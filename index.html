@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DG HR BOT — Hướng Dẫn Sử Dụng</title>
+  <title>DG HR BOT — Hướng Dẫn Nhân Viên</title>
   <style>
     :root {
       --bg: #0f1117;
@@ -368,12 +368,11 @@
 <div class="header">
   <div class="bot-tag">@DG_HR_BOT</div>
   <h1>DG HR <span>BOT</span></h1>
-  <p>Hệ thống quản lý nhân sự gamified · DG Group — Kansai Osaka</p>
+  <p>Hướng dẫn nhân viên · DG Group — Kansai Osaka</p>
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
-    <span class="badge">Version 2.0</span>
+    <span class="badge">Nhân viên · Kỳ cựu · Newbie</span>
     <span class="badge">Cập nhật 09/03/2026</span>
-    <span class="badge">Verified từ source code</span>
   </div>
 </div>
 
@@ -381,8 +380,7 @@
 <nav class="nav">
   <a href="#nguyen-tac">Nguyên tắc</a>
   <a href="#role">Role & EXP</a>
-  <a href="#nhan-vien">Nhân viên</a>
-  <a href="#quan-ly">Quản lý</a>
+  <a href="#nhan-vien">Lệnh</a>
   <a href="#exp-system">EXP System</a>
   <a href="#badges">Badges</a>
   <a href="#nhom">Trong nhóm</a>
@@ -449,15 +447,7 @@
           <span class="name">Quản lý</span>
           <span class="exp-badge">1000+ EXP</span>
         </div>
-        <p>Cần GM duyệt dù đủ EXP. Full access quản trị.</p>
-      </div>
-      <div class="role-card">
-        <div class="role-header">
-          <span class="icon">⚔️</span>
-          <span class="name">GM</span>
-          <span class="exp-badge">Đặc biệt</span>
-        </div>
-        <p>Assign thủ công. Toàn quyền hệ thống.</p>
+        <p>Đích đến cao nhất của nhân viên. Cần GM duyệt khi đủ EXP.</p>
       </div>
     </div>
   </div>
@@ -475,8 +465,7 @@
       <div class="cmd-block-body">
         <p>Đăng ký tài khoản. Bot hỏi thêm bộ phận và vị trí qua inline keyboard.</p>
         <ul>
-          <li>Newbie được kích hoạt <strong>ngay lập tức</strong> — không cần chờ duyệt</li>
-          <li>Chỉ role Quản lý mới cần GM/Creator duyệt thêm</li>
+          <li>Tài khoản được kích hoạt <strong>ngay lập tức</strong> — không cần chờ duyệt</li>
           <li>Nếu đăng ký tên đã tồn tại → bot báo lỗi</li>
         </ul>
       </div>
@@ -537,96 +526,6 @@
         </tbody>
       </table>
     </div>
-  </div>
-
-  <!-- ── Quản lý ── -->
-  <div class="section" id="quan-ly">
-    <div class="section-title">Trưởng ca · Quản lý · GM · Creator</div>
-    <h2>Lệnh Quản Lý</h2>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/moca &nbsp;/dongca</span>
-        <span class="role-tag">Trưởng ca, GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p><strong>/moca</strong> — Báo cáo mở ca đầu ngày. <strong>/dongca</strong> — Báo cáo đóng ca cuối ngày.</p>
-        <ul>
-          <li>Bot hỏi từng bước, trả lời xong → báo cáo đẩy vào nhóm tự động</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/approve</span>
-        <span class="role-tag">GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p>Duyệt nhân viên đăng ký role Quản lý.</p>
-        <ul>
-          <li><span class="cmd">/approve</span> → xem danh sách đang chờ duyệt</li>
-          <li><span class="cmd">/approve [tên]</span> → duyệt trực tiếp</li>
-          <li>Có thể nhấn nút inline ✅ Approve / ❌ Reject trong thông báo</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/lichca</span>
-        <span class="role-tag">Quản lý, GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p>Nộp và xem lịch ca tuần.</p>
-        <ul>
-          <li><span class="cmd">/lichca [tên]: T2 T4 T6</span> — nộp lịch ca theo ngày</li>
-          <li><span class="cmd">/lichca [tên] T2:tối T3:9h-13h</span> — nộp với ca cụ thể</li>
-          <li><span class="cmd">/lichca view</span> — xem lịch tuần hiện tại</li>
-          <li><span class="cmd">/lichca view 2026-W10</span> — xem lịch tuần cụ thể</li>
-        </ul>
-        <div class="warning-note">⚠️ Thứ hợp lệ: T2 T3 T4 T5 T6 T7 CN</div>
-      </div>
-    </div>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/nhaphang</span>
-        <span class="role-tag">Kho, Quản lý, GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p>Nhập hàng. Chụp ảnh hóa đơn gửi cho bot → phiếu nhập tự động lên nhóm.</p>
-      </div>
-    </div>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/exp [tên] [+/-số] [lý do]</span>
-        <span class="role-tag">GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p>Điều chỉnh EXP thủ công.</p>
-        <ul>
-          <li><span class="cmd">/exp Hiếu -20 đi trễ không báo</span></li>
-          <li><span class="cmd">/exp Tân +15 khách khen 5 sao</span></li>
-          <li><span class="cmd">/exp Lan +50 perfect attendance tháng</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="cmd-block">
-      <div class="cmd-block-header">
-        <span class="cmd-name">/fire [tên]</span>
-        <span class="role-tag">GM, Creator</span>
-      </div>
-      <div class="cmd-block-body">
-        <p>Archive nhân viên nghỉ việc. Data giữ nguyên — không xóa.</p>
-        <ul>
-          <li>Để khôi phục: <span class="cmd">/approve [tên]</span></li>
-        </ul>
-      </div>
-    </div>
-
   </div>
 
   <!-- ── EXP System ── -->

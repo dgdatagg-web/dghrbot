@@ -227,6 +227,67 @@
         <p>Tổng quan toàn bộ hệ thống: số nhân viên, EXP trung bình, no-show, vi phạm, top performers.</p>
       </div>
     </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/assignreporter [tên]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Phân công nhân viên báo cáo doanh thu hàng ngày.</p>
+        <ul>
+          <li><span class="cmd">/assignreporter</span> — xem người được phân công hiện tại</li>
+          <li><span class="cmd">/assignreporter Hiếu</span> — phân công Hiếu</li>
+          <li>Người được phân công nhận thông báo DM và có 24h từ 23:59 để nộp</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/baocaodoanhthu</span><span class="role-tag you">Reporter được phân công</span></div>
+      <div class="cmd-block-body">
+        <p>Nộp báo cáo doanh thu ngày. Quy trình 6 bước cố định — không thể bỏ qua.</p>
+        <ul>
+          <li>Bước 1–5: nhập từng mục (tiền mặt, chuyển khoản, Grab, chi phí, kết cuối)</li>
+          <li>Bước 6: gửi ảnh chứng từ ngân hàng</li>
+          <li>Nova tự xác minh chứng từ — số tiền, tài khoản nhận, ngày chuyển khoản</li>
+          <li>Mismatch → báo cáo bị giữ + alert GM ngay lập tức</li>
+        </ul>
+        <div class="warning-note">⚠️ Chứng từ được lưu tự động lên Google Drive.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemdoanhthu [ngày]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Xem báo cáo doanh thu. Mặc định hôm nay — hoặc nhập ngày cụ thể.</p>
+        <ul>
+          <li><span class="cmd">/xemdoanhthu</span> — hôm nay</li>
+          <li><span class="cmd">/xemdoanhthu 2026-03-08</span> — ngày cụ thể</li>
+        </ul>
+        <div class="warning-note">⚠️ Chỉ GM và Creator xem được. Không hiển thị với role khác.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/expstart [tên]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Tính và set EXP khởi điểm cho thành viên onboarding đầu tiên — dựa vào thâm niên và role thực tế.</p>
+        <ul>
+          <li>Công thức: <strong>Role base + (tháng thâm niên × hệ số role) + founding bonus</strong></li>
+          <li>Nhân viên 2 năm → EXP tương xứng với đóng góp thực tế, không phải từ số 0</li>
+          <li>Mọi điều chỉnh đều được log trong exp_log với lý do rõ ràng</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/setexp [tên] [số] [lý do]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Điều chỉnh EXP thủ công với lý do bắt buộc. Khác /exp — đây là set tuyệt đối, không phải ±delta.</p>
+        <ul>
+          <li><span class="cmd">/setexp Hiếu 3200 founding adjustment 3 năm quản lý</span></li>
+          <li>Lý do bắt buộc — hiển thị đầy đủ trong audit log</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <!-- EXP -->
@@ -316,6 +377,9 @@
       <div class="cron-item"><div class="cron-time">08:00 ICT</div><div class="cron-desc">Birthday check<span>Alert sinh nhật hôm nay + 7 ngày tới vào nhóm. Cập nhật ngày sinh: /update @username dob DD/MM/YYYY</span></div></div>
       <div class="cron-item"><div class="cron-time">08:45 ICT</div><div class="cron-desc">Reminder /moca<span>Nhắc trưởng ca nếu chưa mở ca.</span></div></div>
       <div class="cron-item"><div class="cron-time">14:00 ICT</div><div class="cron-desc">Reminder /bc<span>Nhắc nhân viên bàn giao ca.</span></div></div>
+      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Danh sách nhân viên chưa checkout gửi cho GM/QL. Dùng /forcecheckout nếu cần.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:59 ICT</div><div class="cron-desc">Cửa sổ báo cáo DT<span>Nhắc reporter nộp doanh thu. Cửa sổ 24h.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:00 ICT</div><div class="cron-desc">Cảnh báo báo cáo DT trễ<span>Alert GM nếu báo cáo ngày hôm qua chưa được nộp.</span></div></div>
       <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Có lịch ca không check-in → -50 EXP tự động.</span></div></div>
       <div class="cron-item"><div class="cron-time">T2 08:00 ICT</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần.</span></div></div>

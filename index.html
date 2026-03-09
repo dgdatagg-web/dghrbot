@@ -523,6 +523,7 @@
           <tr><td><span class="cmd">/roadmap</span></td><td>Lộ trình thăng cấp + badges còn thiếu</td></tr>
           <tr><td><span class="cmd">/badges</span></td><td>Bộ sưu tập huy hiệu của bạn</td></tr>
           <tr><td><span class="cmd">/cancel</span> hoặc <span class="cmd">/huy</span></td><td>Hủy bước đang làm bất kỳ lúc nào</td></tr>
+          <tr><td><span class="cmd">/tangca [giờ kết thúc] [lý do]</span></td><td>Xin tăng ca — gửi cho quản lý duyệt trước khi ở lại. VD: <code>/tangca 23:30 dọn dẹp</code></td></tr>
         </tbody>
       </table>
     </div>
@@ -642,6 +643,14 @@
       <div class="cron-item">
         <div class="cron-time">14:00 ICT</div>
         <div class="cron-desc">Reminder bc<span>Nhắc nhân viên nộp bàn giao ca.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">22:30 ICT</div>
+        <div class="cron-desc">Nhắc checkout<span>Thông báo cho quản lý nếu có nhân viên chưa checkout. Quản lý xử lý bằng /forcecheckout.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">23:59 ICT</div>
+        <div class="cron-desc">Cửa sổ báo cáo doanh thu<span>Nhắc người được phân công nộp báo cáo doanh thu trong 24 giờ.</span></div>
       </div>
     </div>
   </div>

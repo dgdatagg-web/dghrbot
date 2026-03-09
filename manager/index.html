@@ -87,6 +87,7 @@
   <a href="#nguyen-tac">Nguyên tắc</a>
   <a href="#nhan-vien">Lệnh nhân viên</a>
   <a href="#quan-ly">Lệnh quản lý</a>
+  <a href="#ot-checkout">OT & Checkout</a>
   <a href="#exp-system">EXP System</a>
   <a href="#nhom">Trong nhóm</a>
   <a href="#cron">Tự động</a>
@@ -235,6 +236,36 @@
 
   </div>
 
+  <!-- OT & FORCE CHECKOUT -->
+  <div class="section" id="ot-checkout">
+    <div class="section-title">Quản lý ca làm việc</div>
+    <h2>OT & Force Checkout</h2>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/forcecheckout [tên]</span><span class="role-tag you">Quản lý · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Đóng ca cưỡng bức cho nhân viên quên checkout. Cron 22:30 sẽ cảnh báo danh sách còn mở.</p>
+        <ul>
+          <li><span class="cmd">/forcecheckout Hiếu</span></li>
+          <li>Thời gian tính tự động từ lúc checkin đến lúc force</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/approveot</span><span class="role-tag you">Quản lý · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Duyệt hoặc từ chối yêu cầu tăng ca của nhân viên.</p>
+        <ul>
+          <li><span class="cmd">/approveot</span> — xem danh sách đang chờ</li>
+          <li><span class="cmd">/approveot Hiếu approve</span> — duyệt</li>
+          <li><span class="cmd">/approveot Hiếu reject</span> — từ chối</li>
+        </ul>
+        <div class="warning-note">⚠️ Nhân viên phải được duyệt TRƯỚC khi ở lại tăng ca.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- EXP SYSTEM -->
   <div class="section" id="exp-system">
     <div class="section-title">Cơ chế tích lũy</div>
@@ -328,6 +359,9 @@
       <div class="cron-item"><div class="cron-time">08:00 ICT</div><div class="cron-desc">Birthday check<span>Cảnh báo sinh nhật hôm nay và 7 ngày tới vào nhóm.</span></div></div>
       <div class="cron-item"><div class="cron-time">08:45 ICT</div><div class="cron-desc">Reminder /moca<span>Nhắc trưởng ca nộp báo cáo mở ca nếu chưa làm.</span></div></div>
       <div class="cron-item"><div class="cron-time">14:00 ICT</div><div class="cron-desc">Reminder /bc<span>Nhắc nhân viên nộp bàn giao ca.</span></div></div>
+      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Bot gửi danh sách nhân viên chưa checkout cho quản lý. Dùng /forcecheckout nếu cần.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:59 ICT</div><div class="cron-desc">Cửa sổ báo cáo DT<span>Nhắc reporter nộp doanh thu trong 24h.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:00 ICT</div><div class="cron-desc">Cảnh báo báo cáo DT trễ<span>Alert GM/Creator nếu báo cáo hôm qua chưa được nộp.</span></div></div>
       <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày đăng vào nhóm.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Ai có lịch ca mà không check-in → -50 EXP tự động.</span></div></div>
       <div class="cron-item"><div class="cron-time">T2 08:00 ICT</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần đăng vào nhóm.</span></div></div>

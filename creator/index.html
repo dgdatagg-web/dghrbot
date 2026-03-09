@@ -128,7 +128,7 @@
   <div class="badge-row">
     <span class="badge green">&#10003; Live</span>
     <span class="badge creator">Creator Access</span>
-    <span class="badge">Cập nhật 10/03/2026</span>
+    <span class="badge">Cập nhật 10/03/2026 — ESOP + Access live</span>
   </div>
 </div>
 
@@ -899,24 +899,75 @@ pm2 show dg-hr-bot
       </div>
     </div>
 
-    <h3>ESOP (Schema Ready — Commands Pending)</h3>
-    <div class="callout warning">
-      <strong>Trạng thái:</strong> Schema DB đã sẵn sàng — commands chưa implement. Sprint tiếp theo.
+    <h3>ESOP — Live</h3>
+    <div class="callout success">
+      <strong>Trạng thái:</strong> Tất cả ESOP commands đã live. Schema + commands + migration guard hoàn chỉnh.
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Table / Command</th><th>Trạng thái</th><th>Mục đích</th></tr></thead>
         <tbody>
-          <tr><td><span class="cmd">esop_pool</span></td><td><span class="auto-tag">Schema ready</span></td><td>Pool phân phối ESOP — tổng quỹ, điều kiện, ngày cliff</td></tr>
-          <tr><td><span class="cmd">esop_kpi_config</span></td><td><span class="auto-tag">Active</span></td><td>KPI targets per staff — dùng ngay bởi /reviewkpis</td></tr>
-          <tr><td><span class="cmd">esop_kpi_scores</span></td><td><span class="auto-tag">Active</span></td><td>Monthly KPI scores — tracking KPI performance</td></tr>
-          <tr><td><span class="cmd">esop_cliff_events</span></td><td><span class="auto-tag">Schema ready</span></td><td>Cliff vesting events — ghi nhận milestones vesting</td></tr>
-          <tr><td><span class="cmd">esop_candidates</span></td><td><span class="auto-tag">Schema ready</span></td><td>Danh sách ứng viên ESOP — eligible staff</td></tr>
-          <tr><td><span class="cmd">/assignesop</span></td><td><span class="manual-tag">Pending</span></td><td>Phân công ESOP cho nhân viên đủ điều kiện</td></tr>
-          <tr><td><span class="cmd">/viewpool</span></td><td><span class="manual-tag">Pending</span></td><td>Xem tổng quỹ ESOP và phân bổ hiện tại</td></tr>
-          <tr><td><span class="cmd">/esopstatus</span></td><td><span class="manual-tag">Pending</span></td><td>Xem trạng thái ESOP cá nhân</td></tr>
+          <tr><td><span class="cmd">esop_pool</span></td><td><span class="auto-tag">Active</span></td><td>Pool ESOP — share %, vesting start, cliff Y1/Y2/Y3 per staff</td></tr>
+          <tr><td><span class="cmd">esop_kpi_config</span></td><td><span class="auto-tag">Active</span></td><td>KPI targets per dept — label, weight, active/pending</td></tr>
+          <tr><td><span class="cmd">esop_kpi_scores</span></td><td><span class="auto-tag">Active</span></td><td>Monthly KPI score records — joined với label khi hiển thị</td></tr>
+          <tr><td><span class="cmd">esop_cliff_events</span></td><td><span class="auto-tag">Active</span></td><td>Cliff vesting events — request, review, note</td></tr>
+          <tr><td><span class="cmd">esop_candidates</span></td><td><span class="auto-tag">Active</span></td><td>Ứng viên ESOP — status racing, inherited_pct</td></tr>
+          <tr><td><span class="cmd">staff_access_grants</span></td><td><span class="auto-tag">Active</span></td><td>Access tokens per staff — soft-revocable, dept-scoped</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/assignesop [tên] [%] [dept?]</span><span class="role-tag creator">Creator · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Gán ESOP seat cho nhân viên. Dept lấy từ hồ sơ nếu không truyền vào — reject nếu không có dept.</p>
+        <ul>
+          <li><span class="cmd">/assignesop Hiếu 5</span> — gán 5% cho Hiếu (dept từ hồ sơ)</li>
+          <li><span class="cmd">/assignesop Hiếu 5 dept_bar</span> — gán 5% dept_bar</li>
+          <li>Tự động tạo esop_candidates (status: racing) và DM nhân viên</li>
+          <li>Reject nếu đã có seat active — phải dùng updateEsopShares để sửa %</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/viewpool</span><span class="role-tag creator">Creator · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Toàn bộ ESOP seats active — nhóm theo dept, hiển thị share %, vesting date, cliff Y1/Y2/Y3, tổng % đã cấp.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/esopstatus [tên?]</span><span class="role-tag creator">Creator · GM · Nhân viên (chỉ bản thân)</span></div>
+      <div class="cmd-block-body">
+        <p>Xem ESOP seat + cliff status + KPI scores tháng hiện tại (label + weight từ esop_kpi_config).</p>
+        <ul>
+          <li><span class="cmd">/esopstatus</span> — xem của bản thân</li>
+          <li><span class="cmd">/esopstatus Hiếu</span> — GM/Creator xem của Hiếu</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/grantaccess [tên] [access_type] [dept?]</span><span class="role-tag creator">Creator only</span></div>
+      <div class="cmd-block-body">
+        <p>Cấp quyền truy cập theo token cho nhân viên. Duplicate active grant bị bỏ qua. DM nhân viên khi cấp.</p>
+        <ul>
+          <li><span class="cmd">/grantaccess Hiếu xemdoanhthu</span> — quyền xem doanh thu</li>
+          <li><span class="cmd">/grantaccess Hiếu viewpool dept_bar</span> — scoped theo dept</li>
+          <li>Access tokens hiện dùng: <span class="cmd">xemdoanhthu</span> · <span class="cmd">viewpool</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/revokeaccess [tên] [access_type]</span><span class="role-tag creator">Creator only</span></div>
+      <div class="cmd-block-body">
+        <p>Thu hồi quyền — soft delete (revoked_at). Tìm theo tên + access_type, không cần grant ID. DM nhân viên khi thu hồi.</p>
+        <ul>
+          <li><span class="cmd">/revokeaccess Hiếu xemdoanhthu</span></li>
+        </ul>
+      </div>
     </div>
   </div>
 

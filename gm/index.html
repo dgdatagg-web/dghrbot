@@ -77,7 +77,7 @@
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
     <span class="badge gold">⚔️ GM</span>
-    <span class="badge">Cập nhật 09/03/2026</span>
+    <span class="badge">Cập nhật 10/03/2026</span>
   </div>
 </div>
 
@@ -288,9 +288,36 @@
         </ul>
       </div>
     </div>
-  </div>
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/assignesop [tên] [%] [dept?]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Gán ESOP seat. Dept lấy từ hồ sơ nếu không truyền. Reject nếu đã có seat active.</p>
+        <ul>
+          <li><span class="cmd">/assignesop Hiếu 5</span> — gán 5% (dept từ hồ sơ)</li>
+          <li><span class="cmd">/assignesop Hiếu 5 dept_bar</span> — override dept</li>
+        </ul>
+      </div>
+    </div>
 
-  <!-- EXP -->
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/viewpool</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Toàn bộ ESOP seats active — nhóm theo dept, share %, vesting date, cliff Y1/Y2/Y3, tổng % đã cấp.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/esopstatus [tên?]</span><span class="role-tag you">GM · Creator · Nhân viên (bản thân)</span></div>
+      <div class="cmd-block-body">
+        <p>Xem ESOP seat + cliff status + KPI scores tháng hiện tại với label đầy đủ.</p>
+        <ul>
+          <li><span class="cmd">/esopstatus Hiếu</span> — xem của Hiếu</li>
+          <li><span class="cmd">/esopstatus</span> — xem của bản thân</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
   <div class="section" id="exp-system">
     <div class="section-title">Cơ chế tích lũy</div>
     <h2>EXP System</h2>
@@ -389,7 +416,7 @@
 </div>
 
 <footer>
-  DG HR BOT · Hướng dẫn GM · DG Group — Kansai Osaka · Cập nhật 09/03/2026
+  DG HR BOT · Hướng dẫn GM · DG Group — Kansai Osaka · Cập nhật 10/03/2026
 </footer>
 
 </body>

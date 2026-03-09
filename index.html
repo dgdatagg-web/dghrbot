@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DG HR BOT — Hướng Dẫn Sử Dụng</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #21253a;
+      --border: #2e3250;
+      --accent: #7c6af7;
+      --accent2: #5ddcff;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1a1d27 0%, #12102a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    .header .bot-tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 13px;
+      color: var(--accent2);
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .header h1 {
+      font-size: clamp(24px, 5vw, 40px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .header h1 span { color: var(--accent); }
+    .header p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .header .badge-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge.green { color: var(--green); border-color: #166534; background: #052e16; }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a {
+      display: block;
+      padding: 14px 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav a:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 64px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+    p { color: var(--muted); margin-bottom: 12px; }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .callout.warning { border-left-color: var(--yellow); }
+    .callout.danger  { border-left-color: var(--red); }
+    .callout.success { border-left-color: var(--green); }
+    .callout strong { color: #fff; }
+
+    /* ── Principle cards ── */
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .principle-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .principle-card .num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .principle-card p { color: var(--text); margin: 0; font-size: 14px; }
+
+    /* ── Role grid ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .role-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .role-card .role-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .role-card .icon { font-size: 24px; }
+    .role-card .name { font-weight: 700; color: #fff; font-size: 15px; }
+    .role-card .exp-badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 8px;
+      font-size: 11px;
+      color: var(--accent2);
+      margin-left: auto;
+    }
+    .role-card p { color: var(--muted); font-size: 13px; margin: 0; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    td .cmd { color: var(--accent2); font-family: monospace; font-size: 13px; }
+    td .muted { color: var(--muted); font-size: 13px; }
+    td .plus { color: var(--green); font-weight: 600; }
+    td .minus { color: var(--red); font-weight: 600; }
+    td .auto-tag {
+      display: inline-block;
+      background: #052e16;
+      border: 1px solid #166534;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      color: var(--green);
+    }
+    td .manual-tag {
+      display: inline-block;
+      background: #1e1b4b;
+      border: 1px solid #3730a3;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      color: #a5b4fc;
+    }
+
+    /* ── Command blocks ── */
+    .cmd-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .cmd-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .cmd-block-header .cmd-name {
+      font-family: monospace;
+      font-size: 15px;
+      color: var(--accent2);
+      font-weight: 600;
+    }
+    .cmd-block-header .role-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+    .cmd-block-body { padding: 14px 16px; }
+    .cmd-block-body p { margin: 0 0 8px; font-size: 14px; color: var(--text); }
+    .cmd-block-body ul { padding-left: 18px; }
+    .cmd-block-body li { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+    .cmd-block-body li strong { color: var(--text); }
+    .cmd-block-body .warning-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--yellow);
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    /* ── Cron list ── */
+    .cron-list { display: flex; flex-direction: column; gap: 10px; }
+    .cron-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .cron-time {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--accent2);
+      white-space: nowrap;
+      padding-top: 2px;
+      min-width: 80px;
+    }
+    .cron-desc { font-size: 14px; color: var(--text); }
+    .cron-desc span { color: var(--muted); font-size: 13px; display: block; margin-top: 2px; }
+
+    /* ── Badge grid ── */
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .badge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .badge-card .b-icon { font-size: 22px; flex-shrink: 0; }
+    .badge-card .b-name { font-weight: 600; font-size: 14px; color: #fff; }
+    .badge-card .b-cond { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* ── SOP table icons ── */
+    .sop-full { color: var(--green); }
+    .sop-view { color: var(--yellow); }
+    .sop-lock { color: #374151; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .principles { grid-template-columns: 1fr; }
+      .role-grid { grid-template-columns: 1fr; }
+      .badge-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="bot-tag">@DG_HR_BOT</div>
+  <h1>DG HR <span>BOT</span></h1>
+  <p>Hệ thống quản lý nhân sự gamified · DG Group — Kansai Osaka</p>
+  <div class="badge-row">
+    <span class="badge green">✓ Live</span>
+    <span class="badge">Version 2.0</span>
+    <span class="badge">Cập nhật 09/03/2026</span>
+    <span class="badge">Verified từ source code</span>
+  </div>
+</div>
+
+<!-- ── Nav ── -->
+<nav class="nav">
+  <a href="#nguyen-tac">Nguyên tắc</a>
+  <a href="#role">Role & EXP</a>
+  <a href="#nhan-vien">Nhân viên</a>
+  <a href="#quan-ly">Quản lý</a>
+  <a href="#exp-system">EXP System</a>
+  <a href="#badges">Badges</a>
+  <a href="#nhom">Trong nhóm</a>
+  <a href="#cron">Tự động</a>
+</nav>
+
+<div class="container">
+
+  <!-- ── Nguyên tắc ── -->
+  <div class="section" id="nguyen-tac">
+    <div class="section-title">Bắt đầu từ đây</div>
+    <h2>3 Nguyên Tắc Cốt Lõi</h2>
+    <div class="principles">
+      <div class="principle-card">
+        <div class="num">01</div>
+        <p>Mọi lệnh cá nhân làm trong <strong>DM với bot</strong> — không phải trong nhóm</p>
+      </div>
+      <div class="principle-card">
+        <div class="num">02</div>
+        <p><strong>Nhóm chỉ để xem kết quả</strong> — bot tự đăng, không cần làm gì trong nhóm</p>
+      </div>
+      <div class="principle-card">
+        <div class="num">03</div>
+        <p>Bot chỉ hiểu <strong>lệnh bắt đầu bằng /</strong> — không đọc tin nhắn thường</p>
+      </div>
+    </div>
+    <div class="callout success">
+      <strong>Bước đầu tiên:</strong> Tìm <strong>@DG_HR_BOT</strong> trên Telegram → nhắn tin riêng → gõ <code>/dangky [Tên]</code>
+    </div>
+  </div>
+
+  <!-- ── Role ── -->
+  <div class="section" id="role">
+    <div class="section-title">Hệ thống tiến trình</div>
+    <h2>Role & EXP</h2>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">🐣</span>
+          <span class="name">Newbie</span>
+          <span class="exp-badge">0–99 EXP</span>
+        </div>
+        <p>Mới vào. Active ngay sau /dangky. Chưa cần duyệt.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">⚡</span>
+          <span class="name">Nhân viên</span>
+          <span class="exp-badge">100–499 EXP</span>
+        </div>
+        <p>Tự động lên khi đủ EXP. Quyền cơ bản đầy đủ.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">🔥</span>
+          <span class="name">Kỳ cựu</span>
+          <span class="exp-badge">500–999 EXP</span>
+        </div>
+        <p>Unlock SOP nâng cao, xem báo cáo ca, ghi KPI.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">🛡️</span>
+          <span class="name">Quản lý</span>
+          <span class="exp-badge">1000+ EXP</span>
+        </div>
+        <p>Cần GM duyệt dù đủ EXP. Full access quản trị.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">⚔️</span>
+          <span class="name">GM</span>
+          <span class="exp-badge">Đặc biệt</span>
+        </div>
+        <p>Assign thủ công. Toàn quyền hệ thống.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-header">
+          <span class="icon">👾</span>
+          <span class="name">Creator</span>
+          <span class="exp-badge">Will only</span>
+        </div>
+        <p>God mode. Hard delete. Cấu hình hệ thống.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Nhân viên ── -->
+  <div class="section" id="nhan-vien">
+    <div class="section-title">Tất cả nhân viên</div>
+    <h2>Lệnh Nhân Viên</h2>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/dangky [Tên]</span>
+        <span class="role-tag">Tất cả — lần đầu tiên</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Đăng ký tài khoản. Bot hỏi thêm bộ phận và vị trí qua inline keyboard.</p>
+        <ul>
+          <li>Newbie được kích hoạt <strong>ngay lập tức</strong> — không cần chờ duyệt</li>
+          <li>Chỉ role Quản lý mới cần GM/Creator duyệt thêm</li>
+          <li>Nếu đăng ký tên đã tồn tại → bot báo lỗi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/checkin</span>
+        <span class="role-tag">Tất cả — hàng ngày</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Vào ca. Bắt buộc gửi vị trí GPS sau khi gõ lệnh.</p>
+        <ul>
+          <li>Nhấn <strong>📎 → Location → Send My Location</strong></li>
+          <li>Phải đang ở trong quán mới được tính</li>
+          <li><strong>Có 5 phút</strong> để gửi vị trí — quá hạn phải làm lại từ đầu</li>
+        </ul>
+        <div class="warning-note">⚠️ Gian lận GPS: -200 EXP và bị xử lý kỷ luật.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/checkout</span>
+        <span class="role-tag">Tất cả — cuối ca</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Ra ca. Bot ghi nhận giờ ra, tính tổng thời gian làm việc trong ngày.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/bc</span>
+        <span class="role-tag">Tất cả — cuối ca</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Bàn giao ca. Bot hỏi từng mục trong checklist theo bộ phận của bạn.</p>
+        <ul>
+          <li>Trả lời xong hết → báo cáo tự động đẩy vào nhóm</li>
+          <li>Không cần tự copy vào nhóm</li>
+          <li>EXP: <strong>+2</strong> khi nộp đúng hạn</li>
+          <li>Dùng <strong>/cancel</strong> nếu muốn thoát giữa chừng</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Lệnh xem thông tin</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Lệnh</th><th>Chức năng</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">/profile</span> hoặc <span class="cmd">/me</span> hoặc <span class="cmd">/stats</span></td><td>Xem EXP, role, streak, số ca đã làm</td></tr>
+          <tr><td><span class="cmd">/leaderboard</span> hoặc <span class="cmd">/lb</span></td><td>Bảng xếp hạng EXP toàn bộ nhân viên</td></tr>
+          <tr><td><span class="cmd">/roadmap</span></td><td>Lộ trình thăng cấp + badges còn thiếu</td></tr>
+          <tr><td><span class="cmd">/badges</span></td><td>Bộ sưu tập huy hiệu của bạn</td></tr>
+          <tr><td><span class="cmd">/cancel</span> hoặc <span class="cmd">/huy</span></td><td>Hủy bước đang làm bất kỳ lúc nào</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Quản lý ── -->
+  <div class="section" id="quan-ly">
+    <div class="section-title">Trưởng ca · Quản lý · GM · Creator</div>
+    <h2>Lệnh Quản Lý</h2>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/moca &nbsp;/dongca</span>
+        <span class="role-tag">Trưởng ca, GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p><strong>/moca</strong> — Báo cáo mở ca đầu ngày. <strong>/dongca</strong> — Báo cáo đóng ca cuối ngày.</p>
+        <ul>
+          <li>Bot hỏi từng bước, trả lời xong → báo cáo đẩy vào nhóm tự động</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/approve</span>
+        <span class="role-tag">GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Duyệt nhân viên đăng ký role Quản lý.</p>
+        <ul>
+          <li><span class="cmd">/approve</span> → xem danh sách đang chờ duyệt</li>
+          <li><span class="cmd">/approve [tên]</span> → duyệt trực tiếp</li>
+          <li>Có thể nhấn nút inline ✅ Approve / ❌ Reject trong thông báo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/lichca</span>
+        <span class="role-tag">Quản lý, GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Nộp và xem lịch ca tuần.</p>
+        <ul>
+          <li><span class="cmd">/lichca [tên]: T2 T4 T6</span> — nộp lịch ca theo ngày</li>
+          <li><span class="cmd">/lichca [tên] T2:tối T3:9h-13h</span> — nộp với ca cụ thể</li>
+          <li><span class="cmd">/lichca view</span> — xem lịch tuần hiện tại</li>
+          <li><span class="cmd">/lichca view 2026-W10</span> — xem lịch tuần cụ thể</li>
+        </ul>
+        <div class="warning-note">⚠️ Thứ hợp lệ: T2 T3 T4 T5 T6 T7 CN</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/nhaphang</span>
+        <span class="role-tag">Kho, Quản lý, GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Nhập hàng. Chụp ảnh hóa đơn gửi cho bot → phiếu nhập tự động lên nhóm.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/exp [tên] [+/-số] [lý do]</span>
+        <span class="role-tag">GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Điều chỉnh EXP thủ công.</p>
+        <ul>
+          <li><span class="cmd">/exp Hiếu -20 đi trễ không báo</span></li>
+          <li><span class="cmd">/exp Tân +15 khách khen 5 sao</span></li>
+          <li><span class="cmd">/exp Lan +50 perfect attendance tháng</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/fire [tên]</span>
+        <span class="role-tag">GM, Creator</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Archive nhân viên nghỉ việc. Data giữ nguyên — không xóa.</p>
+        <ul>
+          <li>Để khôi phục: <span class="cmd">/approve [tên]</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/tongquan &nbsp;/setrole &nbsp;/delete</span>
+        <span class="role-tag">Creator only (Will)</span>
+      </div>
+      <div class="cmd-block-body">
+        <ul>
+          <li><span class="cmd">/tongquan</span> — tổng quan toàn hệ thống</li>
+          <li><span class="cmd">/setrole</span> — thay đổi role thủ công</li>
+          <li><span class="cmd">/delete [tên] CONFIRM</span> — xóa vĩnh viễn, không khôi phục</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXP System ── -->
+  <div class="section" id="exp-system">
+    <div class="section-title">Cơ chế tích lũy</div>
+    <h2>EXP System</h2>
+
+    <h3>Cộng EXP (tự động)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sự kiện</th><th>EXP</th><th>Loại</th></tr></thead>
+        <tbody>
+          <tr><td>Check-in đúng giờ (trễ &lt; 5 phút)</td><td><span class="plus">+3</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Check-in trễ 5–15 phút</td><td><span class="plus">+1</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Check-in trễ &gt; 15 phút</td><td>0</td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Bàn giao ca /bc đúng hạn</td><td><span class="plus">+2</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 7 ngày</td><td><span class="plus">+20 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 14 ngày</td><td><span class="plus">+40 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 30 ngày</td><td><span class="plus">+80 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 60 ngày</td><td><span class="plus">+150 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Thêm ca ngoài lịch</td><td><span class="plus">+15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>KPI tháng 100%</td><td><span class="plus">+30</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Khách khen 5 sao</td><td><span class="plus">+15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Perfect attendance tháng</td><td><span class="plus">+50</span></td><td><span class="manual-tag">manual</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warning">
+      <strong>Streak bonus</strong> chỉ cộng vào đúng mốc 7/14/30/60 ngày — không có +1 mỗi ngày liên tiếp.
+    </div>
+
+    <h3>Trừ EXP</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Vi phạm</th><th>EXP</th><th>Loại</th></tr></thead>
+        <tbody>
+          <tr><td>Đi trễ không báo</td><td><span class="minus">-20</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Không nộp BC</td><td><span class="minus">-15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Vắng không báo</td><td><span class="minus">-50</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Hủy hàng không lý do</td><td><span class="minus">-20</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Lỗi đơn Grab</td><td><span class="minus">-25</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Vi phạm vệ sinh ATTP</td><td><span class="minus">-100</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Gian lận GPS check-in</td><td><span class="minus">-200</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>No-show (có lịch, không check-in)</td><td><span class="minus">-50</span></td><td><span class="auto-tag">auto 23:30</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Badges ── -->
+  <div class="section" id="badges">
+    <div class="section-title">Thành tích</div>
+    <h2>Achievement Badges</h2>
+    <p style="margin-bottom:20px">Badge tự award sau mỗi check-in hoặc thay đổi EXP. Khi earn → bot thông báo ngay trong DM.</p>
+    <div class="badge-grid">
+      <div class="badge-card"><span class="b-icon">🩸</span><div><div class="b-name">First Blood</div><div class="b-cond">Ca làm việc đầu tiên</div></div></div>
+      <div class="badge-card"><span class="b-icon">⚙️</span><div><div class="b-name">Grinder</div><div class="b-cond">30 ca tích lũy</div></div></div>
+      <div class="badge-card"><span class="b-icon">💯</span><div><div class="b-name">Century</div><div class="b-cond">100 ca tích lũy</div></div></div>
+      <div class="badge-card"><span class="b-icon">🔥</span><div><div class="b-name">On Fire</div><div class="b-cond">Streak ≥ 7 ngày liên tiếp</div></div></div>
+      <div class="badge-card"><span class="b-icon">🌟</span><div><div class="b-name">Legendary</div><div class="b-cond">Streak ≥ 30 ngày liên tiếp</div></div></div>
+      <div class="badge-card"><span class="b-icon">🎓</span><div><div class="b-name">Mentor</div><div class="b-cond">1 người mình giới thiệu lên Nhân viên</div></div></div>
+      <div class="badge-card"><span class="b-icon">👑</span><div><div class="b-name">KPI King</div><div class="b-cond">3 tháng KPI 100% liên tiếp</div></div></div>
+      <div class="badge-card"><span class="b-icon">🧹</span><div><div class="b-name">Clean Slate</div><div class="b-cond">30 ngày không vi phạm</div></div></div>
+      <div class="badge-card"><span class="b-icon">⚡</span><div><div class="b-name">Comeback</div><div class="b-cond">Từ EXP âm thực sự lên dương</div></div></div>
+    </div>
+  </div>
+
+  <!-- ── Nhóm ── -->
+  <div class="section" id="nhom">
+    <div class="section-title">Kênh báo cáo</div>
+    <h2>Bot Trong Nhóm Làm Việc</h2>
+    <div class="callout warning">
+      <strong>Bot không đọc tin nhắn thường trong nhóm.</strong> Không gõ lệnh trong nhóm — làm trong DM, kết quả tự lên nhóm.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Khi nào</th><th>Bot đăng gì vào nhóm</th></tr></thead>
+        <tbody>
+          <tr><td>Check-in thành công</td><td>Thông báo vào ca</td></tr>
+          <tr><td>Checkout thành công</td><td>Thông báo ra ca + tổng giờ làm</td></tr>
+          <tr><td>/moca hoàn thành</td><td>Báo cáo mở ca đầy đủ</td></tr>
+          <tr><td>/dongca hoàn thành</td><td>Báo cáo đóng ca đầy đủ</td></tr>
+          <tr><td>/bc hoàn thành</td><td>Bàn giao ca theo bộ phận</td></tr>
+          <tr><td>/nhaphang hoàn thành</td><td>Phiếu nhập hàng + ảnh hóa đơn</td></tr>
+          <tr><td>Mỗi sáng (tự động)</td><td>Bảng điểm danh ngày</td></tr>
+          <tr><td>Mỗi tuần (tự động)</td><td>Bảng xếp hạng EXP</td></tr>
+          <tr><td>23:30 ICT (tự động)</td><td>Phát hiện no-show → trừ EXP</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Cron ── -->
+  <div class="section" id="cron">
+    <div class="section-title">Chạy nền</div>
+    <h2>Tác Vụ Tự Động</h2>
+    <div class="cron-list">
+      <div class="cron-item">
+        <div class="cron-time">23:30 ICT</div>
+        <div class="cron-desc">No-show detection — hàng ngày<span>So sánh lịch ca vs check-in. Ai có lịch mà không check-in → -50 EXP tự động.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">Mỗi sáng</div>
+        <div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày đăng vào nhóm.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">Đầu tuần</div>
+        <div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP đăng vào nhóm.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">08:45 ICT</div>
+        <div class="cron-desc">Reminder moca<span>Nhắc trưởng ca nộp báo cáo mở ca.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">14:00 ICT</div>
+        <div class="cron-desc">Reminder bc<span>Nhắc nhân viên nộp bàn giao ca.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  DG HR BOT · DG Group — Kansai Osaka ·
+  Source of truth: <a href="https://github.com/dgdatagg-web/dghrbot">github.com/dgdatagg-web/dghrbot</a> ·
+  Cập nhật 09/03/2026
+</footer>
+
+</body>
+</html>

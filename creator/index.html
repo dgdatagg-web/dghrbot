@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DG HR BOT — Hướng Dẫn Creator</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #21253a;
+      --border: #2e3250; --accent: #e879f9; --accent2: #5ddcff;
+      --green: #4ade80; --yellow: #facc15; --red: #f87171;
+      --text: #e2e8f0; --muted: #8892a4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.7; }
+
+    /* HEADER */
+    .header { background: linear-gradient(135deg, #1a1d27 0%, #1a0020 100%); border-bottom: 1px solid var(--border); padding: 48px 24px 40px; text-align: center; }
+    .header .bot-tag { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 13px; color: var(--accent2); margin-bottom: 16px; }
+    .header h1 { font-size: clamp(24px, 5vw, 40px); font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .header h1 span { color: var(--accent); }
+    .header p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .header .badge-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--muted); }
+    .badge.green { color: var(--green); border-color: #166534; background: #052e16; }
+    .badge.creator { color: var(--accent); border-color: #7e22ce; background: #1a0020; }
+
+    /* NAV */
+    .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 100; }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a { display: block; padding: 14px 18px; color: var(--muted); text-decoration: none; font-size: 13px; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+    .nav a:hover { color: var(--text); border-color: var(--accent); }
+
+    /* LAYOUT */
+    .container { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+    .section { margin-bottom: 72px; }
+    .section-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+    h3 { font-size: 16px; font-weight: 600; color: var(--text); margin: 28px 0 12px; }
+    p { color: var(--muted); margin-bottom: 12px; }
+
+    /* CALLOUT */
+    .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; color: var(--text); }
+    .callout.warning { border-left-color: var(--yellow); }
+    .callout.danger { border-left-color: var(--red); }
+    .callout.success { border-left-color: var(--green); }
+    .callout.info { border-left-color: var(--accent2); }
+    .callout strong { color: #fff; }
+
+    /* TABLES */
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { background: var(--surface2); color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    td .cmd { color: var(--accent2); font-family: monospace; font-size: 13px; }
+    td .plus { color: var(--green); font-weight: 600; }
+    td .minus { color: var(--red); font-weight: 600; }
+    td .auto-tag { display: inline-block; background: #052e16; border: 1px solid #166534; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--green); }
+    td .manual-tag { display: inline-block; background: #1e1b4b; border: 1px solid #3730a3; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #a5b4fc; }
+    td .creator-tag { display: inline-block; background: #1a0020; border: 1px solid #7e22ce; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--accent); }
+
+    /* CMD BLOCK */
+    .cmd-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+    .cmd-block-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+    .cmd-block-header .cmd-name { font-family: monospace; font-size: 15px; color: var(--accent2); font-weight: 600; }
+    .cmd-block-header .role-tag { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; }
+    .cmd-block-header .role-tag.creator { color: var(--accent); border-color: #7e22ce; background: #1a0020; }
+    .cmd-block-header .role-tag.gm { color: var(--yellow); border-color: #92400e; background: #1c1000; }
+    .cmd-block-header .role-tag.shared { color: var(--accent2); border-color: #164e63; background: #0c1e27; }
+    .cmd-block-body { padding: 14px 16px; }
+    .cmd-block-body p { margin: 0 0 8px; font-size: 14px; color: var(--text); }
+    .cmd-block-body ul { padding-left: 18px; }
+    .cmd-block-body li { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+    .cmd-block-body li strong { color: var(--text); }
+    .cmd-block-body .warning-note { margin-top: 10px; font-size: 12px; color: var(--yellow); display: flex; gap: 6px; }
+    .cmd-block-body .danger-note { margin-top: 10px; font-size: 12px; color: var(--red); display: flex; gap: 6px; }
+
+    /* CODE BLOCK */
+    .code-block { background: #0a0c12; border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; color: var(--accent2); overflow-x: auto; margin-bottom: 16px; line-height: 1.8; }
+    .code-block .comment { color: #4a5568; }
+    .code-block .key { color: var(--accent); }
+
+    /* STEP LIST */
+    .step-list { counter-reset: step; display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .step-item { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+    .step-num { display: flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; background: var(--accent); color: #0f1117; font-size: 13px; font-weight: 700; border-radius: 50%; flex-shrink: 0; }
+    .step-body { font-size: 14px; color: var(--text); }
+    .step-body code { font-family: monospace; color: var(--accent2); background: #0a0c12; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    .step-body .sub { color: var(--muted); font-size: 13px; margin-top: 4px; display: block; }
+
+    /* CRON LIST */
+    .cron-list { display: flex; flex-direction: column; gap: 10px; }
+    .cron-item { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+    .cron-time { font-family: monospace; font-size: 13px; color: var(--accent2); white-space: nowrap; padding-top: 2px; min-width: 100px; }
+    .cron-desc { font-size: 14px; color: var(--text); }
+    .cron-desc span { color: var(--muted); font-size: 13px; display: block; margin-top: 2px; }
+
+    /* ARCH GRID */
+    .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .arch-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .arch-card .arch-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .arch-card .arch-value { font-size: 14px; color: var(--text); font-family: monospace; }
+    .arch-card .arch-value a { color: var(--accent2); text-decoration: none; }
+    @media (max-width: 600px) { .arch-grid { grid-template-columns: 1fr; } }
+
+    /* ACCESS LADDER */
+    .access-ladder { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .access-rung { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px; }
+    .access-rung.top { border-color: #7e22ce; background: #1a0020; }
+    .access-rung .rung-label { font-size: 14px; color: var(--text); flex: 1; }
+    .access-rung .rung-role { font-size: 12px; color: var(--muted); font-family: monospace; }
+    .access-rung.top .rung-label { color: var(--accent); font-weight: 600; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 32px 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 600px) { .cmd-block-header { flex-direction: column; align-items: flex-start; gap: 6px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="bot-tag">@DG_HR_BOT</div>
+  <h1>DG HR <span>BOT</span></h1>
+  <p>Toàn quyền hệ thống · DG Group — Kansai Osaka</p>
+  <div class="badge-row">
+    <span class="badge green">&#10003; Live</span>
+    <span class="badge creator">Creator Access</span>
+    <span class="badge">Cập nhật 10/03/2026</span>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="#kien-truc">Kiến trúc</a>
+  <a href="#setup">Setup &amp; Deploy</a>
+  <a href="#creator-cmds">Lệnh Creator</a>
+  <a href="#gm-cmds">Lệnh GM</a>
+  <a href="#manager-cmds">Lệnh Manager</a>
+  <a href="#staff-cmds">Lệnh Nhân Viên</a>
+  <a href="#exp-system">EXP System</a>
+  <a href="#kpi-esop">KPI &amp; ESOP</a>
+  <a href="#doanh-thu">Doanh Thu</a>
+  <a href="#cron">Tự Động</a>
+  <a href="#ip-security">IP &amp; Bảo Mật</a>
+</nav>
+
+<div class="container">
+
+  <!-- SECTION 1: KIEN TRUC -->
+  <div class="section" id="kien-truc">
+    <div class="section-title">Section 01 — Architecture</div>
+    <h2>Kiến Trúc Hệ Thống</h2>
+    <p>Toàn bộ hạ tầng của DG HR Bot — runtime, database, module, và platform.</p>
+
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="arch-label">Bot</div>
+        <div class="arch-value">@DG_HR_BOT (Telegram)</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">Runtime</div>
+        <div class="arch-value">Node.js · PM2 (id: 1) · dg-hr-bot</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">Database</div>
+        <div class="arch-value">/willos/data/staff.db (SQLite)</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">Entry Point</div>
+        <div class="arch-value">index.js</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">Commands</div>
+        <div class="arch-value">commands/</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">KPI Module</div>
+        <div class="arch-value">modules/novaKpiAnalyzer.js</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">Platform</div>
+        <div class="arch-value">Local Mac · Power Nap enabled · PM2 launchd registered</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-label">AI Layer</div>
+        <div class="arch-value">Claude (Anthropic) — KPI analysis &amp; revenue cross-check</div>
+      </div>
+    </div>
+
+    <h3>Database Tables</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Table</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">staff</span></td><td>Core staff records — name, role, dept, telegram_id, status, start_date</td></tr>
+          <tr><td><span class="cmd">checkin_log</span></td><td>All check-in / checkout events with GPS coordinates and timestamps</td></tr>
+          <tr><td><span class="cmd">exp_log</span></td><td>Full EXP audit trail — every gain, deduction, and adjustment with reason</td></tr>
+          <tr><td><span class="cmd">shift_sessions</span></td><td>Open shift tracking — links checkin to checkout per staff per day</td></tr>
+          <tr><td><span class="cmd">esop_kpi_config</span></td><td>KPI targets per staff — [PENDING] or approved, with metrics and thresholds</td></tr>
+          <tr><td><span class="cmd">esop_kpi_scores</span></td><td>Monthly KPI score records per staff per target</td></tr>
+          <tr><td><span class="cmd">revenue_reports</span></td><td>Daily revenue report header — total, submitter, status, AI verification flag</td></tr>
+          <tr><td><span class="cmd">revenue_receipts</span></td><td>Bank transfer screenshot records — amount, account, date, mismatch flag</td></tr>
+          <tr><td><span class="cmd">ot_requests</span></td><td>Overtime requests — staff, hours, reason, approval status</td></tr>
+          <tr><td><span class="cmd">access_grants</span></td><td>Role-based access grants — maps staff to permission level</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Access Hierarchy</h3>
+    <div class="access-ladder">
+      <div class="access-rung top">
+        <div class="rung-label">Creator — Do Ngoc Minh (Will)</div>
+        <div class="rung-role">creator</div>
+      </div>
+      <div class="access-rung">
+        <div class="rung-label">General Manager</div>
+        <div class="rung-role">gm</div>
+      </div>
+      <div class="access-rung">
+        <div class="rung-label">Quan Ly — Manager / Shift Lead</div>
+        <div class="rung-role">ql</div>
+      </div>
+      <div class="access-rung">
+        <div class="rung-label">Ky Cuu — Senior Staff</div>
+        <div class="rung-role">senior</div>
+      </div>
+      <div class="access-rung">
+        <div class="rung-label">Nhan Vien — Staff</div>
+        <div class="rung-role">staff</div>
+      </div>
+      <div class="access-rung">
+        <div class="rung-label">Newbie</div>
+        <div class="rung-role">newbie</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: SETUP & DEPLOY -->
+  <div class="section" id="setup">
+    <div class="section-title">Section 02 — Deployment</div>
+    <h2>Setup &amp; Deploy</h2>
+    <p>Hướng dẫn từng bước triển khai hệ thống từ đầu. Đủ để rebuild hoàn toàn nếu cần.</p>
+
+    <div class="callout info">
+      <strong>Yêu cầu:</strong> Node.js 18+, PM2 installed globally (<code style="font-family:monospace;color:var(--accent2)">npm install -g pm2</code>), Mac với Power Nap enabled.
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          Copy hoặc clone toàn bộ files vào <code>/willos/staff-bot/</code>
+          <span class="sub">Entry point: index.js — commands ở commands/ — modules ở modules/</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <code>npm install</code> — cài tất cả dependencies
+          <span class="sub">Trong thư mục /willos/staff-bot/</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          Tạo file <code>.env</code> với 4 biến bắt buộc:
+          <span class="sub">BOT_TOKEN= · GROUP_CHAT_ID= · OPENAI_API_KEY= · OPENAI_BASE_URL=</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <code>node index.js</code> — test chạy thử 1 lần
+          <span class="sub">Kiểm tra bot respond trên Telegram. Ctrl+C khi xong.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <code>pm2 start index.js --name dg-hr-bot</code> — đưa vào PM2
+          <span class="sub">PM2 id sẽ là 1 nếu đây là process đầu tiên. Confirm: pm2 list</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <code>pm2 save</code> sau đó <code>pm2 startup</code> — đăng ký launchd
+          <span class="sub">Chạy lệnh launchd mà PM2 in ra để bot tự khởi động sau khi Mac restart.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          Bật Power Nap: System Settings → Battery → bật <strong>Enable Power Nap</strong>
+          <span class="sub">Cho phép Mac chạy process khi màn hình tắt — bot tiếp tục nhận lệnh và cron hoạt động.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <code>pm2 logs dg-hr-bot</code> — kiểm tra logs
+          <span class="sub">Xem 20 dòng gần nhất: pm2 logs dg-hr-bot --lines 20</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Lệnh PM2 quan trọng</h3>
+    <div class="code-block">
+<span class="comment"># Restart bot sau khi update code</span>
+pm2 restart dg-hr-bot
+
+<span class="comment"># Xem logs realtime</span>
+pm2 logs dg-hr-bot
+
+<span class="comment"># Xem 20 dòng gần nhất</span>
+pm2 logs dg-hr-bot --lines 20
+
+<span class="comment"># Xem status tất cả processes</span>
+pm2 list
+
+<span class="comment"># Stop bot</span>
+pm2 stop dg-hr-bot
+
+<span class="comment"># Xem chi tiết process</span>
+pm2 show dg-hr-bot
+    </div>
+
+    <h3>File .env mẫu</h3>
+    <div class="code-block">
+<span class="key">BOT_TOKEN</span>=7xxxxxxxx:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="key">GROUP_CHAT_ID</span>=-100xxxxxxxxxx
+<span class="key">OPENAI_API_KEY</span>=sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx
+<span class="key">OPENAI_BASE_URL</span>=https://api.anthropic.com/v1
+    </div>
+
+    <div class="callout warning">
+      <strong>Luu y:</strong> Không commit file .env lên git. Rotate BOT_TOKEN ngay nếu bị lộ — xem Section 11 IP &amp; Bao Mat.
+    </div>
+  </div>
+
+  <!-- SECTION 3: CREATOR COMMANDS -->
+  <div class="section" id="creator-cmds">
+    <div class="section-title">Section 03 — Creator Only</div>
+    <h2>Lệnh Creator</h2>
+    <p>Các lệnh chỉ dành cho Creator (Do Ngoc Minh). Không ai khác có quyền thực thi.</p>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/expstart [tên]</span>
+        <span class="role-tag creator">Creator Only</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Khởi tạo EXP cho thành viên sáng lập — những người đã làm trước khi hệ thống ra đời. Không bắt đầu từ 0.</p>
+        <ul>
+          <li><strong>Công thức tenure_exp:</strong> số tháng x tier_rate — Tier 1 (&lt;6 tháng): 30/tháng · Tier 2 (6–12 tháng): 60/tháng · Tier 3 (12–24 tháng): 100/tháng · Tier 4 (24+ tháng): 150/tháng</li>
+          <li><strong>Founding bonus:</strong> min(500, số_tháng × 10) — ghi nhận đóng góp xây dựng từ đầu</li>
+          <li>Role base bỏ qua cho batch đầu — thăng cấp dựa trên trust thực tế</li>
+          <li>Bot hỏi xác nhận trước khi ghi vào DB</li>
+        </ul>
+        <div class="warning-note">&#9888;&#65039; Sau khi xác nhận, ghi vào exp_log với lý do "founding calibration". Không thể undo — chỉ override bằng /setexp.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/expconfirm</span>
+        <span class="role-tag creator">Creator Only</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Xác nhận EXP calibration đang pending sau /expstart. Bot hiển thị tóm tắt — gõ /expconfirm để ghi chính thức.</p>
+        <ul>
+          <li>Chỉ có tác dụng khi có pending calibration trong session</li>
+          <li>Ghi đồng thời vào bảng staff (exp field) và exp_log (audit trail)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/setexp [tên] [amount]</span>
+        <span class="role-tag creator">Creator Only</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Override EXP tuyệt đối cho bất kỳ nhân viên nào. Khác /exp — đây là set giá trị chứ không phải delta.</p>
+        <ul>
+          <li><span class="cmd">/setexp Hiếu 3200</span> — set Hiếu EXP = 3200, bất kể hiện tại là bao nhiêu</li>
+          <li>Full audit trail ghi vào exp_log kèm giá trị cũ, giá trị mới, và timestamp</li>
+          <li>Dùng cho trường hợp điều chỉnh đặc biệt, sửa lỗi, hoặc calibration lại</li>
+        </ul>
+        <div class="danger-note">&#128683; Lệnh không thể undo. Giá trị EXP cũ bị ghi đè ngay lập tức.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/assignreporter [tên]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Phân công nhân viên báo cáo doanh thu hàng ngày. Bot DM người được phân công thông báo nhiệm vụ.</p>
+        <ul>
+          <li><span class="cmd">/assignreporter</span> — xem reporter hiện tại</li>
+          <li><span class="cmd">/assignreporter Hiếu</span> — phân công Hiếu làm reporter ngày hôm nay</li>
+          <li>Người được phân công nhận DM và có đến 23:59 ICT để nộp</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/reviewkpis</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Chạy phân tích KPI toàn bộ nhân viên qua novaKpiAnalyzer.js. Đọc 90 ngày dữ liệu checkin, BC, no-show, EXP.</p>
+        <ul>
+          <li>Điều kiện tối thiểu: 20+ check-in per staff mới đủ dữ liệu</li>
+          <li>Phát hiện 6 pattern: chronic_lateness · low_checkin_rate · bc_dropout · high_noshow · exp_decline · order_errors</li>
+          <li>Tạo 2–3 KPI targets cá nhân hóa mỗi người</li>
+          <li>Ghi vào esop_kpi_config với tag [PENDING] — chờ GM/Creator approve</li>
+        </ul>
+        <div class="warning-note">&#9888;&#65039; Chạy có thể mất 30–60 giây tùy số lượng nhân viên. Bot sẽ xác nhận khi xong.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/approvekpi [tên]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Duyệt KPI suggestions đang PENDING cho một nhân viên. Xóa tag [PENDING], DM kết quả cho họ.</p>
+        <ul>
+          <li><span class="cmd">/approvekpi Hiếu</span> — approve tất cả KPI pending của Hiếu</li>
+          <li>Nhân viên nhận DM với KPI targets chính thức của mình</li>
+          <li>KPI đã approve không thể edit — chỉ có thể tạo round mới bằng /reviewkpis</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/xemdoanhthu [ngày]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Xem báo cáo doanh thu theo ngày. Format ngày: YYYY-MM-DD.</p>
+        <ul>
+          <li><span class="cmd">/xemdoanhthu</span> — xem hôm nay</li>
+          <li><span class="cmd">/xemdoanhthu 2026-03-08</span> — xem ngày cụ thể</li>
+          <li>Hiển thị: tiền mặt, chuyển khoản, Grab, chi phí, kết cuối, trạng thái AI verification</li>
+        </ul>
+        <div class="warning-note">&#9888;&#65039; Chỉ Creator và GM xem được. Role thấp hơn bị từ chối.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/fire [tên]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Deactivate nhân viên ngay lập tức. Status chuyển sang inactive, không còn xuất hiện trong leaderboard và danh sách.</p>
+        <ul>
+          <li>Data vẫn giữ nguyên trong DB — không xóa</li>
+          <li>Để khôi phục: dùng <span class="cmd">/approve [tên]</span></li>
+          <li>Để xóa hoàn toàn: xóa trực tiếp trong SQLite (Creator only)</li>
+        </ul>
+        <div class="danger-note">&#128683; Lệnh có hiệu lực ngay — không có confirmation prompt.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/addstaff [tên]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Thêm nhân viên thủ công — bỏ qua quy trình /dangky tự đăng ký. Dành cho onboarding đặc biệt.</p>
+        <ul>
+          <li>Bot hỏi bộ phận và vai trò qua inline keyboard</li>
+          <li>Tạo hồ sơ trạng thái inactive (chưa có Telegram ID)</li>
+          <li>Nhân viên tự kích hoạt bằng cách DM bot: <span class="cmd">/dangky [tên đúng]</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/setrole [tên] [role]</span>
+        <span class="role-tag creator">Creator · GM</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Set role thủ công cho nhân viên bất kỳ. Creator là role duy nhất chỉ có thể gán bởi Creator.</p>
+        <ul>
+          <li>Các role hợp lệ: <strong>newbie · staff · senior · ql · gm · creator</strong></li>
+          <li><span class="cmd">/setrole Hiếu gm</span> — nâng Hiếu lên GM</li>
+          <li><span class="cmd">/setrole Tan creator</span> — chỉ Creator mới gán role creator</span></li>
+        </ul>
+        <div class="danger-note">&#128683; Role creator cho phép toàn quyền hệ thống. Gán cẩn thận.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header">
+        <span class="cmd-name">/tongquan</span>
+        <span class="role-tag creator">Creator · GM · QL</span>
+      </div>
+      <div class="cmd-block-body">
+        <p>Tổng quan toàn bộ hệ thống: tất cả nhân viên, EXP hiện tại, điểm danh hôm nay, và coverage ca đang mở.</p>
+        <ul>
+          <li>Creator version: hiển thị thêm thống kê DB, số pending KPI, và tình trạng cron</li>
+          <li>Danh sách nhân viên đang ca, nhân viên chưa check-in, và top EXP</li>
+          <li>Shift coverage: bộ phận nào đang thiếu người</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: GM COMMANDS -->
+  <div class="section" id="gm-cmds">
+    <div class="section-title">Section 04 — GM Access</div>
+    <h2>Lệnh GM</h2>
+    <p>Creator có toàn bộ lệnh GM. Phần này là reference cho GM và Creator.</p>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/approve [tên]</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Duyệt đăng ký nhân viên pending hoặc khôi phục tài khoản đã bị archive.</p>
+        <ul>
+          <li><span class="cmd">/approve</span> — danh sách tất cả đang chờ</li>
+          <li><span class="cmd">/approve Hiếu</span> — duyệt trực tiếp</li>
+          <li>Có thể nhấn nút Approve / Reject trong thông báo Telegram</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/exp [tên] [±amount] [lý do]</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Điều chỉnh EXP thủ công với delta (cộng/trừ). Lý do bắt buộc — ghi vào exp_log.</p>
+        <ul>
+          <li><span class="cmd">/exp Hiếu +30 KPI tháng đạt</span></li>
+          <li><span class="cmd">/exp Tan -20 đi trễ không báo</span></li>
+          <li><span class="cmd">/exp Lan +50 perfect attendance tháng</span></li>
+          <li>Log EXP hiển thị trong /profile của nhân viên — họ thấy lý do</li>
+        </ul>
+        <div class="warning-note">&#9888;&#65039; Lý do bắt buộc — lệnh bị từ chối nếu thiếu lý do.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/forcecheckout [tên]</span><span class="role-tag gm">GM · Creator · QL</span></div>
+      <div class="cmd-block-body">
+        <p>Ép checkout cho nhân viên quên ra ca. Tạo checkout log với note "force checkout by GM".</p>
+        <ul>
+          <li>Dùng khi nhân viên về rồi nhưng quên bấm /checkout</li>
+          <li>Checkout time mặc định là thời điểm lệnh được gọi</li>
+          <li>Có thể override: <span class="cmd">/forcecheckout Hiếu 22:30</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/approveot [tên] [approve|reject]</span><span class="role-tag gm">GM · Creator · QL</span></div>
+      <div class="cmd-block-body">
+        <p>Duyệt hoặc từ chối yêu cầu tăng ca. Nhân viên nhận DM kết quả.</p>
+        <ul>
+          <li><span class="cmd">/approveot Hiếu approve</span></li>
+          <li><span class="cmd">/approveot Tan reject</span></li>
+          <li>Dùng <span class="cmd">/approveot</span> để xem danh sách đang pending</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/staff &nbsp; /nhanvien &nbsp; /danhsach</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Xem toàn bộ nhân viên đang active — kèm role và EXP hiện tại. Ba lệnh tương đương nhau.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/rename [tên cũ] [tên mới]</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Đổi tên hiển thị của nhân viên trong toàn bộ hệ thống.</p>
+        <ul>
+          <li><span class="cmd">/rename HieuOld HieuNew</span></li>
+          <li>Cập nhật đồng thời trong staff table và tất cả references</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/update [tên] [field] [value]</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Cập nhật bất kỳ field nào trong hồ sơ nhân viên.</p>
+        <ul>
+          <li><span class="cmd">/update Hiếu department Bếp</span> — đổi bộ phận</li>
+          <li><span class="cmd">/update Hiếu class_role Trưởng ca</span> — đổi vị trí</li>
+          <li><span class="cmd">/update Hiếu nickname Mèo</span> — nickname hiển thị</li>
+          <li><span class="cmd">/update Hiếu dob 15/08/1995</span> — ngày sinh (DD/MM/YYYY)</li>
+          <li><span class="cmd">/update Hiếu username @newtghandle</span> — username Telegram</li>
+        </ul>
+        <div class="warning-note">&#9888;&#65039; Dùng /staff để xem đúng tên trong hệ thống trước khi update.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/delete [tên]</span><span class="role-tag gm">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Deactivate nhân viên — alias của /fire. Data giữ nguyên, không xóa khỏi DB.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: MANAGER COMMANDS -->
+  <div class="section" id="manager-cmds">
+    <div class="section-title">Section 05 — Manager / QL</div>
+    <h2>Lệnh Manager / Quản Lý</h2>
+    <p>Lệnh dành cho Trưởng ca và Quản lý. Creator và GM có đầy đủ các lệnh này.</p>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/baocao</span><span class="role-tag">QL · GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Mở báo cáo ca (mở ca). Bot hỏi các câu cấu trúc theo từng bộ phận. Kết quả tự post lên nhóm.</p>
+        <ul>
+          <li>Bếp: checklist vệ sinh, tình trạng nguyên liệu, sự cố</li>
+          <li>Bar: checklist setup, tình trạng máy móc</li>
+          <li>Kho: tình trạng hàng hóa, cần nhập gì</li>
+          <li>Kết quả: báo cáo đầy đủ lên group với timestamp và tên QL</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/bosung [nội dung]</span><span class="role-tag">QL · GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Thêm ghi chú bổ sung vào báo cáo ca hôm nay. Không cần mở flow mới.</p>
+        <ul>
+          <li><span class="cmd">/bosung Máy pha cà phê cần bảo dưỡng</span></li>
+          <li>Ghi chú tự post lên nhóm kèm thời gian</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/forcecheckout [tên]</span><span class="role-tag">QL · GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Ép checkout khi nhân viên quên. Xem chi tiết ở phần GM commands.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/approveot [tên] [approve|reject]</span><span class="role-tag">QL · GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Duyệt / từ chối yêu cầu tăng ca. DM kết quả cho nhân viên. Xem chi tiết ở phần GM commands.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/tongquan</span><span class="role-tag">QL · GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Tổng quan hệ thống với quyền hạn theo role. QL thấy ca hôm nay. GM/Creator thấy toàn bộ.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: STAFF COMMANDS -->
+  <div class="section" id="staff-cmds">
+    <div class="section-title">Section 06 — All Staff</div>
+    <h2>Lệnh Nhân Viên</h2>
+    <p>Tất cả nhân viên, kể cả Creator, đều dùng những lệnh này trong workflow hàng ngày.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Lệnh</th><th>Chức năng</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="cmd">/dangky [Tên]</span></td>
+            <td>Đăng ký tài khoản. Bot hỏi bộ phận và vị trí qua inline keyboard.</td>
+            <td>Kích hoạt ngay lập tức — không cần GM duyệt</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/checkin</span></td>
+            <td>Vào ca. Bot yêu cầu gửi GPS location trong vòng 5 phút.</td>
+            <td>GPS phải nằm trong vùng nhà hàng. Gian lận GPS: -200 EXP</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/checkout</span></td>
+            <td>Ra ca. Ghi nhận thời gian và tổng số giờ làm trong session.</td>
+            <td>Quên checkout: GM dùng /forcecheckout</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/bc</span></td>
+            <td>Bàn giao ca. Bot hỏi checklist theo bộ phận. Kết quả tự post lên nhóm.</td>
+            <td>Không nộp: -15 EXP. Nộp đúng hạn: +2 EXP</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/tangca [giờ] [lý do]</span></td>
+            <td>Yêu cầu tăng ca. Phải gửi TRƯỚC khi ở lại. VD: /tangca 23:30 dọn dẹp</td>
+            <td>Không request trước = không được tính OT</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/profile &nbsp; /me &nbsp; /stats</span></td>
+            <td>Xem EXP, role, streak, tổng số ca, và exp log gần nhất.</td>
+            <td>Ba lệnh tương đương nhau</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/leaderboard &nbsp; /lb</span></td>
+            <td>Bảng xếp hạng EXP toàn nhân viên.</td>
+            <td>Update realtime</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/roadmap</span></td>
+            <td>Lộ trình thăng cấp — EXP còn thiếu, badge cần đạt để lên role tiếp theo.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/badges</span></td>
+            <td>Bộ sưu tập badge cá nhân — đã đạt và chưa đạt.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/lichca</span></td>
+            <td>Lịch ca cá nhân — xem lịch hiện tại và tuần tới.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/nhaphang</span></td>
+            <td>Nhập hàng. Bot hỏi: tên hàng, số lượng, giá, nhà cung cấp. Đính kèm ảnh hóa đơn.</td>
+            <td>Phiếu nhập hàng tự post lên nhóm</td>
+          </tr>
+          <tr>
+            <td><span class="cmd">/cancel &nbsp; /huy</span></td>
+            <td>Hủy bất kỳ flow đang dở. Dùng khi bấm nhầm lệnh hoặc muốn thoát giữa chừng.</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>Lưu ý quan trọng:</strong> Tất cả lệnh thực hiện trong DM với bot — không phải trong nhóm. Kết quả tự động post lên nhóm khi hoàn thành flow.
+    </div>
+  </div>
+
+  <!-- SECTION 7: EXP SYSTEM -->
+  <div class="section" id="exp-system">
+    <div class="section-title">Section 07 — Gamification</div>
+    <h2>EXP System</h2>
+    <p>Hệ thống điểm kinh nghiệm — mọi hành động đều được ghi nhận và tích lũy.</p>
+
+    <h3>Cộng EXP — Tự Động</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sự kiện</th><th>EXP</th><th>Loại</th></tr></thead>
+        <tbody>
+          <tr><td>Check-in đúng giờ (dưới 5 phút trễ)</td><td><span class="plus">+3</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Check-in trễ 5–15 phút</td><td><span class="plus">+1</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Check-in trễ quá 15 phút</td><td><span class="plus">+0</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>/bc bàn giao ca đúng hạn</td><td><span class="plus">+2</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 7 ngày liên tiếp</td><td><span class="plus">+20 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 14 ngày liên tiếp</td><td><span class="plus">+40 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 30 ngày liên tiếp</td><td><span class="plus">+80 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+          <tr><td>Streak milestone 60 ngày liên tiếp</td><td><span class="plus">+150 bonus</span></td><td><span class="auto-tag">auto</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cộng EXP — GM / Creator Ghi Thủ Công</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sự kiện</th><th>EXP</th><th>Loại</th></tr></thead>
+        <tbody>
+          <tr><td>Thêm ca ngoài lịch</td><td><span class="plus">+15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>KPI 100% tháng</td><td><span class="plus">+30</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Khách khen 5 sao</td><td><span class="plus">+15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Perfect attendance cả tháng</td><td><span class="plus">+50</span></td><td><span class="manual-tag">manual</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Trừ EXP — Thủ Công</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Vi phạm</th><th>EXP</th><th>Loại</th></tr></thead>
+        <tbody>
+          <tr><td>Đi trễ không báo</td><td><span class="minus">-20</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Không nộp /bc</td><td><span class="minus">-15</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Vắng không báo</td><td><span class="minus">-50</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Hủy order không lý do</td><td><span class="minus">-20</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Lỗi đơn Grab</td><td><span class="minus">-25</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Vi phạm vệ sinh an toàn thực phẩm</td><td><span class="minus">-100</span></td><td><span class="manual-tag">manual</span></td></tr>
+          <tr><td>Gian lận GPS check-in</td><td><span class="minus">-200</span></td><td><span class="manual-tag">manual</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Trừ EXP — Tự Động</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Điều kiện</th><th>EXP</th><th>Thời điểm</th></tr></thead>
+        <tbody>
+          <tr><td>No-show — có lịch ca, không check-in</td><td><span class="minus">-50</span></td><td><span class="auto-tag">auto 23:30 ICT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Founding EXP — Công Thức Creator (/expstart)</h3>
+    <div class="callout info">
+      <strong>Dành cho batch nhân viên đầu tiên — những người làm trước khi hệ thống ra đời.</strong> Không bắt đầu từ EXP = 0.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Thâm niên</th><th>Tier Rate (EXP/tháng)</th></tr></thead>
+        <tbody>
+          <tr><td>Dưới 6 tháng</td><td><span class="plus">30</span> / tháng</td></tr>
+          <tr><td>6 – 12 tháng</td><td><span class="plus">60</span> / tháng</td></tr>
+          <tr><td>12 – 24 tháng</td><td><span class="plus">100</span> / tháng</td></tr>
+          <tr><td>24+ tháng</td><td><span class="plus">150</span> / tháng</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:14px;">Founding bonus cộng thêm: <strong style="color:var(--text)">min(500, số_tháng × 10)</strong> — ghi nhận đóng góp xây dựng từ đầu. Role base bỏ qua cho batch đầu. Thăng cấp dựa trên trust thực tế của Creator.</p>
+
+    <h3>Ngưỡng Thăng Cấp</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Role</th><th>EXP yêu cầu</th><th>Cách lên</th></tr></thead>
+        <tbody>
+          <tr><td>Newbie</td><td>0</td><td>Tự động sau đăng ký</td></tr>
+          <tr><td>Nhan Vien (Staff)</td><td>100</td><td>Tự động khi đạt ngưỡng</td></tr>
+          <tr><td>Ky Cuu (Senior)</td><td>500</td><td>Tự động khi đạt ngưỡng</td></tr>
+          <tr><td>Quan Ly (Manager)</td><td>1000+</td><td>GM duyệt qua /approve</td></tr>
+          <tr><td>GM</td><td>—</td><td>Creator gán qua /setrole</td></tr>
+          <tr><td>Creator</td><td>—</td><td>Do Ngoc Minh only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 8: KPI & ESOP -->
+  <div class="section" id="kpi-esop">
+    <div class="section-title">Section 08 — Performance</div>
+    <h2>KPI &amp; ESOP</h2>
+
+    <h3>KPI System</h3>
+    <div class="callout info">
+      <strong>Engine:</strong> modules/novaKpiAnalyzer.js — phân tích AI cá nhân hóa, không phải template chung.
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">novaKpiAnalyzer.js — Flow</span><span class="role-tag creator">Creator · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Pipeline phân tích KPI tự động:</p>
+        <ul>
+          <li><strong>Input:</strong> 90 ngày checkin_log, BC submissions, no-show events, waste records, order errors, EXP history</li>
+          <li><strong>Gate:</strong> Bỏ qua nhân viên dưới 20 check-in — không đủ dữ liệu</li>
+          <li><strong>Pattern detection:</strong> chronic_lateness · low_checkin_rate · bc_dropout · high_noshow · exp_decline · order_errors</li>
+          <li><strong>Output:</strong> 2–3 KPI targets cá nhân hóa per staff — dựa trên điểm yếu thực tế</li>
+          <li><strong>Storage:</strong> Ghi vào esop_kpi_config với tag [PENDING]</li>
+          <li><strong>Review:</strong> GM/Creator xem → /approvekpi → strip [PENDING] → DM nhân viên</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>KPI Workflow</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          Chạy <code>/reviewkpis</code> — hoặc đợi cron tự chạy ngày 1 mỗi tháng lúc 09:00
+          <span class="sub">Yêu cầu: 20+ check-in per staff. Thời gian: 30–60 giây.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          KPI targets được ghi vào DB với tag <code>[PENDING]</code> — chưa hiển thị cho nhân viên
+          <span class="sub">GM/Creator xem và chỉnh sửa nếu cần trước khi approve.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <code>/approvekpi [tên]</code> — strip [PENDING], DM targets chính thức cho nhân viên
+          <span class="sub">Nhân viên thấy KPI của mình lần đầu tiên ở bước này.</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          Scores được ghi hàng tháng vào <code>esop_kpi_scores</code> — tracking progress
+          <span class="sub">Dữ liệu này feed vào ESOP pool allocation (khi ESOP active).</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>ESOP (Schema Ready — Commands Pending)</h3>
+    <div class="callout warning">
+      <strong>Trạng thái:</strong> Schema DB đã sẵn sàng — commands chưa implement. Sprint tiếp theo.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Table / Command</th><th>Trạng thái</th><th>Mục đích</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">esop_pool</span></td><td><span class="auto-tag">Schema ready</span></td><td>Pool phân phối ESOP — tổng quỹ, điều kiện, ngày cliff</td></tr>
+          <tr><td><span class="cmd">esop_kpi_config</span></td><td><span class="auto-tag">Active</span></td><td>KPI targets per staff — dùng ngay bởi /reviewkpis</td></tr>
+          <tr><td><span class="cmd">esop_kpi_scores</span></td><td><span class="auto-tag">Active</span></td><td>Monthly KPI scores — tracking KPI performance</td></tr>
+          <tr><td><span class="cmd">esop_cliff_events</span></td><td><span class="auto-tag">Schema ready</span></td><td>Cliff vesting events — ghi nhận milestones vesting</td></tr>
+          <tr><td><span class="cmd">esop_candidates</span></td><td><span class="auto-tag">Schema ready</span></td><td>Danh sách ứng viên ESOP — eligible staff</td></tr>
+          <tr><td><span class="cmd">/assignesop</span></td><td><span class="manual-tag">Pending</span></td><td>Phân công ESOP cho nhân viên đủ điều kiện</td></tr>
+          <tr><td><span class="cmd">/viewpool</span></td><td><span class="manual-tag">Pending</span></td><td>Xem tổng quỹ ESOP và phân bổ hiện tại</td></tr>
+          <tr><td><span class="cmd">/esopstatus</span></td><td><span class="manual-tag">Pending</span></td><td>Xem trạng thái ESOP cá nhân</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 9: DOANH THU -->
+  <div class="section" id="doanh-thu">
+    <div class="section-title">Section 09 — Revenue</div>
+    <h2>Doanh Thu</h2>
+    <p>Hệ thống báo cáo doanh thu hàng ngày với AI cross-verification.</p>
+
+    <div class="callout success">
+      <strong>Tài khoản ngân hàng chính:</strong> 80817777128 — AI verify số tài khoản này trên chứng từ. Mismatch = flag ngay.
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/assignreporter [tên]</span><span class="role-tag creator">Creator · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Phân công reporter doanh thu ngày. Bot DM người được phân công kèm hướng dẫn.</p>
+        <ul>
+          <li>Reporter nhận thông báo nhiệm vụ qua DM</li>
+          <li>Deadline: 23:59 ICT hàng ngày</li>
+          <li>Nếu không nộp đúng hạn: bot nhắc lại, rồi alert GM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/baocaodoanhthu</span><span class="role-tag">Reporter được phân công</span></div>
+      <div class="cmd-block-body">
+        <p>Nộp báo cáo doanh thu ngày. Quy trình 6 bước cố định — không thể bỏ qua bước nào.</p>
+        <ul>
+          <li><strong>Bước 1:</strong> Tổng tiền mặt nhận trong ngày</li>
+          <li><strong>Bước 2:</strong> Tổng chuyển khoản nhận trong ngày</li>
+          <li><strong>Bước 3:</strong> Doanh thu Grab/delivery</li>
+          <li><strong>Bước 4:</strong> Chi phí phát sinh trong ngày</li>
+          <li><strong>Bước 5:</strong> Kết cuối (tóm tắt và ghi chú)</li>
+          <li><strong>Bước 6:</strong> Gửi ảnh chứng từ ngân hàng — Haiku AI cross-check: số tiền, tài khoản (80817777128), ngày</li>
+        </ul>
+        <div class="danger-note">&#128683; Mismatch trên chứng từ: báo cáo bị giữ, GM nhận alert ngay lập tức.</div>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemdoanhthu [ngày]</span><span class="role-tag creator">Creator · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Xem báo cáo doanh thu theo ngày. Mặc định hôm nay nếu không nhập ngày.</p>
+        <ul>
+          <li><span class="cmd">/xemdoanhthu</span> — hôm nay</li>
+          <li><span class="cmd">/xemdoanhthu 2026-03-08</span> — ngày cụ thể (YYYY-MM-DD)</li>
+          <li>Hiển thị: tiền mặt, chuyển khoản, Grab, chi phí, kết cuối, trạng thái AI verify, submitter</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Revenue Cron Jobs</h3>
+    <div class="cron-list">
+      <div class="cron-item">
+        <div class="cron-time">23:59 ICT</div>
+        <div class="cron-desc">Nhắc reporter<span>Nhắc người được phân công nộp báo cáo doanh thu nếu chưa submit.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">23:00 ICT</div>
+        <div class="cron-desc">Alert GM nếu chưa nộp<span>Cảnh báo GM nếu báo cáo doanh thu chưa được nộp trước 11 giờ tối.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 10: CRONS -->
+  <div class="section" id="cron">
+    <div class="section-title">Section 10 — Automation</div>
+    <h2>Tác Vụ Tự Động (Crons)</h2>
+    <p>Tất cả cron jobs chạy theo giờ ICT (Indochina Time, UTC+7). Power Nap phải bật để cron hoạt động khi Mac ngủ.</p>
+
+    <div class="callout warning">
+      <strong>Dependency:</strong> Cron jobs phụ thuộc PM2 và Power Nap. Nếu Mac shutdown hoàn toàn — không chỉ ngủ — cron sẽ bị bỏ lỡ đến khi bot restart.
+    </div>
+
+    <div class="cron-list">
+      <div class="cron-item">
+        <div class="cron-time">Mỗi sáng</div>
+        <div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày được post vào group — ai đang ca, ai chưa check-in.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">08:45 ICT</div>
+        <div class="cron-desc">Reminder /baocao<span>Nhắc shift lead nếu chưa submit báo cáo mở ca.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">14:00 ICT</div>
+        <div class="cron-desc">Reminder /bc<span>Nhắc nhân viên submit bàn giao ca chiều.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">22:00 ICT</div>
+        <div class="cron-desc">Evening reminder<span>Nhắc tổng cuối ngày — checklist đóng ca và bàn giao.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">22:30 ICT</div>
+        <div class="cron-desc">Forgot-checkout alert<span>Gửi danh sách nhân viên có session đang mở cho GM và QL. Dùng /forcecheckout nếu cần.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">23:00 ICT</div>
+        <div class="cron-desc">Revenue missed window<span>Alert GM nếu báo cáo doanh thu chưa được nộp trước 11 giờ tối.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">23:30 ICT</div>
+        <div class="cron-desc">No-show detection<span>So sánh lịch ca với check-in log. Nhân viên có lịch nhưng không check-in: -50 EXP tự động. Alert GM danh sách.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">23:59 ICT</div>
+        <div class="cron-desc">Revenue reporter reminder<span>Nhắc reporter được phân công nộp báo cáo doanh thu trước midnight.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">T2 08:00 ICT</div>
+        <div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần được post vào group mỗi thứ Hai sáng.</span></div>
+      </div>
+      <div class="cron-item">
+        <div class="cron-time">Ngày 1 / tháng 09:00</div>
+        <div class="cron-desc">KPI analysis<span>Auto-chạy novaKpiAnalyzer.js — đọc 90 ngày data, ghi PENDING KPI targets vào DB. Creator/GM review và approve.</span></div>
+      </div>
+    </div>
+
+    <h3>Full Cron Reference</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Thời gian</th><th>Job</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Mỗi sáng</td><td>Daily scorecard</td><td>Bảng điểm danh ngày post vào group</td></tr>
+          <tr><td>08:45 ICT daily</td><td>/baocao reminder</td><td>Nhắc shift lead mở ca</td></tr>
+          <tr><td>14:00 ICT daily</td><td>/bc reminder</td><td>Nhắc nhân viên bàn giao ca chiều</td></tr>
+          <tr><td>22:00 ICT daily</td><td>Evening reminder</td><td>Nhắc chung cuối ngày</td></tr>
+          <tr><td>22:30 ICT daily</td><td>Forgot-checkout alert</td><td>Danh sách session mở gửi GM/QL</td></tr>
+          <tr><td>23:00 ICT daily</td><td>Revenue missed window</td><td>Alert GM nếu DT chưa nộp trước 23:00</td></tr>
+          <tr><td>23:30 ICT daily</td><td>No-show detection</td><td>-50 EXP auto cho nhân viên no-show</td></tr>
+          <tr><td>23:59 ICT daily</td><td>Revenue reporter reminder</td><td>Nhắc reporter nộp báo cáo DT</td></tr>
+          <tr><td>Thứ Hai 08:00 ICT</td><td>Weekly leaderboard</td><td>EXP ranking tuần post vào group</td></tr>
+          <tr><td>Ngày 1 mỗi tháng 09:00</td><td>KPI analysis</td><td>Auto-run novaKpiAnalyzer, ghi PENDING KPIs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 11: IP & SECURITY -->
+  <div class="section" id="ip-security">
+    <div class="section-title">Section 11 — Ownership &amp; Security</div>
+    <h2>IP &amp; Bảo Mật</h2>
+
+    <div class="callout danger">
+      <strong>Toàn bộ source code là tài sản độc quyền của Do Ngoc Minh — All Rights Reserved.</strong> Không được sao chép, phân phối, hoặc sử dụng ngoài DG Group.
+    </div>
+
+    <h3>Ownership</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Thông tin</th></tr></thead>
+        <tbody>
+          <tr><td>System owner</td><td>Do Ngoc Minh (Will) — DG Group</td></tr>
+          <tr><td>Copyright</td><td>© 2026 Do Ngoc Minh — All Rights Reserved</td></tr>
+          <tr><td>License</td><td>Proprietary — không phải open source</td></tr>
+          <tr><td>IP Layer</td><td>Hiển thị cho tất cả người dùng khi /start nếu chưa đăng ký</td></tr>
+          <tr><td>Staff data</td><td>Thuộc về DG Group — chỉ dùng cho internal ops management</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Data &amp; Privacy</h3>
+    <div class="callout">
+      <strong>Không chia sẻ data ra bên ngoài.</strong> Không có third-party analytics trên staff data. AI processing (Claude) được anonymize tối đa có thể — chỉ truyền data cần thiết cho analysis.
+    </div>
+
+    <h3>Nếu Bot Token Bị Lộ</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          Vào BotFather trên Telegram — <code>/mybots</code> → chọn @DG_HR_BOT → <strong>API Token</strong> → <strong>Revoke current token</strong>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          Copy token mới từ BotFather
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          Update file <code>.env</code>: thay giá trị <code>BOT_TOKEN=</code> bằng token mới
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <code>pm2 restart dg-hr-bot</code> — bot reconnect với token mới
+          <span class="sub">Toàn bộ quá trình không mất data — chỉ thay token kết nối.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Database Backup</h3>
+    <div class="code-block">
+<span class="comment"># Backup thủ công</span>
+cp /willos/data/staff.db /willos/data/staff.db.backup.$(date +%Y%m%d)
+
+<span class="comment"># Xem danh sách backups</span>
+ls -lh /willos/data/staff.db*
+
+<span class="comment"># Restore từ backup cụ thể</span>
+cp /willos/data/staff.db.backup.20260310 /willos/data/staff.db
+pm2 restart dg-hr-bot
+    </div>
+
+    <div class="callout warning">
+      <strong>Khuyến nghị:</strong> Setup cron backup tự động hàng ngày. SQLite file nhỏ — có thể backup lên iCloud hoặc external drive dễ dàng.
+    </div>
+
+    <h3>Access Level Summary</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Role</th><th>Quyền</th></tr></thead>
+        <tbody>
+          <tr><td><span class="creator-tag">Creator</span></td><td>Toàn quyền hệ thống — /setexp, /expstart, /setrole creator, direct DB access</td></tr>
+          <tr><td><span class="manual-tag">GM</span></td><td>Quản lý nhân viên, EXP, KPI, doanh thu — tất cả lệnh trừ Creator-only</td></tr>
+          <tr><td><span class="auto-tag">Quan Ly</span></td><td>Báo cáo ca, force checkout, approve OT, /tongquan</td></tr>
+          <tr><td>Senior / Staff / Newbie</td><td>Checkin/checkout, /bc, /profile, /tangca, /leaderboard</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  DG HR BOT &middot; Creator Admin &middot; DG Group &mdash; Kansai Osaka &middot; &copy; 2026 Do Ngoc Minh &middot; All Rights Reserved
+</footer>
+
+</body>
+</html>

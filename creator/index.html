@@ -128,7 +128,7 @@
   <div class="badge-row">
     <span class="badge green">&#10003; Live</span>
     <span class="badge creator">Creator Access</span>
-    <span class="badge">Cập nhật 10/03/2026 — ESOP + Access live</span>
+    <span class="badge">Cập nhật 10/03/2026 — Reward Engine Chunks 1–4 live</span>
   </div>
 </div>
 
@@ -141,6 +141,7 @@
   <a href="#staff-cmds">Lệnh Nhân Viên</a>
   <a href="#exp-system">EXP System</a>
   <a href="#kpi-esop">KPI &amp; ESOP</a>
+  <a href="#reward-engine">Reward Engine</a>
   <a href="#doanh-thu">Doanh Thu</a>
   <a href="#cron">Tự Động</a>
   <a href="#ip-security">IP &amp; Bảo Mật</a>
@@ -1105,6 +1106,79 @@ pm2 show dg-hr-bot
         </tbody>
       </table>
     </div>
+  </div>
+
+  <!-- SECTION 10B: REWARD ENGINE -->
+  <div class="section" id="reward-engine">
+    <div class="section-title">Section 10B — Reward Engine</div>
+    <h2>Nova Reward Engine</h2>
+
+    <div class="callout">
+      <strong>Status:</strong> Chunks 1–4 live. DB tables active. Townboard + Post + Join working. Payout cycle (Chunks 5–15) coming next session.
+    </div>
+
+    <h3>Performance Formula</h3>
+    <p><code>composite = (individual × 0.70) + (team × 0.20) + (company × 0.10)</code></p>
+    <ul>
+      <li><strong>Individual (70%):</strong> attendance rate, BC rate, error rate, EXP trajectory, streak</li>
+      <li><strong>Team (20%):</strong> dept avg attendance + BC compliance + error rate</li>
+      <li><strong>Company (10%):</strong> revenue vs target + customer ratings — GM sets monthly</li>
+      <li><strong>Company bonus:</strong> fires for ALL staff when all company KPIs hit — distributed by ranking tier %</li>
+    </ul>
+    <p class="sub">Composite trigger: cron pass (weekly/monthly) + <code>/compositeall</code>. NOT per approval event. Payout and scoring are fully separate.</p>
+
+    <h3>DB Tables — Live</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Table</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">reward_definitions</span></td><td>Quest/cash_kpi/company_kpi/activity definitions. exp/cash/item rewards, expiry, capacity</td></tr>
+          <tr><td><span class="cmd">reward_assignments</span></td><td>Staff ↔ reward linkage, status lifecycle, approval tracking</td></tr>
+          <tr><td><span class="cmd">reward_payouts</span></td><td>Payout rows: exp credited, cash owed/confirmed, both-sides confirmation</td></tr>
+          <tr><td><span class="cmd">company_kpi_targets</span></td><td>kpi_key, target_value, current_value, hit flag</td></tr>
+          <tr><td><span class="cmd">townboard_posts</span></td><td>Active display state: reward_id, posted_by, pinned, removed_at</td></tr>
+          <tr><td><span class="cmd">reward_data_log</span></td><td>Event feed: quest_complete, kpi_hit, company_bonus, cash_paid</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Commands — Live</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Lệnh</th><th>Ai dùng</th><th>Mô tả</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">/tb</span></td><td>Tất cả nhân viên</td><td>Xem Townboard — danh sách quest/KPI đang active. Nút <code>/join [id]</code> mỗi card.</td></tr>
+          <tr><td><span class="cmd">/posttask</span></td><td>GM / Creator</td><td>Đăng quest mới — interactive flow: chọn loại (quest/cash_kpi/activity), phần thưởng, hạn, số lượng. Tự thông báo lên group HR với deep link.</td></tr>
+          <tr><td><span class="cmd">/join [id]</span></td><td>Tất cả nhân viên</td><td>Nhận quest theo ID. Single: claim. Group: add vào danh sách. Activity: open join. Cash_kpi: bị chặn (GM gán riêng).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Reward Types</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Mô tả</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">quest</span></td><td>Nhiệm vụ một lần — exp/cash/item reward. Single hoặc group target.</td></tr>
+          <tr><td><span class="cmd">cash_kpi</span></td><td>KPI tiền mặt cá nhân — GM tạo target, staff thực hiện, GM confirm hit.</td></tr>
+          <tr><td><span class="cmd">company_kpi</span></td><td>KPI toàn công ty — khi tất cả hit → bonus chia theo tier ranking.</td></tr>
+          <tr><td><span class="cmd">activity</span></td><td>Hoạt động lặp lại — có <code>recurrence_day</code> + <code>recurrence_time</code>. Open join (không giới hạn số lượng).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Coming Next (Chunks 5–15)</h3>
+    <ul>
+      <li><code>/completetask [id] [tên]</code> — GM xác nhận hoàn thành, mở payout row, DM staff</li>
+      <li><code>/canceltask [id]</code> — Hủy quest</li>
+      <li><code>/confirmpayout [id]</code> — Xác nhận đã trả tiền mặt (2 phía)</li>
+      <li><code>/cashkpi [tên]</code> — Tạo KPI tiền mặt cá nhân</li>
+      <li><code>/kpihit [id]</code> — Xác nhận KPI đã đạt</li>
+      <li><code>/score</code> — Nhân viên xem điểm composite 70/20/10</li>
+      <li><code>/compositeall</code> / <code>/compositeview [tên]</code> — GM xem tổng quan</li>
+      <li><code>/setcompanykpi</code> / <code>/companyscore</code> — GM cài KPI công ty</li>
+      <li><code>modules/novaPerformance.js</code> — Composite calculator</li>
+    </ul>
   </div>
 
   <!-- SECTION 11: IP & SECURITY -->

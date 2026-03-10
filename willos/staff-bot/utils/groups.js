@@ -1,0 +1,157 @@
+/**
+ * groups.js — DG Group Routing Config
+ * Single source of truth for all group IDs and event routing.
+ *
+ * Architecture:
+ *   BOD        ← Weekly/monthly reports, GM→Creator chain
+ *   MANAGERS   ← Alerts: birthdays, on/off, bc follow-up, important notices
+ *   HR         ← Real-time ops: checkin, moca, dongca, checkout, bc log
+ *   KANSAI     ← Bep system: shift ops, SOP, nhaphang
+ *   MARKETING  ← Client feedback: ratings, comments, brand data
+ *   FINANCE    ← Revenue: baocaodoanhthu, chiphi, nhaphang cost
+ */
+
+'use strict';
+
+const GROUPS = {
+  BOD:       -1001003827938422,  // [DG] BOD GROUP — Creator leads, GM reports
+  MANAGERS:  -1001003763800722,  // [DG] MANAGERS — GM leads, Creator watches
+  HR:        -1001003764628939,  // [DG] BÁO CÁO Công Việc / HR — real-time ops
+  KANSAI:    -1001003796440045,  // [DG] Kansai Osaka — bep system
+  MARKETING: -1001003334004161,  // [DG] Marketing / Social
+  FINANCE:   -1001003778798020,  // [DG] Tài Chính-Kế Toán-Thu Mua
+};
+
+/**
+ * Event routing map.
+ * Each event key maps to one or more group IDs that should receive the notice.
+ *
+ * Usage:
+ *   const { getGroups } = require('../utils/groups');
+ *   const targets = getGroups('bc');
+ *   for (const gid of targets) await bot.sendMessage(gid, msg, opts);
+ */
+// ── Finance topic thread IDs (confirmed) ─────────────────────────────────────
+const FINANCE_TOPICS = {
+  chiphi:   10,  // LƯU TRỮ HOÁ ĐƠN
+  doanhthu: 12,  // BÁO CÁO DOANH THU
+  nhaphang: 13,  // BÁO CÁO THU/MUA/TỒN KHO
+};
+
+const ROUTING = {
+  // ── Real-time ops → HR only ──────────────────────────────────────────────────
+  checkin:   [GROUPS.HR],
+  checkout:  [GROUPS.HR],
+  moca:      [GROUPS.HR],
+  dongca:    [GROUPS.HR],
+  // bc → HR (log) + MANAGERS (follow-up action required)
+  bc:        [GROUPS.HR, GROUPS.MANAGERS],
+
+  // ── Staff management → MANAGERS ──────────────────────────────────────────────
+  dangky:      [GROUPS.MANAGERS],
+  bosung:      [GROUPS.MANAGERS],
+  birthday:    [GROUPS.MANAGERS],
+  staff_onoff: [GROUPS.MANAGERS],
+  important:   [GROUPS.MANAGERS],
+
+  // ── Client feedback → MARKETING ──────────────────────────────────────────────
+  // Bad ratings also alert MANAGERS so they can act
+  rating_bad:      [GROUPS.MARKETING, GROUPS.MANAGERS],
+  rating_good:     [GROUPS.MARKETING],
+  client_feedback: [GROUPS.MARKETING],
+
+  // ── Finance → correct topic threads ──────────────────────────────────────────
+  nhaphang: [GROUPS.FINANCE],  // thread 13 — BÁO CÁO THU/MUA/TỒN KHO
+  doanhthu: [GROUPS.FINANCE],  // thread 12 — BÁO CÁO DOANH THU
+  chiphi:   [GROUPS.FINANCE],  // thread 10 — LƯU TRỮ HOÁ ĐƠN
+
+  // ── Task board → HR ──────────────────────────────────────────────────────────
+  posttask: [GROUPS.HR],
+
+  // ── Analytics cron → MANAGERS ────────────────────────────────────────────────
+  daily_scorecard:    [GROUPS.MANAGERS],  // 22:30 daily
+  weekly_leaderboard: [GROUPS.MANAGERS],  // Mon 08:00
+  forgot_checkout:    [GROUPS.MANAGERS],  // 22:30
+
+  // ── Management reports → BOD ─────────────────────────────────────────────────
+  weekly_report:  [GROUPS.BOD],
+  monthly_report: [GROUPS.BOD],
+};
+
+/**
+ * Get target group IDs for an event type.
+ * Falls back to HR group if event not mapped (safe default).
+ *
+ * @param {string} event - Event key (e.g. 'checkin', 'bc', 'nhaphang')
+ * @returns {number[]} Array of group chat IDs
+ */
+function getGroups(event) {
+  return ROUTING[event] || [GROUPS.HR];
+}
+
+/**
+ * Get a single primary group ID for an event.
+ * Use when you only need one target (e.g. for a link back).
+ *
+ * @param {string} event
+ * @returns {number}
+ */
+function getPrimaryGroup(event) {
+  return getGroups(event)[0];
+}
+
+/**
+ * Send a message to all groups mapped to an event.
+ * Handles multiple targets silently — one failure doesn't block others.
+ *
+ * @param {object} bot - TelegramBot instance
+ * @param {string} event - Event key
+ * @param {string} text - Message text
+ * @param {object} opts - sendMessage options (parse_mode, message_thread_id, etc.)
+ * @returns {Promise<object[]>} Array of sent message results (nulls on failure)
+ */
+async function broadcastEvent(bot, event, text, opts = {}) {
+  const targets = getGroups(event);
+  const results = [];
+  for (const gid of targets) {
+    // Auto-inject Finance topic thread ID if applicable
+    const threadId = gid === GROUPS.FINANCE ? FINANCE_TOPICS[event] : null;
+    const finalOpts = threadId
+      ? { ...opts, message_thread_id: threadId }
+      : opts;
+    const result = await bot.sendMessage(gid, text, finalOpts).catch(err => {
+      console.error(`[GROUPS] Failed to send '${event}' to ${gid}:`, err.message);
+      return null;
+    });
+    results.push(result);
+  }
+  return results;
+}
+
+/**
+ * Send a photo to all groups mapped to an event.
+ *
+ * @param {object} bot
+ * @param {string} event
+ * @param {string|Buffer} photo
+ * @param {object} opts
+ * @returns {Promise<object[]>}
+ */
+async function broadcastPhoto(bot, event, photo, opts = {}) {
+  const targets = getGroups(event);
+  const results = [];
+  for (const gid of targets) {
+    const threadId = gid === GROUPS.FINANCE ? FINANCE_TOPICS[event] : null;
+    const finalOpts = threadId
+      ? { ...opts, message_thread_id: threadId }
+      : opts;
+    const result = await bot.sendPhoto(gid, photo, finalOpts).catch(err => {
+      console.error(`[GROUPS] Failed to send photo '${event}' to ${gid}:`, err.message);
+      return null;
+    });
+    results.push(result);
+  }
+  return results;
+}
+
+module.exports = { GROUPS, ROUTING, getGroups, getPrimaryGroup, broadcastEvent, broadcastPhoto };

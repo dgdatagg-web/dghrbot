@@ -1,0 +1,129 @@
+{
+  "_comment": "EXP Rules — DG Group Staff RPG System",
+  "_calibration": {
+    "target_quanly": 1000,
+    "fast_track_days": 240,
+    "normal_track_days": 330,
+    "thresholds": {
+      "newbie":   0,
+      "nhanvien": 100,
+      "kycuu":    400,
+      "quanly":   1000,
+      "gm":       2500,
+      "creator":  9999
+    }
+  },
+
+  "auto": {
+    "checkin_ontime": {
+      "exp": 3,
+      "desc": "Checkin đúng giờ (trễ < 5p)",
+      "condition": "late_minutes < 5"
+    },
+    "checkin_late_minor": {
+      "exp": 1,
+      "desc": "Checkin trễ nhẹ (5-15p)",
+      "condition": "late_minutes >= 5 && late_minutes < 15"
+    },
+    "checkin_late_major": {
+      "exp": 0,
+      "desc": "Checkin trễ nặng (>15p) — không có EXP",
+      "condition": "late_minutes >= 15"
+    },
+    "bc_submitted": {
+      "exp": 2,
+      "desc": "Nộp BC đúng hạn trong ca",
+      "condition": "submitted within shift hours"
+    },
+    "nhaphang_complete": {
+      "exp": 2,
+      "desc": "Nhập hàng đầy đủ (kho)",
+      "condition": "dept === kho"
+    },
+    "streak_7": {
+      "exp": 20,
+      "desc": "Streak 7 ngày liên tục",
+      "condition": "streak === 7"
+    },
+    "streak_14": {
+      "exp": 40,
+      "desc": "Streak 14 ngày liên tục",
+      "condition": "streak === 14"
+    },
+    "streak_30": {
+      "exp": 80,
+      "desc": "Streak 30 ngày liên tục",
+      "condition": "streak === 30"
+    },
+    "streak_60": {
+      "exp": 150,
+      "desc": "Streak 60 ngày liên tục",
+      "condition": "streak === 60"
+    }
+  },
+
+  "manual_reward": {
+    "extra_shift": {
+      "exp": 15,
+      "desc": "Làm thêm ca (quản lý confirm)"
+    },
+    "good_handling": {
+      "exp": 10,
+      "desc": "Xử lý tình huống tốt (nhẹ)"
+    },
+    "excellent_handling": {
+      "exp": 25,
+      "desc": "Xử lý xuất sắc / sáng kiến tốt"
+    },
+    "customer_compliment": {
+      "exp": 20,
+      "desc": "Khách khen / feedback tốt"
+    }
+  },
+
+  "penalty": {
+    "late_no_notice": {
+      "exp": -20,
+      "desc": "Trễ >15p không báo trước",
+      "severity": "light"
+    },
+    "miss_bc": {
+      "exp": -15,
+      "desc": "Quên nộp BC trong ca",
+      "severity": "light"
+    },
+    "huy_hang_no_reason": {
+      "exp": -20,
+      "desc": "Hủy hàng không có lý do rõ ràng",
+      "severity": "light"
+    },
+    "grab_order_mistake": {
+      "exp": -25,
+      "desc": "Sai sót đơn Grab / đóng gói sai",
+      "severity": "medium"
+    },
+    "absent_no_notice": {
+      "exp": -50,
+      "desc": "Tự ý nghỉ không báo trước",
+      "severity": "heavy"
+    },
+    "food_safety_violation": {
+      "exp": -100,
+      "desc": "Vi phạm vệ sinh ATTP",
+      "severity": "heavy"
+    },
+    "gps_fraud": {
+      "exp": -200,
+      "desc": "Checkin gian lận GPS",
+      "severity": "critical",
+      "flag": true
+    }
+  },
+
+  "_daily_estimate": {
+    "good_day": "+5 to +7 (ontime +3, BC +2, streak bonus avg)",
+    "normal_day": "+4 (ontime +3, BC +2, minus streak avg)",
+    "bad_day": "+1 to -2 (late + miss BC)",
+    "note": "1000 EXP / ~4.2/day = 238 days (8 months good), / ~3/day = 333 days (12 months normal)"
+  }
+}

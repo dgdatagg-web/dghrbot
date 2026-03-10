@@ -1,0 +1,8 @@
+{
+  "suppliers": [
+    { "id": "cho_binh_tay", "name": "Chợ Bình Tây" },
+    { "id": "cho_binh_dien", "name": "Chợ Bình Điền" },
+    { "id": "khac", "name": "Khác" }
+  ],
+  "note": "Chi (thu mua) sẽ bổ sung NCC chính thức sau."
+}

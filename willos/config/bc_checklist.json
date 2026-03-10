@@ -1,0 +1,112 @@
+{
+  "bep": {
+    "label": "Ca Bếp",
+    "sections": [
+      {
+        "key": "checklist",
+        "label": "Checklist đã fill",
+        "type": "checkbox",
+        "items": ["Packaging", "Các loại sốt", "Rau củ", "Hành lá", "Trứng đánh", "Gia vị", "Bắp", "Khô mực", "Cá bào"]
+      },
+      {
+        "key": "com_mi",
+        "label": "Cơm / Mì",
+        "type": "text",
+        "placeholder": "VD: nửa nồi lớn + 1 nồi nhỏ"
+      },
+      {
+        "key": "huy_hang",
+        "label": "Hủy hàng",
+        "type": "cancel_items",
+        "note": "Nhập item + lý do + người gây ra"
+      },
+      {
+        "key": "don_saisot",
+        "label": "Đơn sai sót",
+        "type": "order_issue"
+      },
+      {
+        "key": "nhan_hang",
+        "label": "Nhận hàng",
+        "type": "text",
+        "placeholder": "VD: 200 trứng"
+      },
+      {
+        "key": "xuat_kho",
+        "label": "Xuất kho",
+        "type": "text",
+        "placeholder": "VD: 2 lốc tô nắp, 1 cây chén"
+      }
+    ]
+  },
+  "prep": {
+    "label": "Ca Prep",
+    "sections": [
+      {
+        "key": "ra_dong",
+        "label": "Đã ra đông",
+        "type": "quantities",
+        "items": ["Heo", "Gà", "Tôm", "Cá hồi", "Bò"]
+      },
+      {
+        "key": "da_prep",
+        "label": "Đã prep",
+        "type": "quantities",
+        "items": ["Heo", "Gà", "Tôm", "Khoai", "Cà", "Cà rốt bào", "Bắp cải"]
+      },
+      {
+        "key": "xuat_kho",
+        "label": "Xuất kho",
+        "type": "text",
+        "placeholder": "VD: 1 bột xù"
+      }
+    ]
+  },
+  "bar": {
+    "label": "Ca Bar",
+    "sections": [
+      {
+        "key": "checklist",
+        "label": "Đã pha / chuẩn bị",
+        "type": "checkbox",
+        "items": ["Trà", "Cốt trà đào", "Cà phê", "Trà chanh thái xanh", "Cốt trà thái đỏ", "Cốt trà thái xanh", "Đá", "Nổ bắp", "Thay bao rác"]
+      },
+      {
+        "key": "giao_ca",
+        "label": "Giao ca cho",
+        "type": "text",
+        "placeholder": "Tên người nhận ca"
+      },
+      {
+        "key": "can_nhap",
+        "label": "Cần nhập",
+        "type": "text",
+        "placeholder": "VD: Chanh dây, Kem, Tắc"
+      },
+      {
+        "key": "xuat_kho",
+        "label": "Xuất kho",
+        "type": "text",
+        "placeholder": "VD: 1 sữa tươi (tồn 6)",
+        "assign_to": "Chi"
+      }
+    ]
+  },
+  "bida": {
+    "label": "Ca Bida",
+    "sections": [
+      {
+        "key": "tinh_trang",
+        "label": "Tình trạng ca",
+        "type": "text",
+        "placeholder": "Ghi chú tổng quan ca"
+      },
+      {
+        "key": "xuat_kho",
+        "label": "Xuất kho",
+        "type": "text",
+        "placeholder": "VD: 2 bao bi-a"
+      }
+    ]
+  }
+}

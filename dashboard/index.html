@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DG OS — Command Center</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c14;--surface:#0e1420;--card:#121b2a;--card2:#16202f;
+  --border:#1a2640;--border2:#223048;
+  --text:#edf2f7;--muted:#5a7090;--dim:#3d5270;
+  --accent:#5b6ef5;--accent2:#7c8dff;
+  --green:#0ecb81;--green2:#0a9e65;
+  --yellow:#f5a623;--red:#f0455a;
+  --blue:#3d8ef0;--cyan:#00c8e0;
+  --purple:#9b6dff;--orange:#ff7d3b;
+  --sidebar:220px;
+}
+html{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;font-size:13px;line-height:1.5;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{height:48px;display:flex;align-items:center;gap:10px;padding:0 18px;background:var(--surface);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:200}
+.logo{font-size:15px;font-weight:900;letter-spacing:-.5px;white-space:nowrap}
+.logo em{color:var(--accent);font-style:normal}
+.top-pill{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.pill-phase{background:rgba(91,110,245,.15);color:var(--accent2)}
+.pill-alert{background:rgba(240,69,90,.18);color:var(--red);animation:alertpulse 2s infinite}
+@keyframes alertpulse{0%,100%{opacity:1}50%{opacity:.6}}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:11px}
+.live{display:flex;align-items:center;gap:5px;color:var(--green)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#clock{color:var(--text);font-variant-numeric:tabular-nums;font-size:12px;font-weight:600}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:48px;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:48px;bottom:0;left:0;overflow-y:auto;z-index:100}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.sb-section{padding:14px 14px 6px}
+.sb-label{font-size:9px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sb-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.agent-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:default;transition:background .15s;margin-bottom:2px}
+.agent-row:hover{background:var(--card)}
+.agent-icon-sm{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.agent-meta{flex:1;min-width:0}
+.agent-nm{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-rl{font-size:9px;color:var(--muted)}
+.agent-s{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;flex-shrink:0}
+.s-act{background:rgba(14,203,129,.12);color:var(--green)}
+.s-run{background:rgba(61,142,240,.12);color:var(--blue);animation:runpulse 2s infinite}
+@keyframes runpulse{0%,100%{opacity:1}50%{opacity:.6}}
+.s-wait{background:rgba(245,166,35,.12);color:var(--yellow)}
+.s-hold{background:rgba(90,112,144,.1);color:var(--muted)}
+
+.mini-bar{height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:3px}
+.mini-bar-fill{height:100%;border-radius:2px;transition:width .6s}
+
+/* EXP STAFF CARDS */
+.exp-card{padding:8px 10px;border-radius:8px;cursor:default;transition:background .15s;margin-bottom:3px}
+.exp-card:hover{background:var(--card)}
+.exp-top{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.exp-avatar{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.exp-name{font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp-lv{font-size:9px;font-weight:800;padding:1px 6px;border-radius:6px;background:rgba(91,110,245,.15);color:var(--accent2);flex-shrink:0}
+.exp-role{font-size:9px;color:var(--muted)}
+.exp-bar-row{display:flex;align-items:center;gap:6px;margin:3px 0}
+.exp-bar{flex:1;height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.exp-bar-fill{height:100%;border-radius:4px;transition:width .6s}
+.exp-bar-txt{font-size:8px;color:var(--dim);white-space:nowrap}
+.exp-stats{display:flex;gap:8px;font-size:9px;color:var(--muted)}
+.exp-xp{color:var(--yellow);font-weight:700}
+.exp-weekly{color:var(--green);font-weight:700}
+
+/* LEADERBOARD */
+.lb-wrap{margin:10px 14px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px}
+.lb-title{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.lb-row{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-size:10px;font-weight:800;width:14px;text-align:center;flex-shrink:0}
+.lb-emoji{font-size:13px;flex-shrink:0}
+.lb-name{font-size:11px;font-weight:700;flex:1}
+.lb-xp{font-size:10px;font-weight:700;color:var(--green)}
+.lb-crown{font-size:10px}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ALERT BAR */
+.alert-bar{background:rgba(240,69,90,.08);border-bottom:1px solid rgba(240,69,90,.2);padding:8px 20px;display:flex;align-items:center;gap:10px;font-size:12px}
+.alert-bar.hidden{display:none}
+.alert-icon{font-size:14px}
+.alert-text{color:var(--red);font-weight:600}
+.alert-text span{color:var(--muted);font-weight:400}
+
+/* CONTENT */
+.content{padding:20px;display:flex;flex-direction:column;gap:20px}
+
+/* SEC HEADER */
+.sec{font-size:9px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* KPI ROW */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:11px 11px 0 0}
+.kpi.green::before{background:var(--green)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.cyan::before{background:var(--cyan)}
+.kpi.yellow::before{background:var(--yellow)}
+.kpi.purple::before{background:var(--purple)}
+.kpi.orange::before{background:var(--orange)}
+.kpi-val{font-size:20px;font-weight:800;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.kpi-trend{font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px}
+.tr-up{color:var(--green)}
+.tr-down{color:var(--red)}
+.tr-neu{color:var(--muted)}
+.kpi-bep{font-size:9px;margin-top:4px;padding:2px 6px;border-radius:4px;display:inline-block}
+.bep-ok{background:rgba(14,203,129,.12);color:var(--green)}
+.bep-warn{background:rgba(245,166,35,.12);color:var(--yellow)}
+.bep-red{background:rgba(240,69,90,.12);color:var(--red)}
+
+/* TOP ROW: WIP + CHECKLIST */
+.top-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+
+/* WIP */
+.wip-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wip-col{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px}
+.col-head{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.cdot{width:8px;height:8px;border-radius:50%}
+.cn{margin-left:auto;background:var(--border);border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+
+/* TASK CARD */
+.tc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:11px;margin-bottom:7px;transition:border-color .15s,transform .1s}
+.tc:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tc:last-child{margin-bottom:0}
+.tc-top{display:flex;align-items:center;gap=5px;margin-bottom:6px;gap:5px}
+.otag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.4px}
+.pbadge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-left:auto}
+.ph{background:rgba(240,69,90,.15);color:var(--red)}
+.pc{background:rgba(240,69,90,.35);color:#fff;font-weight:700}
+.pm{background:rgba(245,166,35,.13);color:var(--yellow)}
+.tc-name{font-size:12px;font-weight:600;margin-bottom:6px;line-height:1.35}
+.tc-tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.ttag{font-size:9px;padding:1px 5px;border-radius:4px;background:rgba(91,110,245,.1);color:var(--accent2)}
+.tc-bar{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.tc-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.tc-foot{display:flex;align-items:center;justify-content:space-between}
+.stag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px}
+.st-r{background:rgba(61,142,240,.15);color:var(--blue)}
+.st-q{background:rgba(245,166,35,.13);color:var(--yellow)}
+.st-d{background:rgba(14,203,129,.13);color:var(--green)}
+.st-b{background:rgba(240,69,90,.25);color:var(--red);font-weight:700}
+.st-h{background:rgba(90,112,144,.1);color:var(--muted)}
+.tc-pct{font-size:10px;font-weight:700;color:var(--muted)}
+
+/* DONE COMPACT */
+.done-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 0;user-select:none;color:var(--muted);font-size:11px;font-weight:600}
+.done-toggle:hover{color:var(--text)}
+.done-chevron{transition:transform .2s;font-size:10px}
+.done-chevron.open{transform:rotate(90deg)}
+.done-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;display:none}
+.done-grid.open{display:grid}
+.done-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;opacity:.55}
+.done-card:hover{opacity:.8}
+.done-name{font-size:11px;font-weight:600;text-decoration:line-through;color:var(--muted);margin-bottom:4px}
+.done-owner{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px}
+
+/* TODAY CHECKLIST */
+.checklist{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px}
+.cl-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.cl-title{font-size:12px;font-weight:700}
+.cl-count{font-size:10px;color:var(--muted)}
+.cl-item{display:flex;align-items:flex-start;gap:8px;padding:8px;border-radius:7px;transition:background .15s;cursor:pointer;margin-bottom:2px}
+.cl-item:hover{background:var(--card)}
+.cl-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s}
+.cl-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.cl-check.over{border-color:var(--red)}
+.cl-body{flex:1}
+.cl-name{font-size:11px;font-weight:600}
+.cl-name.done{text-decoration:line-through;opacity:.4}
+.cl-dept{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;display:inline-block;margin-top:3px;text-transform:uppercase}
+.cl-sep{height:1px;background:var(--border);margin:8px 0}
+.cl-prog{display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--muted)}
+.cl-prog-bar{width:100%;height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px}
+.cl-prog-fill{height:100%;border-radius:3px;background:var(--green);transition:width .4s}
+
+/* PERIOD TABS */
+.period-wrap{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px}
+.ptabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.ptab{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+.ptab:hover,.ptab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.plist{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto}
+.plist::-webkit-scrollbar{width:3px}
+.plist::-webkit-scrollbar-thumb{background:var(--border2)}
+.pi{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:border-color .15s}
+.pi:hover{border-color:var(--border2)}
+.pichk{width:15px;height:15px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s}
+.pichk.done{background:var(--green);border-color:var(--green);color:#fff}
+.pi-name{font-size:11px;font-weight:600;flex:1}
+.pi-name.done{text-decoration:line-through;opacity:.4}
+.pi-dept{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;text-transform:uppercase}
+
+/* TOPICS */
+.topics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tp{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px}
+.tp-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.tp-desc{font-size:10px;color:var(--muted);margin-bottom:7px;line-height:1.4}
+.tp-st{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;display:inline-block}
+.tp-act{background:rgba(14,203,129,.12);color:var(--green)}
+.tp-hold{background:rgba(90,112,144,.1);color:var(--muted)}
+
+/* ACTIVITY */
+.act-list{display:flex;flex-direction:column;gap:6px}
+.ai{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--card);border:1px solid var(--border);border-radius:8px}
+.ai-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ai-body{flex:1}
+.ai-title{font-size:11px;font-weight:600}
+.ai-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.ai-time{font-size:10px;color:var(--dim);flex-shrink:0;padding-top:1px}
+
+.footer{text-align:center;padding:14px;font-size:10px;color:var(--dim);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">⚡ DG<em>OS</em></div>
+  <div class="top-pill pill-phase">Phase 0 — Data Foundation</div>
+  <div class="top-pill pill-alert" id="alert-pill" style="display:none">⚠ Alerts</div>
+  <div class="topbar-right">
+    <div class="live"><div class="dot"></div>Live</div>
+    <div id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <!-- AI TEAM -->
+    <div class="sb-section">
+      <div class="sb-label">🤖 AI Team</div>
+      <div id="ai-team"></div>
+    </div>
+    <!-- REAL TEAM by DEPT -->
+    <div class="sb-section" id="real-team-section"></div>
+    <!-- EXP LEADERBOARD -->
+    <div id="exp-leaderboard"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ALERT BAR -->
+    <div class="alert-bar hidden" id="alert-bar">
+      <div class="alert-icon">🚨</div>
+      <div class="alert-text" id="alert-text">No alerts</div>
+    </div>
+
+    <div class="content">
+
+      <!-- KPIs -->
+      <div>
+        <div class="sec">📊 Business KPIs</div>
+        <div class="kpi-grid" id="kpi-grid"></div>
+      </div>
+
+      <!-- WIP + CHECKLIST -->
+      <div>
+        <div class="sec">🔥 Work In Progress</div>
+        <div class="top-row">
+          <div>
+            <div class="wip-cols" id="wip-cols"></div>
+          </div>
+          <div class="checklist">
+            <div class="cl-head">
+              <div class="cl-title">📋 Today's Checklist</div>
+              <div class="cl-count" id="cl-count">0/0</div>
+            </div>
+            <div id="cl-list"></div>
+            <div class="cl-prog">
+              <span id="cl-prog-txt">0% complete</span>
+            </div>
+            <div class="cl-prog-bar"><div class="cl-prog-fill" id="cl-prog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONE (collapsible) -->
+      <div>
+        <div class="done-toggle" onclick="toggleDone(this)">
+          <span class="done-chevron">▶</span>
+          <span>✅ Completed Today</span>
+          <span id="done-count" style="color:var(--green);font-weight:800">0</span>
+          <span style="color:var(--dim);font-weight:400;font-size:10px">tasks</span>
+        </div>
+        <div class="done-grid" id="done-grid"></div>
+      </div>
+
+      <!-- PERIODIC -->
+      <div>
+        <div class="sec">⏰ Periodic Tasks</div>
+        <div class="period-wrap">
+          <div class="ptabs" id="ptabs">
+            <button class="ptab active" onclick="setPeriod('daily',this)">Daily</button>
+            <button class="ptab" onclick="setPeriod('weekly',this)">Weekly</button>
+            <button class="ptab" onclick="setPeriod('monthly',this)">Monthly</button>
+            <button class="ptab" onclick="setPeriod('quarterly',this)">Quarterly</button>
+            <button class="ptab" onclick="setPeriod('yearly',this)">Yearly</button>
+          </div>
+          <div class="plist" id="plist"></div>
+        </div>
+      </div>
+
+      <!-- SHIFT REPORT SUMMARY -->
+      <div>
+        <div class="sec">📋 Last Shift Report</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr) 1.5fr;gap:10px" id="shift-row"></div>
+      </div>
+
+      <!-- TOPICS + ACTIVITY -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start">
+        <div>
+          <div class="sec">📡 Telegram Topics</div>
+          <div class="topics-grid" id="topics-grid"></div>
+        </div>
+        <div>
+          <div class="sec">⚡ Activity</div>
+          <div class="act-list" id="act-list"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="footer">⚡ DG OS Command Center v2.0 — Kansai Osaka</div>
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════
+const AGENTS = [
+  {id:'nova',name:'Nova', role:'Command & Control',emoji:'⚡',color:'#5b6ef5',status:'running',prog:90},
+  {id:'hy',  name:'Hy',   role:'WillOS Engineer',  emoji:'🔧',color:'#3d8ef0',status:'active', prog:100},
+  {id:'kai', name:'Kai',  role:'Data Analyst',     emoji:'📊',color:'#00c8e0',status:'running',prog:30},
+  {id:'gong',name:'Gong', role:'Finance',          emoji:'💰',color:'#0ecb81',status:'waiting',prog:5},
+  {id:'mira',name:'Mira', role:'QC & SOP',         emoji:'🌸',color:'#9b6dff',status:'hold',   prog:0},
+];
+const REAL_TEAM = [
+  // Phòng Bếp
+  {id:'hieu',  name:'Hiếu',  role:'Bếp trưởng', dept:'Bếp',    emoji:'👨‍🍳',color:'#ff7d3b',status:'active', total_xp:340, weekly_xp:45,  level:3},
+  {id:'tan',   name:'Tân',   role:'Bếp phó',    dept:'Bếp',    emoji:'🧑‍🍳',color:'#ff9a5c',status:'active', total_xp:95,  weekly_xp:20,  level:0},
+  // Phòng Kế Toán
+  {id:'qa',    name:'QA',    role:'Phó GĐ',     dept:'Kế Toán',emoji:'👩‍💼',color:'#f0455a',status:'active', total_xp:520, weekly_xp:80,  level:5},
+  {id:'chi',   name:'Chi',   role:'Thu mua/KT', dept:'Kế Toán',emoji:'📦', color:'#f5a623',status:'active', total_xp:190, weekly_xp:25,  level:3},
+  // Phòng Bar
+  {id:'bety',  name:'Bety',  role:'QL Bar/Prep', dept:'Bar',   emoji:'🍹', color:'#00c8e0',status:'active', total_xp:210, weekly_xp:35,  level:2},
+  {id:'thao',  name:'Thảo',  role:'Bartender',  dept:'Bar',    emoji:'🧋', color:'#38bdf8',status:'active', total_xp:130, weekly_xp:22,  level:1},
+  // Phòng Bida
+  {id:'thu',   name:'Thư',   role:'QL Bida',    dept:'Bida',   emoji:'🎱', color:'#0ecb81',status:'active', total_xp:195, weekly_xp:28,  level:1},
+  {id:'nhan',  name:'Nhân',  role:'Xếp bi',     dept:'Bida',   emoji:'🟢', color:'#34d399',status:'inactive', total_xp:220, weekly_xp:30,  level:2},
+  {id:'li',    name:'Lì',    role:'Xếp bi',     dept:'Bida',   emoji:'🟢', color:'#34d399',status:'active', total_xp:155, weekly_xp:25,  level:1},
+  {id:'khoi',  name:'Khôi',  role:'Xếp bi',     dept:'Bida',   emoji:'🟢', color:'#34d399',status:'active', total_xp:88,  weekly_xp:18,  level:0},
+  {id:'nhim',  name:'Nhím',  role:'Xếp bi',     dept:'Bida',   emoji:'🟢', color:'#34d399',status:'active', total_xp:45,  weekly_xp:12,  level:0},
+];
+// Runtime fallback KPIs (used when API is down)
+const KPIS_FALLBACK = [
+  {label:'Gross Revenue',val:'646M₫', trend:'↑ 88 ngày',tc:'tr-up', cls:'green', sub:'Nov25–Feb26',bep:null},
+  {label:'Net Revenue',  val:'553M₫', trend:'14.4% fee',  tc:'tr-neu',cls:'blue',  sub:'Sau phí Grab',bep:null},
+  {label:'Tổng Đơn',    val:'4,257', trend:'48.4/ngày',  tc:'tr-neu',cls:'cyan',  sub:'88 ngày',bep:null},
+  {label:'Avg/Đơn',     val:'130K₫', trend:'₫ trung bình',tc:'tr-neu',cls:'yellow',sub:'GrabFood',bep:null},
+  {label:'Growth T2',   val:'-19%',  trend:'↓ vs T12',   tc:'tr-down',cls:'purple',sub:'ongoing month',bep:null},
+  {label:'#1 SKU',      val:'29.4%', trend:'Kare Tonkatsu',tc:'tr-neu',cls:'orange',sub:'tổng đơn',bep:null},
+];
+const KPIS = [
+  {label:'Gross Revenue',val:'646M₫',trend:'↑ 90 ngày',tc:'tr-up',cls:'green',sub:'Nov25–Feb26',bep:null},
+  {label:'Net Revenue',  val:'553M₫',trend:'14.4% fee', tc:'tr-neu',cls:'blue', sub:'Sau phí Grab',bep:null},
+  {label:'Tổng Đơn',    val:'4,257', trend:'48.4/ngày', tc:'tr-neu',cls:'cyan', sub:'88 ngày',bep:null},
+  {label:'Avg/Đơn',     val:'151K₫', trend:'₫ trung bình',tc:'tr-neu',cls:'yellow',sub:'GrabFood',bep:null},
+  {label:'Growth T2',   val:'+75%',  trend:'↑ T12 +73%', tc:'tr-up',cls:'purple',sub:'vs cùng kỳ',bep:null},
+  {label:'#1 SKU',      val:'21.8%', trend:'Kare Tonkatsu',tc:'tr-neu',cls:'orange',sub:'tổng đơn',bep:null},
+];
+const TASKS = [
+  // ── RUNNING ──────────────────────────────────────────────────────────────
+  {id:'T-017',title:'Baseline freeze — 4 tuần data liên tục',             owner:'kai',  prog:30, status:'running', pri:'medium',   tags:['willos','data'],     note:'88 ngày Grab ok. Đang thu thêm T3/2026'},
+  {id:'T-023',title:'Shift report pipeline: topics 172+177 → WillOS DB',  owner:'nova', prog:80, status:'running', pri:'high',     tags:['willos','pipeline'], note:'Parser built + hooked vào DG_HR_Bot. Test thực tế đang chạy'},
+  // ── QUEUE ────────────────────────────────────────────────────────────────
+  {id:'T-022',title:'HR Bot onboarding — hướng dẫn staff /dangky',        owner:'nova', prog:0,  status:'queue',   pri:'high',     tags:['hr','bot'],          note:'Post guide lên #172 + #177'},
+  {id:'T-024',title:'P&L đầy đủ T12/2025–T2/2026 (có COGS thực)',        owner:'gong', prog:0,  status:'queue',   pri:'high',     tags:['finance','p&l'],     note:'Chờ COGS từ T-025'},
+  {id:'T-025',title:'Gross margin per SKU (final, sau import)',            owner:'gong', prog:0,  status:'queue',   pri:'high',     tags:['finance','margin'],  note:'Chờ T-023 có đủ shift data'},
+  {id:'T-026',title:'Fix standup.sh: column names + thread 177→172 ✅',   owner:'nova', prog:100,status:'done',    pri:'medium',   tags:['standup','infra'],   note:'gross_sales/num_transactions fixed. Post → #172. Done 02/03'},
+  // ── DONE ─────────────────────────────────────────────────────────────────
+  {id:'T-030',title:'Payment reminders 3 cron jobs ✅',                   owner:'nova', prog:100,status:'done',    pri:'high',     tags:['finance','infra'],   note:'Ngày 5/10/30 → topic 173. IDs: d71c/ab6e/ea2f'},
+  {id:'T-029',title:'DG_HR_Bot deploy production ✅',                     owner:'nova', prog:100,status:'done',    pri:'critical', tags:['bot','infra'],       note:'@DG_HR_Bot live, token clean, .env chuẩn'},
+  {id:'T-028',title:'willos/.env chuẩn hoá — token + group IDs ✅',      owner:'nova', prog:100,status:'done',    pri:'high',     tags:['infra','config'],    note:'DG_HR_BOT_TOKEN + GROUP_CHAT_ID + tất cả topic IDs'},
+  {id:'T-021',title:'Import SKU Master v2 vào WillOS DB ✅',              owner:'nova', prog:100,status:'done',    pri:'critical', tags:['sku','willos'],      note:'76 SKUs + COGS imported'},
+  {id:'T-019',title:'SKU Master v2 — COGS từ nhập hàng T01 ✅',          owner:'nova', prog:100,status:'done',    pri:'high',     tags:['sku','finance']},
+  {id:'T-018',title:'Drive dgdatagg organize (function+PIC) ✅',          owner:'nova', prog:100,status:'done',    pri:'high',     tags:['drive','ops']},
+  {id:'T-016',title:'BEP Kansai Osaka — T01 net 68.5M ✅',                owner:'gong', prog:100,status:'done',    pri:'medium',   tags:['strategy','finance']},
+  {id:'T-015',title:'P&L estimate T12–T2 (Grab) ✅',                      owner:'gong', prog:100,status:'done',    pri:'high',     tags:['finance','p&l']},
+  {id:'T-014',title:'Gross margin estimate (blended 62.2%) ✅',           owner:'gong', prog:100,status:'done',    pri:'high',     tags:['finance','margin']},
+  {id:'T-013',title:'HR Bot MVP — live ✅',                                owner:'hy',   prog:100,status:'done',    pri:'high',     tags:['bot','telegram']},
+  {id:'T-012',title:'Dashboard live data từ WillOS ✅',                    owner:'hy',   prog:100,status:'done',    pri:'high',     tags:['dashboard','willos']},
+  {id:'T-011',title:'Import Grab 90N (2,982 rows, 88 days) ✅',           owner:'kai',  prog:100,status:'done',    pri:'high',     tags:['data','willos']},
+  {id:'T-010',title:'SKU Master 71 items (Kai audit) ✅',                  owner:'kai',  prog:100,status:'done',    pri:'high',     tags:['sku','data']},
+  {id:'T-009',title:'EXP module: 11 staff seeded ✅',                      owner:'hy',   prog:100,status:'done',    pri:'high',     tags:['exp','willos']},
+  {id:'T-008',title:'WillOS shift report parser + API ✅',                 owner:'hy',   prog:100,status:'done',    pri:'high',     tags:['willos','api']},
+  {id:'T-007',title:'Import Grab T9/2025 (646 rows) ✅',                   owner:'hy',   prog:100,status:'done',    pri:'high',     tags:['data','willos']},
+  {id:'T-006',title:'Dashboard redesign v2.0 ✅',                          owner:'nova', prog:100,status:'done',    pri:'high',     tags:['dashboard']},
+  {id:'T-005',title:'Drive willdo0910 + dgdatagg organize ✅',             owner:'nova', prog:100,status:'done',    pri:'high',     tags:['drive']},
+  {id:'T-004',title:'Backup + Cron 4 jobs ✅',                             owner:'nova', prog:100,status:'done',    pri:'high',     tags:['infra']},
+  {id:'T-003',title:'Auto standup script + 3 cron jobs ✅',                owner:'nova', prog:100,status:'done',    pri:'high',     tags:['standup','infra']},
+  {id:'T-002',title:'Topic map v2 (5 topics) + welcome msgs ✅',          owner:'nova', prog:100,status:'done',    pri:'high',     tags:['ops','telegram']},
+  {id:'T-001',title:'Team Charter + Real team 11 người ✅',                owner:'nova', prog:100,status:'done',    pri:'high',     tags:['hr','ops']},
+];
+const CHECKLIST = [
+  {name:'Báo cáo ca sáng (09:00)', dept:'Vận hành',color:'#ff7d3b',done:false,over:false},
+  {name:'Kiểm tra hàng đầu ca',   dept:'Kho',     color:'#0ecb81',done:false,over:false},
+  {name:'Nova auto standup',       dept:'AI Ops',  color:'#5b6ef5',done:true, over:false},
+  {name:'Báo cáo ca tối (22:00)', dept:'Vận hành',color:'#ff7d3b',done:false,over:false},
+  {name:'Nightly backup 02:00',    dept:'Tech',    color:'#3d8ef0',done:false,over:false},
+];
+const PERIODIC = {
+  daily:[
+    {name:'Báo cáo ca sáng',dept:'Vận hành',color:'#ff7d3b',done:false},
+    {name:'Báo cáo ca tối', dept:'Vận hành',color:'#ff7d3b',done:false},
+    {name:'Kiểm tra hàng đầu ca',dept:'Kho',color:'#0ecb81',done:false},
+    {name:'Nova standup 3x',dept:'AI Ops',color:'#5b6ef5',done:true},
+    {name:'Nightly backup', dept:'Tech',color:'#3d8ef0',done:false},
+  ],
+  weekly:[
+    {name:'Kiểm kho & đặt hàng (Thứ 2)',dept:'Kho',color:'#0ecb81',done:false},
+    {name:'Review P&L tuần',dept:'Tài chính',color:'#0ecb81',done:false},
+    {name:'Team meeting (Thứ 6)',dept:'Nhân sự',color:'#9b6dff',done:false},
+    {name:'WillOS weekly report',dept:'Tech',color:'#3d8ef0',done:false},
+    {name:'Review KPI bếp',dept:'Vận hành',color:'#ff7d3b',done:false},
+  ],
+  monthly:[
+    {name:'P&L tháng',dept:'Tài chính',color:'#0ecb81',done:false},
+    {name:'Đối chiếu sao kê ngân hàng',dept:'Kế toán',color:'#0ecb81',done:false},
+    {name:'Review COGS & margin',dept:'Tài chính',color:'#0ecb81',done:false},
+    {name:'Inventory audit',dept:'Kho',color:'#0ecb81',done:false},
+    {name:'Đánh giá nhân viên',dept:'Nhân sự',color:'#9b6dff',done:false},
+    {name:'Báo cáo ATVSTP',dept:'ATVSTP',color:'#f0455a',done:false},
+  ],
+  quarterly:[
+    {name:'P&L Quarterly review',dept:'Tài chính',color:'#0ecb81',done:false},
+    {name:'Review giá menu + margin',dept:'Kinh doanh',color:'#00c8e0',done:false},
+    {name:'Kiểm tra giấy phép VSTP',dept:'Pháp lý',color:'#f0455a',done:false},
+    {name:'Review SOP & training',dept:'Đào tạo',color:'#f5a623',done:false},
+    {name:'ESOP rewards quarterly',dept:'Nhân sự',color:'#9b6dff',done:false},
+  ],
+  yearly:[
+    {name:'Gia hạn đăng ký kinh doanh',dept:'Pháp lý',color:'#f0455a',done:false},
+    {name:'Kiểm toán tài chính năm',dept:'Kế toán',color:'#0ecb81',done:false},
+    {name:'Renewal ATVSTP',dept:'ATVSTP',color:'#f0455a',done:false},
+    {name:'Annual review + ESOP',dept:'Nhân sự',color:'#9b6dff',done:false},
+    {name:'Strategic planning',dept:'Chiến lược',color:'#5b6ef5',done:false},
+    {name:'Menu redesign cycle',dept:'Kinh doanh',color:'#00c8e0',done:false},
+  ],
+};
+const TOPICS=[
+  {name:'🎯 General',          thread:1,  status:'active',  desc:'Command, decisions, escalations'},
+  {name:'🍱 Kansai + Standup', thread:172,status:'active',  desc:'Ca summary + daily standup 08:00/14:00/22:00'},
+  {name:'💰 Tài Chính/KT',     thread:173,status:'active',  desc:'P&L, margin, BEP — Will + QA'},
+  {name:'📦 Thu Mua/Kho',      thread:174,status:'active',  desc:'Stock alerts, đơn nhập, cost drift'},
+  {name:'🤖 WillOS & Tech',    thread:175,status:'active',  desc:'Backend/IT: Hy, Kai, Nova'},
+  {name:'⚡ Daily Standup',    thread:177,status:'closed',  desc:'❌ Merged vào #172 (2026-02-27)'},
+];
+// Last shift report (live from API, fallback hardcode)
+const LAST_SHIFT_FALLBACK = {
+  date: '25/02/2026',
+  reporter: 'Tân',
+  grab: 2500000,
+  fabi: 1800000,
+  total: 4300000,
+  items: {curry:18, rice:6, noodle:9, takoyaki:12, other:5},
+  waste: '150g mì bị chua',
+  incident: 'GF-869 đánh giá 4⭐ (cơm & thịt bò hơi ít)',
+  missing: 'Khô mực, cá bào, sốt, packaging',
+  status: 'ok',
+};
+
+const ACTIVITY=[
+  {icon:'⚡',bg:'rgba(91,110,245,.15)', title:'Standup fixed + topic corrected',sub:'column names đúng, post → #172. Data live 7.2M/50 đơn', time:'02/03 08:08'},
+  {icon:'🤖',bg:'rgba(91,110,245,.15)', title:'DG_HR_Bot deployed',    sub:'Production live · token clean · no conflict',   time:'28/02 15:17'},
+  {icon:'📋',bg:'rgba(61,142,240,.15)', title:'Shift report pipeline',  sub:'Parser topics 172+177 → WillOS DB · hooked',    time:'28/02 15:30'},
+  {icon:'💳',bg:'rgba(14,203,129,.15)', title:'Payment reminders x3',   sub:'Ngày 5/10/30 → topic 173 · cron live',          time:'28/02 13:50'},
+];
+
+// ══════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════
+const ag = id => AGENTS.find(a=>a.id===id)||{emoji:'?',color:'#666',name:id};
+
+function renderSidebar(){
+  const sc={active:'s-act',running:'s-run',waiting:'s-wait',hold:'s-hold'};
+  const sl={active:'Active',running:'🔄 Run',waiting:'⏳ Wait',hold:'Hold'};
+
+  // AI Team
+  document.getElementById('ai-team').innerHTML=AGENTS.map(a=>`
+    <div class="agent-row">
+      <div class="agent-icon-sm" style="background:${a.color}18;color:${a.color}">${a.emoji}</div>
+      <div class="agent-meta">
+        <div class="agent-nm">${a.name}</div>
+        <div class="mini-bar"><div class="mini-bar-fill" style="width:${a.prog}%;background:${a.color}"></div></div>
+      </div>
+      <div class="agent-s ${sc[a.status]||'s-hold'}">${sl[a.status]||a.status}</div>
+    </div>`).join('');
+
+  // Real Team — EXP-powered, grouped by dept
+  const deptConfig = {
+    'Bếp':    {icon:'🍳', color:'#ff7d3b'},
+    'Kế Toán':{icon:'💼', color:'#f0455a'},
+    'Bar':    {icon:'🍹', color:'#00c8e0'},
+    'Bida':   {icon:'🎱', color:'#0ecb81'},
+  };
+  const depts = {};
+  REAL_TEAM.filter(m => m.status !== 'inactive').forEach(m => {
+    if (!depts[m.dept]) depts[m.dept] = [];
+    depts[m.dept].push(m);
+  });
+
+  function expBar(total_xp, level, color) {
+    const xpInLevel = total_xp % 100;
+    const pct = xpInLevel;
+    const filled = Math.round(pct / 20); // 5 blocks
+    const blocks = '█'.repeat(filled) + '░'.repeat(5 - filled);
+    return { pct, blocks, xpInLevel };
+  }
+
+  const el = document.getElementById('real-team-section');
+  el.innerHTML = Object.entries(depts).map(([dept, members]) => {
+    const cfg = deptConfig[dept] || {icon:'👥', color:'#999'};
+    return `
+      <div class="sb-label" style="margin-top:10px">${cfg.icon} ${dept}</div>
+      ${members.map(m => {
+        const { pct, blocks, xpInLevel } = expBar(m.total_xp, m.level, m.color);
+        const rewardTip = m.level >= 7 ? '🎓' : m.level >= 5 ? '🔑' : m.level >= 3 ? '💰' : '';
+        return `
+        <div class="exp-card">
+          <div class="exp-top">
+            <div class="exp-avatar" style="background:${m.color}18;color:${m.color}">${m.emoji}</div>
+            <div class="exp-name">${m.name} ${rewardTip}</div>
+            <div class="exp-lv">Lv.${m.level}</div>
+          </div>
+          <div class="exp-bar-row">
+            <div class="exp-bar"><div class="exp-bar-fill" style="width:${pct}%;background:${m.color}"></div></div>
+            <div class="exp-bar-txt">${xpInLevel}/100</div>
+          </div>
+          <div class="exp-stats">
+            <span class="exp-role">${m.role}</span>
+            <span style="margin-left:auto"><span class="exp-xp">⭐ ${m.total_xp}</span> <span class="exp-weekly">📈 +${m.weekly_xp}</span></span>
+          </div>
+        </div>`;
+      }).join('')}`;
+  }).join('');
+
+  // Leaderboard mini — top 3 weekly
+  const lbData = [...REAL_TEAM].filter(m => m.status !== 'inactive').sort((a,b) => b.weekly_xp - a.weekly_xp);
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const lbEl = document.getElementById('exp-leaderboard');
+  if (lbEl) {
+    lbEl.innerHTML = `
+      <div class="lb-wrap">
+        <div class="lb-title">🏆 Weekly Top</div>
+        ${lbData.slice(0,3).map((m,i) => `
+          <div class="lb-row">
+            <div class="lb-rank" style="color:${i===0?'#ffd700':i===1?'#c0c0c0':'#cd7f32'}">${rankEmoji[i]}</div>
+            <div class="lb-emoji">${m.emoji}</div>
+            <div class="lb-name">${m.name}</div>
+            <div class="lb-xp">+${m.weekly_xp} XP</div>
+            ${i===0?'<div class="lb-crown">👑</div>':''}
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+function renderKPIs(){
+  document.getElementById('kpi-grid').innerHTML=KPIS.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-val" style="color:var(--${k.cls==='green'?'green':k.cls==='blue'?'blue':k.cls==='cyan'?'cyan':k.cls==='yellow'?'yellow':k.cls==='purple'?'purple':'orange'})">${k.val}</div>
+      <div class="kpi-trend ${k.tc}">${k.trend}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:2px">${k.sub}</div>
+    </div>`).join('');
+}
+
+function tcHTML(t){
+  const a=ag(t.owner);
+  const sc={running:'st-r',queue:'st-q',done:'st-d',hold:'st-h',blocked:'st-b'}[t.status]||'st-q';
+  const sl={running:'🔄 Running',queue:'⏳ Queue',done:'✅ Done',hold:'⏸️ Hold',blocked:'🚫 Blocked'}[t.status]||'⏳';
+  const pc=t.pri==='critical'?'pc':t.pri==='high'?'ph':'pm';
+  const pl=t.pri==='critical'?'CRITICAL':t.pri==='high'?'HIGH':'MED';
+  return`<div class="tc">
+    <div class="tc-top">
+      <span class="otag" style="background:${a.color}18;color:${a.color}">${a.emoji} ${a.name}</span>
+      <span class="pbadge ${pc}">${pl}</span>
+    </div>
+    <div class="tc-name">${t.title}</div>
+    <div class="tc-tags">${t.tags.map(tg=>`<span class="ttag">${tg}</span>`).join('')}</div>
+    <div class="tc-bar"><div class="tc-bar-fill" style="width:${t.prog}%;background:${a.color}"></div></div>
+    <div class="tc-foot"><span class="stag ${sc}">${sl}</span><span class="tc-pct">${t.prog}%</span></div>
+  </div>`;
+}
+
+function renderWIP(){
+  const blk=TASKS.filter(t=>t.status==='blocked');
+  const run=TASKS.filter(t=>t.status==='running');
+  const que=TASKS.filter(t=>t.status==='queue');
+  const done=TASKS.filter(t=>t.status==='done');
+  document.getElementById('wip-cols').innerHTML=`
+    ${blk.length?`<div class="wip-col" style="border-top:2px solid var(--red)">
+      <div class="col-head"><div class="cdot" style="background:var(--red)"></div>Blocked<div class="cn" style="background:var(--red)">${blk.length}</div></div>
+      ${blk.map(tcHTML).join('')}
+    </div>`:''}
+    <div class="wip-col">
+      <div class="col-head"><div class="cdot" style="background:var(--blue)"></div>Running<div class="cn">${run.length}</div></div>
+      ${run.map(tcHTML).join('')}
+    </div>
+    <div class="wip-col">
+      <div class="col-head"><div class="cdot" style="background:var(--yellow)"></div>Queue<div class="cn">${que.length}</div></div>
+      ${que.map(tcHTML).join('')}
+    </div>`;
+  document.getElementById('done-count').textContent=done.length;
+  document.getElementById('done-grid').innerHTML=done.map(t=>{
+    const a=ag(t.owner);
+    return`<div class="done-card">
+      <div class="done-name">${t.title}</div>
+      <span class="done-owner" style="background:${a.color}18;color:${a.color}">${a.emoji} ${a.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleDone(el){
+  const grid=document.getElementById('done-grid');
+  const ch=el.querySelector('.done-chevron');
+  grid.classList.toggle('open');
+  ch.classList.toggle('open');
+}
+
+function renderChecklist(){
+  const done=CHECKLIST.filter(c=>c.done).length;
+  document.getElementById('cl-count').textContent=`${done}/${CHECKLIST.length}`;
+  const pct=Math.round(done/CHECKLIST.length*100);
+  document.getElementById('cl-prog-txt').textContent=`${pct}% complete`;
+  document.getElementById('cl-prog-fill').style.width=pct+'%';
+  document.getElementById('cl-list').innerHTML=CHECKLIST.map((c,i)=>`
+    <div class="cl-item" onclick="toggleCheck(${i})">
+      <div class="cl-check ${c.done?'done':c.over?'over':''}">${c.done?'✓':''}</div>
+      <div class="cl-body">
+        <div class="cl-name ${c.done?'done':''}">${c.name}</div>
+        <div class="cl-dept" style="background:${c.color}18;color:${c.color}">${c.dept}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleCheck(i){
+  CHECKLIST[i].done=!CHECKLIST[i].done;
+  renderChecklist();
+}
+
+let curPeriod='daily';
+function setPeriod(p,btn){
+  curPeriod=p;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderPeriod();
+}
+function renderPeriod(){
+  const items=PERIODIC[curPeriod]||[];
+  document.getElementById('plist').innerHTML=items.map((item,i)=>`
+    <div class="pi" onclick="togglePeriod(${i})">
+      <div class="pichk ${item.done?'done':''}">${item.done?'✓':''}</div>
+      <div class="pi-name ${item.done?'done':''}">${item.name}</div>
+      <div class="pi-dept" style="background:${item.color}18;color:${item.color}">${item.dept}</div>
+    </div>`).join('');
+}
+function togglePeriod(i){
+  PERIODIC[curPeriod][i].done=!PERIODIC[curPeriod][i].done;
+  renderPeriod();
+}
+
+function renderTopics(){
+  document.getElementById('topics-grid').innerHTML=TOPICS.map(t=>`
+    <div class="tp" style="${t.status==='closed'?'opacity:0.45;':''}">
+      <div class="tp-name">${t.name}</div>
+      <div class="tp-desc">${t.desc}</div>
+      <div class="tp-st ${t.status==='active'?'tp-act':t.status==='closed'?'tp-hold':'tp-hold'}">${t.status==='active'?'✅ Active':t.status==='closed'?'⛔ Closed':'⏸️ Hold'}</div>
+    </div>`).join('');
+}
+
+function renderActivity(){
+  document.getElementById('act-list').innerHTML=ACTIVITY.map(a=>`
+    <div class="ai">
+      <div class="ai-icon" style="background:${a.bg}">${a.icon}</div>
+      <div class="ai-body"><div class="ai-title">${a.title}</div><div class="ai-sub">${a.sub}</div></div>
+      <div class="ai-time">${a.time}</div>
+    </div>`).join('');
+}
+
+function checkAlerts(){
+  const blocked=TASKS.filter(t=>t.status==='blocked');
+  const overTasks=CHECKLIST.filter(c=>c.over&&!c.done);
+  const alerts=[];
+  if(blocked.length) alerts.push(`${blocked.length} task blocked`);
+  if(overTasks.length) alerts.push(`${overTasks.length} checklist overdue`);
+  const bar=document.getElementById('alert-bar');
+  const pill=document.getElementById('alert-pill');
+  if(alerts.length){
+    bar.classList.remove('hidden');
+    document.getElementById('alert-text').innerHTML=alerts.join(' · ');
+    pill.style.display='';
+    pill.textContent='⚠ '+alerts.length+' Alert'+(alerts.length>1?'s':'');
+  }else{
+    bar.classList.add('hidden');
+    pill.style.display='none';
+  }
+}
+
+function renderShift(){
+  const s = LAST_SHIFT;
+  const fmt = n => (n/1000000).toFixed(1)+'M₫';
+  const totalItems = Object.values(s.items).reduce((a,b)=>a+b,0);
+  document.getElementById('shift-row').innerHTML = `
+    <div class="kpi blue">
+      <div class="kpi-label">Ca gần nhất</div>
+      <div class="kpi-val" style="font-size:14px;color:var(--blue)">${s.date}</div>
+      <div class="kpi-trend tr-neu">Báo bởi ${s.reporter}</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Grab</div>
+      <div class="kpi-val" style="color:var(--green)">${fmt(s.grab)}</div>
+      <div class="kpi-trend tr-neu">GrabFood</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="kpi-label">Fabi</div>
+      <div class="kpi-val" style="color:var(--cyan)">${fmt(s.fabi)}</div>
+      <div class="kpi-trend tr-neu">Fabi order</div>
+    </div>
+    <div class="kpi ${s.total>=4000000?'green':'yellow'}">
+      <div class="kpi-label">Tổng ca</div>
+      <div class="kpi-val" style="color:var(--${s.total>=4000000?'green':'yellow'})">${fmt(s.total)}</div>
+      <div class="kpi-trend tr-neu">${totalItems} món</div>
+    </div>
+    <div class="card" style="background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px">
+      <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Notes & Alerts</div>
+      ${s.incident ? `<div style="font-size:11px;margin-bottom:5px"><span style="color:var(--yellow)">⚠</span> ${s.incident}</div>` : ''}
+      ${s.missing  ? `<div style="font-size:11px;margin-bottom:5px"><span style="color:var(--red)">📦</span> Thiếu: ${s.missing}</div>` : ''}
+      ${s.waste    ? `<div style="font-size:11px"><span style="color:var(--muted)">🗑</span> Waste: ${s.waste}</div>` : ''}
+    </div>`;
+}
+
+function tick(){
+  document.getElementById('clock').textContent=
+    new Date().toLocaleTimeString('vi-VN',{timeZone:'Asia/Saigon',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ══════════════════════════════════════
+//  LIVE DATA FETCH — WillOS API
+// ══════════════════════════════════════
+
+const API_BASE = 'http://localhost:3000';
+
+/**
+ * Graceful fetch — returns fallback if API is down or response bad
+ */
+async function fetchFromAPI(endpoint, fallback) {
+  try {
+    const r = await fetch(`${API_BASE}${endpoint}`, {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) {
+    console.warn(`⚠ API ${endpoint} unavailable (${e.message}) — using fallback`);
+    return fallback;
+  }
+}
+
+// ── Fetch & render KPIs from /api/grab/summary ──────────────────
+async function loadKPIs() {
+  const res = await fetchFromAPI('/api/grab/summary', null);
+  let kpis;
+  if (res && res.ok && res.data) {
+    const d = res.data;
+    const fmt = n => {
+      if (n >= 1e9) return (n/1e9).toFixed(1)+'B₫';
+      if (n >= 1e6) return Math.round(n/1e6)+'M₫';
+      if (n >= 1e3) return Math.round(n/1e3)+'K₫';
+      return n+'₫';
+    };
+    const growthVal = d.growth_vs_t12;
+    const growthTc  = growthVal > 0 ? 'tr-up' : growthVal < 0 ? 'tr-down' : 'tr-neu';
+    const growthStr = growthVal !== null ? (growthVal > 0 ? '↑' : '↓') + ' vs T12' : '— no data';
+    const growthDisp = growthVal !== null ? (growthVal > 0 ? '+' : '') + growthVal + '%' : '—';
+
+    // Top SKU short name (strip Vietnamese)
+    const topSkuFull = d.top_sku || 'N/A';
+    const topSkuShort = topSkuFull.split(' - ')[0] || topSkuFull;
+
+    kpis = [
+      {label:'Gross Revenue', val:fmt(d.total_gross),         trend:`${d.days_with_data} ngày`,    tc:'tr-up',  cls:'green',  sub:'GrabFood tổng',  bep:null},
+      {label:'Net Revenue',   val:fmt(d.total_net),           trend:'Sau phí Grab',                tc:'tr-neu', cls:'blue',   sub:'~14% fee',       bep:null},
+      {label:'Tổng Đơn',     val:d.total_transactions.toLocaleString('vi'), trend:Math.round(d.total_transactions/d.days_with_data)+'/ngày', tc:'tr-neu', cls:'cyan', sub:d.days_with_data+' ngày data',bep:null},
+      {label:'Avg/Đơn',      val:fmt(d.avg_per_transaction),  trend:'₫ trung bình',               tc:'tr-neu', cls:'yellow', sub:'GrabFood',       bep:null},
+      {label:'Growth',        val:growthDisp,                  trend:growthStr,                     tc:growthTc, cls:'purple', sub:d.latest_month||'',bep:null},
+      {label:'#1 SKU',        val:(d.top_sku_share||0)+'%',   trend:topSkuShort,                   tc:'tr-neu', cls:'orange', sub:'tổng đơn',       bep:null},
+    ];
+    console.log('⚡ KPIs loaded from /api/grab/summary');
+  } else {
+    kpis = KPIS_FALLBACK;
+  }
+
+  document.getElementById('kpi-grid').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-val" style="color:var(--${k.cls==='green'?'green':k.cls==='blue'?'blue':k.cls==='cyan'?'cyan':k.cls==='yellow'?'yellow':k.cls==='purple'?'purple':'orange'})">${k.val}</div>
+      <div class="kpi-trend ${k.tc}">${k.trend}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:2px">${k.sub}</div>
+    </div>`).join('');
+}
+
+// ── Fetch & render Staff EXP from /api/exp/staff ────────────────
+async function loadStaffEXP() {
+  const res = await fetchFromAPI('/api/exp/staff', null);
+  if (res && res.ok && res.data && res.data.length) {
+    res.data.forEach(row => {
+      const m = REAL_TEAM.find(r => r.id === row.id);
+      if (m) {
+        m.total_xp  = row.total_xp  ?? m.total_xp;
+        m.weekly_xp = row.weekly_xp ?? m.weekly_xp;
+        m.level     = row.level     ?? m.level;
+        m.role      = row.role      ?? m.role;
+        m.dept      = row.dept      ?? m.dept;
+        m.emoji     = row.emoji     ?? m.emoji;
+        m.color     = row.color     ?? m.color;
+      }
+    });
+    console.log('⚡ Staff EXP loaded from /api/exp/staff');
+  }
+}
+
+// ── Fetch & render Leaderboard from /api/exp/leaderboard ────────
+async function loadLeaderboard() {
+  const res = await fetchFromAPI('/api/exp/leaderboard', null);
+  let lbData;
+  if (res && res.ok && res.data && res.data.length) {
+    lbData = res.data;
+    console.log('⚡ Leaderboard loaded from /api/exp/leaderboard');
+  } else {
+    lbData = [...REAL_TEAM].sort((a,b) => b.weekly_xp - a.weekly_xp);
+  }
+
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const lbEl = document.getElementById('exp-leaderboard');
+  if (lbEl) {
+    lbEl.innerHTML = `
+      <div class="lb-wrap">
+        <div class="lb-title">🏆 Weekly Top</div>
+        ${lbData.slice(0,3).map((m,i) => `
+          <div class="lb-row">
+            <div class="lb-rank" style="color:${i===0?'#ffd700':i===1?'#c0c0c0':'#cd7f32'}">${rankEmoji[i]}</div>
+            <div class="lb-emoji">${m.emoji}</div>
+            <div class="lb-name">${m.name}</div>
+            <div class="lb-xp">+${m.weekly_xp} XP</div>
+            ${i===0?'<div class="lb-crown">👑</div>':''}
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+// ── Fetch & render Last Shift from /api/report/shifts ───────────
+async function loadLastShift() {
+  const res = await fetchFromAPI('/api/report/shifts?limit=1', null);
+  let s;
+
+  if (res && res.success && res.reports && res.reports.length) {
+    const r = res.reports[0];
+    // Convert DB date (YYYY-MM-DD) to display format
+    const parts = (r.report_date || '').split('-');
+    const dateDisplay = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : r.report_date;
+    // Reporter: strip full name to first name
+    const reporterShort = (r.reporter || '').split(' ').pop();
+    s = {
+      date:     dateDisplay,
+      reporter: reporterShort,
+      grab:     r.grab_revenue  || 0,
+      fabi:     r.fabi_revenue  || 0,
+      total:    r.total_revenue || 0,
+      items:    {curry:r.qty_curry||0, rice:r.qty_rice||0, noodle:r.qty_noodle||0, takoyaki:r.qty_takoyaki||0, other:r.qty_other||0},
+      waste:    r.waste_note    || '',
+      incident: r.incident_note || '',
+      missing:  r.stock_missing || '',
+      status:   r.incident_note ? 'warning' : 'ok',
+    };
+    console.log('⚡ Last shift loaded from /api/report/shifts');
+  } else {
+    s = LAST_SHIFT_FALLBACK;
+  }
+
+  const fmt = n => (n/1000000).toFixed(1)+'M₫';
+  const totalItems = Object.values(s.items).reduce((a,b)=>a+b,0);
+  document.getElementById('shift-row').innerHTML = `
+    <div class="kpi blue">
+      <div class="kpi-label">Ca gần nhất</div>
+      <div class="kpi-val" style="font-size:14px;color:var(--blue)">${s.date}</div>
+      <div class="kpi-trend tr-neu">Báo bởi ${s.reporter}</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Grab</div>
+      <div class="kpi-val" style="color:var(--green)">${fmt(s.grab)}</div>
+      <div class="kpi-trend tr-neu">GrabFood</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="kpi-label">Fabi</div>
+      <div class="kpi-val" style="color:var(--cyan)">${fmt(s.fabi)}</div>
+      <div class="kpi-trend tr-neu">Fabi order</div>
+    </div>
+    <div class="kpi ${s.total>=4000000?'green':'yellow'}">
+      <div class="kpi-label">Tổng ca</div>
+      <div class="kpi-val" style="color:var(--${s.total>=4000000?'green':'yellow'})">${fmt(s.total)}</div>
+      <div class="kpi-trend tr-neu">${totalItems} món</div>
+    </div>
+    <div class="card" style="background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px">
+      <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Notes & Alerts</div>
+      ${s.incident ? `<div style="font-size:11px;margin-bottom:5px"><span style="color:var(--yellow)">⚠</span> ${s.incident}</div>` : ''}
+      ${s.missing  ? `<div style="font-size:11px;margin-bottom:5px"><span style="color:var(--red)">📦</span> Thiếu: ${s.missing}</div>` : ''}
+      ${s.waste    ? `<div style="font-size:11px"><span style="color:var(--muted)">🗑</span> Waste: ${s.waste}</div>` : ''}
+    </div>`;
+}
+
+// ── EXP API FETCH (with fallback to hardcoded REAL_TEAM data) — LEGACY ──
+async function fetchExpLeaderboard() {
+  // Now handled by loadLeaderboard() — kept for compatibility
+  await loadStaffEXP();
+}
+
+function tick(){
+  document.getElementById('clock').textContent=
+    new Date().toLocaleTimeString('vi-VN',{timeZone:'Asia/Saigon',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ── FULL REFRESH — loads all live data, then re-renders ──────────
+async function fullRefresh() {
+  console.log('🔄 Refreshing live data...');
+  await Promise.all([
+    loadStaffEXP(),
+    loadLeaderboard(),
+  ]);
+  renderSidebar();
+
+  await Promise.all([
+    loadKPIs(),
+    loadLastShift(),
+  ]);
+  checkAlerts();
+  console.log('✅ Refresh complete');
+}
+
+// ── INIT ──
+(async () => {
+  // Render static parts immediately
+  renderWIP();
+  renderChecklist();
+  renderPeriod();
+  renderTopics();
+  renderActivity();
+  tick();
+  setInterval(tick, 1000);
+
+  // Load live data
+  await fullRefresh();
+
+  // Auto-refresh every 60s
+  setInterval(fullRefresh, 60000);
+})();
+</script>
+</body>
+</html>

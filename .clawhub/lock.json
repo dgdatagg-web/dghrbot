@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "skills": {
+    "agent-team-orchestration": {
+      "version": "1.0.0",
+      "installedAt": 1772297342079
+    },
+    "afrexai-franchise-ops": {
+      "version": "1.0.1",
+      "installedAt": 1772297418695
+    },
+    "agent-development": {
+      "version": "0.1.0",
+      "installedAt": 1772297583850
+    },
+    "automation-workflows": {
+      "version": "0.1.0",
+      "installedAt": 1772297715965
+    },
+    "god-mode": {
+      "version": "0.1.0",
+      "installedAt": 1772297774808
+    },
+    "data-reconciliation-exceptions": {
+      "version": "1.0.0",
+      "installedAt": 1772297820736
+    },
+    "competitive-intelligence-market-research": {
+      "version": "1.0.0",
+      "installedAt": 1772298072582
+    },
+    "duckdb-cli-ai-skills": {
+      "version": "1.0.0",
+      "installedAt": 1772298369046
+    },
+    "openclaw-watchdog": {
+      "version": "1.3.0",
+      "installedAt": 1772298543113
+    },
+    "pdf-extract": {
+      "version": "1.0.0",
+      "installedAt": 1772298608388
+    },
+    "analyst": {
+      "version": "1.0.0",
+      "installedAt": 1772298672018
+    },
+    "voice-stt-tts": {
+      "version": "1.0.3",
+      "installedAt": 1772414303371
+    },
+    "maylo-voice-assistant": {
+      "version": "0.1.0",
+      "installedAt": 1772414306751
+    },
+    "memoclaw": {
+      "version": "1.18.0",
+      "installedAt": 1772414309148
+    },
+    "memory-health-probe": {
+      "version": "1.0.0",
+      "installedAt": 1772414311758
+    },
+    "soulforge": {
+      "version": "1.4.1",
+      "installedAt": 1772414314394
+    },
+    "agent-hive": {
+      "version": "1.1.1",
+      "installedAt": 1772414316683
+    },
+    "coding-lead": {
+      "version": "1.0.13",
+      "installedAt": 1772414319105
+    },
+    "pipedream-connect": {
+      "version": "1.4.0",
+      "installedAt": 1772414322143
+    },
+    "hostinger-vps-mcp-tools": {
+      "version": "1.0.0",
+      "installedAt": 1772414325728
+    },
+    "openclaw-dashboard": {
+      "version": "1.7.1",
+      "installedAt": 1772414328791
+    },
+    "analyst-watchdog": {
+      "version": "1.0.0",
+      "installedAt": 1772414331189
+    },
+    "openclaw-tally": {
+      "version": "0.2.0",
+      "installedAt": 1772414334203
+    },
+    "team-builder": {
+      "version": "1.0.14",
+      "installedAt": 1772414336589
+    },
+    "safe-update-merge": {
+      "version": "1.2.0",
+      "installedAt": 1772414339560
+    },
+    "clawguardian": {
+      "version": "2.3.3",
+      "installedAt": 1772414344988
+    },
+    "firm-gateway-hardening-pack": {
+      "version": "1.0.0",
+      "installedAt": 1772414347488
+    },
+    "via-humanos": {
+      "version": "0.1.1",
+      "installedAt": 1772414351401
+    }
+  }
+}

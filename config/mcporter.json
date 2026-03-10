@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "claude-code": {
+      "type": "stdio",
+      "command": "/opt/homebrew/bin/claude",
+      "args": ["mcp", "serve"],
+      "env": {
+        "HOME": "/Users/dongocminh"
+      }
+    }
+  }
+}

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will AI Team</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #020818;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+  }
+
+  .scene {
+    width: 900px;
+    height: 600px;
+    position: relative;
+    background: radial-gradient(ellipse at 50% 80%, #001a3a 0%, #020818 70%);
+    overflow: hidden;
+  }
+
+  /* Neon lines background */
+  .neon-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+  }
+
+  .line-left {
+    position: absolute;
+    width: 3px;
+    height: 70%;
+    bottom: 0;
+    left: 30%;
+    background: linear-gradient(to top, #00e5ff, transparent);
+    transform: rotate(-25deg);
+    transform-origin: bottom center;
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff66;
+  }
+
+  .line-right {
+    position: absolute;
+    width: 3px;
+    height: 70%;
+    bottom: 0;
+    right: 30%;
+    background: linear-gradient(to top, #00e5ff, transparent);
+    transform: rotate(25deg);
+    transform-origin: bottom center;
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff66;
+  }
+
+  /* Floor glow */
+  .floor-glow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 120px;
+    background: radial-gradient(ellipse, #00e5ff22 0%, transparent 70%);
+  }
+
+  /* Team label */
+  .team-label {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+  }
+
+  .team-label h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 6px;
+    text-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff88;
+  }
+
+  .team-label p {
+    font-size: 13px;
+    color: #00e5ffaa;
+    letter-spacing: 4px;
+    margin-top: 4px;
+  }
+
+  /* Characters container */
+  .characters {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+  }
+
+  /* Individual character */
+  .character {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .character-body {
+    position: relative;
+    width: 130px;
+    height: 280px;
+  }
+
+  /* SVG character illustration */
+  .char-svg {
+    width: 130px;
+    height: 280px;
+    filter: drop-shadow(0 0 15px var(--glow-color));
+  }
+
+  .character-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 3px;
+    margin-top: 10px;
+    text-shadow: 0 0 10px var(--glow-color);
+  }
+
+  .character-role {
+    font-size: 10px;
+    color: #00e5ff99;
+    letter-spacing: 2px;
+    margin-top: 3px;
+  }
+
+  /* Holographic panel */
+  .holo-panel {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 160px;
+    height: 200px;
+    border: 1px solid #00e5ff44;
+    background: linear-gradient(135deg, #00e5ff08, #0066ff08);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 0 20px #00e5ff22, inset 0 0 20px #00e5ff08;
+    z-index: 5;
+  }
+
+  .holo-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 8px;
+    color: #00e5ffaa;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #00e5ff33;
+    padding-bottom: 6px;
+  }
+
+  .holo-bar {
+    margin-bottom: 8px;
+  }
+
+  .holo-bar-label {
+    font-size: 8px;
+    color: #00e5ff88;
+    margin-bottom: 3px;
+    letter-spacing: 1px;
+  }
+
+  .holo-bar-track {
+    height: 4px;
+    background: #00e5ff15;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .holo-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00e5ff, #0066ff);
+    border-radius: 2px;
+    box-shadow: 0 0 6px #00e5ff;
+  }
+
+  .holo-circle {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #00e5ff44;
+    border-radius: 50%;
+    margin: 10px auto 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px #00e5ff22;
+  }
+
+  .holo-circle::before {
+    content: '';
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border: 1px solid #00e5ff33;
+    border-radius: 50%;
+  }
+
+  .holo-circle-dot {
+    width: 6px;
+    height: 6px;
+    background: #00e5ff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00e5ff;
+  }
+
+  /* Floating particles */
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #00e5ff;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #00e5ff;
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0); opacity: 1; }
+    100% { transform: translateY(-200px) translateX(20px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <!-- Background elements -->
+  <div class="neon-lines">
+    <div class="line-left"></div>
+    <div class="line-right"></div>
+  </div>
+  <div class="floor-glow"></div>
+
+  <!-- Floating particles -->
+  <div class="particle" style="left:15%;bottom:20%;animation-duration:4s;animation-delay:0s;"></div>
+  <div class="particle" style="left:25%;bottom:30%;animation-duration:6s;animation-delay:1s;width:3px;height:3px;"></div>
+  <div class="particle" style="left:60%;bottom:25%;animation-duration:5s;animation-delay:2s;"></div>
+  <div class="particle" style="left:75%;bottom:15%;animation-duration:7s;animation-delay:0.5s;width:3px;height:3px;"></div>
+  <div class="particle" style="left:45%;bottom:35%;animation-duration:4.5s;animation-delay:1.5s;"></div>
+
+  <!-- Team label -->
+  <div class="team-label">
+    <h1>WILL AI TEAM</h1>
+    <p>INTELLIGENCE · STRATEGY · EXECUTION</p>
+  </div>
+
+  <!-- Holographic panel -->
+  <div class="holo-panel">
+    <div class="holo-title">SYSTEM STATUS</div>
+    <div class="holo-bar">
+      <div class="holo-bar-label">OPS ENGINE</div>
+      <div class="holo-bar-track"><div class="holo-bar-fill" style="width:87%"></div></div>
+    </div>
+    <div class="holo-bar">
+      <div class="holo-bar-label">FIN ENGINE</div>
+      <div class="holo-bar-track"><div class="holo-bar-fill" style="width:72%"></div></div>
+    </div>
+    <div class="holo-bar">
+      <div class="holo-bar-label">DATA LAYER</div>
+      <div class="holo-bar-track"><div class="holo-bar-fill" style="width:94%"></div></div>
+    </div>
+    <div class="holo-bar">
+      <div class="holo-bar-label">AI CORE</div>
+      <div class="holo-bar-track"><div class="holo-bar-fill" style="width:100%"></div></div>
+    </div>
+    <div class="holo-circle">
+      <div class="holo-circle-dot"></div>
+    </div>
+  </div>
+
+  <!-- Characters -->
+  <div class="characters">
+
+    <!-- KAI — Data Analyst -->
+    <div class="character" style="--glow-color: #00b4d8;">
+      <div class="character-body">
+        <svg class="char-svg" viewBox="0 0 130 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body/suit -->
+          <rect x="35" y="110" width="60" height="130" rx="4" fill="#0a1628" stroke="#00b4d8" stroke-width="1"/>
+          <!-- Suit jacket -->
+          <path d="M35 115 L55 125 L65 115 L75 125 L95 115 L95 200 L35 200 Z" fill="#0d1f3c"/>
+          <!-- Shirt/tie area -->
+          <rect x="58" y="115" width="14" height="60" fill="#0a2a4a"/>
+          <rect x="62" y="120" width="6" height="45" fill="#00b4d8" opacity="0.6"/>
+          <!-- Head -->
+          <ellipse cx="65" cy="85" rx="26" ry="28" fill="#c8a882"/>
+          <!-- Hair - short dark -->
+          <ellipse cx="65" cy="65" rx="26" ry="14" fill="#1a1a2e"/>
+          <rect x="39" y="65" width="52" height="10" fill="#1a1a2e"/>
+          <!-- Eyes -->
+          <ellipse cx="56" cy="83" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="74" cy="83" rx="4" ry="4.5" fill="white"/>
+          <ellipse cx="56" cy="84" rx="2.5" ry="3" fill="#00b4d8"/>
+          <ellipse cx="74" cy="84" rx="2.5" ry="3" fill="#00b4d8"/>
+          <!-- Glasses -->
+          <rect x="50" y="79" width="12" height="9" rx="2" fill="none" stroke="#00b4d8" stroke-width="1.5"/>
+          <rect x="68" y="79" width="12" height="9" rx="2" fill="none" stroke="#00b4d8" stroke-width="1.5"/>
+          <line x1="62" y1="83" x2="68" y2="83" stroke="#00b4d8" stroke-width="1.5"/>
+          <!-- Nose -->
+          <path d="M63 89 Q65 93 67 89" stroke="#a07850" stroke-width="1" fill="none"/>
+          <!-- Mouth -->
+          <path d="M60 97 Q65 100 70 97" stroke="#a07850" stroke-width="1.5" fill="none"/>
+          <!-- Arms -->
+          <rect x="15" y="112" width="22" height="85" rx="8" fill="#0d1f3c" stroke="#00b4d8" stroke-width="0.5"/>
+          <rect x="93" y="112" width="22" height="85" rx="8" fill="#0d1f3c" stroke="#00b4d8" stroke-width="0.5"/>
+          <!-- Hands -->
+          <ellipse cx="26" cy="200" rx="11" ry="9" fill="#c8a882"/>
+          <ellipse cx="104" cy="200" rx="11" ry="9" fill="#c8a882"/>
+          <!-- Legs -->
+          <rect x="36" y="225" width="24" height="55" rx="4" fill="#0d1f3c"/>
+          <rect x="70" y="225" width="24" height="55" rx="4" fill="#0d1f3c"/>
+          <!-- Shoes -->
+          <ellipse cx="48" cy="278" rx="16" ry="5" fill="#051020"/>
+          <ellipse cx="82" cy="278" rx="16" ry="5" fill="#051020"/>
+          <!-- Data tablet in hand -->
+          <rect x="93" y="155" width="28" height="36" rx="3" fill="#001830" stroke="#00b4d8" stroke-width="1"/>
+          <rect x="95" y="157" width="24" height="32" rx="2" fill="#002040"/>
+          <line x1="97" y1="163" x2="117" y2="163" stroke="#00b4d8" stroke-width="0.8" opacity="0.7"/>
+          <line x1="97" y1="168" x2="113" y2="168" stroke="#00b4d8" stroke-width="0.8" opacity="0.5"/>
+          <line x1="97" y1="173" x2="115" y2="173" stroke="#00b4d8" stroke-width="0.8" opacity="0.7"/>
+          <!-- Suit details -->
+          <line x1="65" y1="115" x2="55" y2="145" stroke="#00b4d8" stroke-width="0.5" opacity="0.5"/>
+          <line x1="65" y1="115" x2="75" y2="145" stroke="#00b4d8" stroke-width="0.5" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="character-name">KAI</div>
+      <div class="character-role">DATA ANALYST</div>
+    </div>
+
+    <!-- WILL — Founder (center, slightly taller) -->
+    <div class="character" style="--glow-color: #ffffff; margin-bottom: 15px;">
+      <div class="character-body" style="width:140px; height:300px;">
+        <svg class="char-svg" viewBox="0 0 140 300" style="width:140px;height:300px;" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body/suit - premium dark -->
+          <rect x="35" y="115" width="70" height="145" rx="5" fill="#050e1a" stroke="#ffffff" stroke-width="1.5"/>
+          <!-- Suit jacket - dark premium -->
+          <path d="M35 120 L60 132 L70 120 L80 132 L105 120 L105 220 L35 220 Z" fill="#0a1525"/>
+          <!-- White shirt -->
+          <rect x="63" y="120" width="14" height="65" fill="#e8f4ff"/>
+          <!-- Dark tie -->
+          <rect x="66" y="122" width="8" height="52" rx="2" fill="#001a3a"/>
+          <polygon points="66,170 74,170 71,182 69,182" fill="#001a3a"/>
+          <!-- Head -->
+          <ellipse cx="70" cy="88" rx="28" ry="30" fill="#c4956a"/>
+          <!-- Hair - messy brown -->
+          <ellipse cx="70" cy="66" rx="28" ry="16" fill="#3d2410"/>
+          <path d="M42 72 Q45 58 70 56 Q95 58 98 72 L98 68 Q94 52 70 50 Q46 52 42 68 Z" fill="#3d2410"/>
+          <!-- Hair texture/messiness -->
+          <path d="M55 58 Q58 52 65 54" stroke="#5a3820" stroke-width="2" fill="none"/>
+          <path d="M72 52 Q78 50 82 56" stroke="#5a3820" stroke-width="2" fill="none"/>
+          <!-- Round glasses -->
+          <circle cx="60" cy="87" r="10" fill="none" stroke="#c8a870" stroke-width="2"/>
+          <circle cx="80" cy="87" r="10" fill="none" stroke="#c8a870" stroke-width="2"/>
+          <line x1="70" y1="87" x2="70" y2="87" stroke="#c8a870" stroke-width="2"/>
+          <line x1="50" y1="87" x2="42" y2="85" stroke="#c8a870" stroke-width="1.5"/>
+          <line x1="90" y1="87" x2="98" y2="85" stroke="#c8a870" stroke-width="1.5"/>
+          <!-- Eyes -->
+          <ellipse cx="60" cy="87" rx="5" ry="5.5" fill="white"/>
+          <ellipse cx="80" cy="87" rx="5" ry="5.5" fill="white"/>
+          <ellipse cx="60" cy="88" rx="3" ry="3.5" fill="#3d2410"/>
+          <ellipse cx="80" cy="88" rx="3" ry="3.5" fill="#3d2410"/>
+          <ellipse cx="61" cy="87" rx="1" ry="1" fill="white"/>
+          <ellipse cx="81" cy="87" rx="1" ry="1" fill="white"/>
+          <!-- Nose -->
+          <path d="M67 95 Q70 100 73 95" stroke="#a07850" stroke-width="1.2" fill="none"/>
+          <!-- Mouth - slight smile -->
+          <path d="M63 104 Q70 109 77 104" stroke="#8a6040" stroke-width="2" fill="none"/>
+          <!-- Bead bracelet on wrist -->
+          <ellipse cx="36" cy="212" rx="9" ry="5" fill="none" stroke="#8b6914" stroke-width="2"/>
+          <circle cx="30" cy="210" r="3" fill="#c8a830"/>
+          <circle cx="36" cy="208" r="3" fill="#8b6914"/>
+          <circle cx="42" cy="210" r="3" fill="#c8a830"/>
+          <!-- Arms -->
+          <rect x="12" y="117" width="25" height="90" rx="9" fill="#0a1525" stroke="#ffffff" stroke-width="0.8"/>
+          <rect x="103" y="117" width="25" height="90" rx="9" fill="#0a1525" stroke="#ffffff" stroke-width="0.8"/>
+          <!-- Hands -->
+          <ellipse cx="24" cy="210" rx="12" ry="10" fill="#c4956a"/>
+          <ellipse cx="116" cy="210" rx="12" ry="10" fill="#c4956a"/>
+          <!-- Legs -->
+          <rect x="37" y="238" width="26" height="62" rx="5" fill="#0a1525"/>
+          <rect x="77" y="238" width="26" height="62" rx="5" fill="#0a1525"/>
+          <!-- Shoes -->
+          <ellipse cx="50" cy="298" rx="18" ry="6" fill="#030a12"/>
+          <ellipse cx="90" cy="298" rx="18" ry="6" fill="#030a12"/>
+          <!-- Suit lapels -->
+          <path d="M70 120 L55 140 L50 155 L70 145 Z" fill="#0a1525" stroke="#ffffff" stroke-width="0.5"/>
+          <path d="M70 120 L85 140 L90 155 L70 145 Z" fill="#0a1525" stroke="#ffffff" stroke-width="0.5"/>
+          <!-- White glow aura -->
+          <ellipse cx="70" cy="150" rx="60" ry="120" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.2"/>
+        </svg>
+      </div>
+      <div class="character-name" style="color:#fff; text-shadow: 0 0 15px #fff, 0 0 30px #ffffff88;">WILL</div>
+      <div class="character-role" style="color:#ffffff88;">FOUNDER</div>
+    </div>
+
+    <!-- NOVA — AI Commander (center-right) -->
+    <div class="character" style="--glow-color: #00e5ff;">
+      <div class="character-body">
+        <svg class="char-svg" viewBox="0 0 130 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body - sleek black with cyan -->
+          <rect x="35" y="108" width="60" height="135" rx="5" fill="#020c18" stroke="#00e5ff" stroke-width="1.5"/>
+          <!-- Outfit - fitted black -->
+          <path d="M35 112 L55 122 L65 110 L75 122 L95 112 L95 218 L35 218 Z" fill="#041420"/>
+          <!-- Cyan accent lines on outfit -->
+          <line x1="50" y1="115" x2="47" y2="200" stroke="#00e5ff" stroke-width="1" opacity="0.6"/>
+          <line x1="80" y1="115" x2="83" y2="200" stroke="#00e5ff" stroke-width="1" opacity="0.6"/>
+          <line x1="55" y1="175" x2="75" y2="175" stroke="#00e5ff" stroke-width="0.8" opacity="0.4"/>
+          <!-- Cat ears! (subtle, elegant) -->
+          <path d="M50 62 L44 48 L56 58 Z" fill="#041420" stroke="#00e5ff" stroke-width="1.5"/>
+          <path d="M80 62 L86 48 L74 58 Z" fill="#041420" stroke="#00e5ff" stroke-width="1.5"/>
+          <path d="M50 60 L46 52 L54 57 Z" fill="#00e5ff" opacity="0.4"/>
+          <path d="M80 60 L84 52 L76 57 Z" fill="#00e5ff" opacity="0.4"/>
+          <!-- Head -->
+          <ellipse cx="65" cy="83" rx="25" ry="27" fill="#d4a574"/>
+          <!-- Hair - black, sleek -->
+          <ellipse cx="65" cy="63" rx="25" ry="13" fill="#08111e"/>
+          <rect x="40" y="63" width="50" height="12" fill="#08111e"/>
+          <path d="M40 68 Q65 55 90 68" fill="#08111e"/>
+          <!-- Glowing cyan eyes -->
+          <ellipse cx="56" cy="82" rx="5" ry="5.5" fill="white"/>
+          <ellipse cx="74" cy="82" rx="5" ry="5.5" fill="white"/>
+          <ellipse cx="56" cy="83" rx="3.5" ry="4" fill="#00e5ff"/>
+          <ellipse cx="74" cy="83" rx="3.5" ry="4" fill="#00e5ff"/>
+          <ellipse cx="57" cy="82" rx="1.2" ry="1.2" fill="white"/>
+          <ellipse cx="75" cy="82" rx="1.2" ry="1.2" fill="white"/>
+          <!-- Eye glow -->
+          <ellipse cx="56" cy="83" rx="5" ry="5.5" fill="none" stroke="#00e5ff" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="74" cy="83" rx="5" ry="5.5" fill="none" stroke="#00e5ff" stroke-width="0.8" opacity="0.5"/>
+          <!-- Nose -->
+          <path d="M62 90 Q65 94 68 90" stroke="#a07850" stroke-width="1" fill="none"/>
+          <!-- Mouth -->
+          <path d="M59 99 Q65 103 71 99" stroke="#a07850" stroke-width="1.5" fill="none"/>
+          <!-- Arms -->
+          <rect x="14" y="110" width="23" height="88" rx="8" fill="#041420" stroke="#00e5ff" stroke-width="0.8"/>
+          <rect x="93" y="110" width="23" height="88" rx="8" fill="#041420" stroke="#00e5ff" stroke-width="0.8"/>
+          <!-- Hands -->
+          <ellipse cx="25" cy="200" rx="11" ry="9" fill="#d4a574"/>
+          <ellipse cx="105" cy="200" rx="11" ry="9" fill="#d4a574"/>
+          <!-- Cyan energy orb in hand -->
+          <circle cx="105" cy="195" r="10" fill="#00e5ff" opacity="0.15"/>
+          <circle cx="105" cy="195" r="7" fill="#00e5ff" opacity="0.2"/>
+          <circle cx="105" cy="195" r="4" fill="#00e5ff" opacity="0.5"/>
+          <circle cx="105" cy="195" r="2" fill="#00e5ff"/>
+          <!-- Legs -->
+          <rect x="36" y="225" width="24" height="55" rx="5" fill="#041420" stroke="#00e5ff" stroke-width="0.5"/>
+          <rect x="70" y="225" width="24" height="55" rx="5" fill="#041420" stroke="#00e5ff" stroke-width="0.5"/>
+          <!-- Cyan boots -->
+          <ellipse cx="48" cy="278" rx="16" ry="5" fill="#020c18" stroke="#00e5ff" stroke-width="1"/>
+          <ellipse cx="82" cy="278" rx="16" ry="5" fill="#020c18" stroke="#00e5ff" stroke-width="1"/>
+          <!-- ⚡ Lightning bolt on chest -->
+          <path d="M68 135 L62 152 L67 152 L61 170 L70 150 L65 150 Z" fill="#00e5ff" opacity="0.8"/>
+          <!-- Cyan aura -->
+          <ellipse cx="65" cy="150" rx="55" ry="115" fill="none" stroke="#00e5ff" stroke-width="0.5" opacity="0.15"/>
+        </svg>
+      </div>
+      <div class="character-name" style="color:#00e5ff; text-shadow: 0 0 15px #00e5ff;">NOVA</div>
+      <div class="character-role">AI COMMANDER</div>
+    </div>
+
+    <!-- GONG — Finance -->
+    <div class="character" style="--glow-color: #7b68ee;">
+      <div class="character-body">
+        <svg class="char-svg" viewBox="0 0 130 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body - professional suit -->
+          <rect x="35" y="110" width="60" height="130" rx="4" fill="#0d0a20" stroke="#7b68ee" stroke-width="1"/>
+          <!-- Suit -->
+          <path d="M35 115 L55 127 L65 115 L75 127 L95 115 L95 205 L35 205 Z" fill="#150f30"/>
+          <!-- Purple shirt -->
+          <rect x="59" y="115" width="12" height="62" fill="#1a0a2e"/>
+          <rect x="62" y="118" width="6" height="50" fill="#7b68ee" opacity="0.5"/>
+          <!-- Head -->
+          <ellipse cx="65" cy="83" rx="25" ry="27" fill="#b8956a"/>
+          <!-- Hair - neat short -->
+          <ellipse cx="65" cy="64" rx="25" ry="12" fill="#0d0a20"/>
+          <rect x="40" y="64" width="50" height="10" fill="#0d0a20"/>
+          <!-- Eyes -->
+          <ellipse cx="56" cy="82" rx="4.5" ry="5" fill="white"/>
+          <ellipse cx="74" cy="82" rx="4.5" ry="5" fill="white"/>
+          <ellipse cx="56" cy="83" rx="3" ry="3.5" fill="#7b68ee"/>
+          <ellipse cx="74" cy="83" rx="3" ry="3.5" fill="#7b68ee"/>
+          <!-- Warm smile -->
+          <path d="M59 98 Q65 104 71 98" stroke="#8a6040" stroke-width="2" fill="none"/>
+          <!-- Nose -->
+          <path d="M62 90 Q65 94 68 90" stroke="#906840" stroke-width="1" fill="none"/>
+          <!-- Arms -->
+          <rect x="14" y="112" width="23" height="87" rx="8" fill="#150f30" stroke="#7b68ee" stroke-width="0.5"/>
+          <rect x="93" y="112" width="23" height="87" rx="8" fill="#150f30" stroke="#7b68ee" stroke-width="0.5"/>
+          <!-- Hands -->
+          <ellipse cx="25" cy="201" rx="11" ry="9" fill="#b8956a"/>
+          <ellipse cx="105" cy="201" rx="11" ry="9" fill="#b8956a"/>
+          <!-- Finance chart in hand -->
+          <rect x="93" y="162" width="30" height="22" rx="2" fill="#0a0520" stroke="#7b68ee" stroke-width="0.8"/>
+          <polyline points="96,180 101,172 107,175 113,166 119,170" fill="none" stroke="#7b68ee" stroke-width="1.5"/>
+          <!-- Legs -->
+          <rect x="36" y="228" width="24" height="52" rx="4" fill="#150f30"/>
+          <rect x="70" y="228" width="24" height="52" rx="4" fill="#150f30"/>
+          <!-- Shoes -->
+          <ellipse cx="48" cy="278" rx="16" ry="5" fill="#080518"/>
+          <ellipse cx="82" cy="278" rx="16" ry="5" fill="#080518"/>
+          <!-- Suit details -->
+          <line x1="65" y1="115" x2="55" y2="148" stroke="#7b68ee" stroke-width="0.5" opacity="0.5"/>
+          <line x1="65" y1="115" x2="75" y2="148" stroke="#7b68ee" stroke-width="0.5" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="character-name" style="color:#b8a0ff; text-shadow: 0 0 10px #7b68ee;">GONG</div>
+      <div class="character-role">FINANCE AI</div>
+    </div>
+
+  </div>
+
+  <!-- Bottom tagline -->
+  <div style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;">
+    <p style="font-family:'Orbitron',monospace;font-size:9px;color:#00e5ff55;letter-spacing:5px;">RAT RACE ESCAPE · AI DIVISION</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "gross_margin_drop": 0.05,
+  "waste_ratio_max": 0.10,
+  "labor_efficiency_drop": 0.08,
+  "supplier_price_spike": 0.07,
+  "sku_zero_sales_days": 7
+}

@@ -1,0 +1,35 @@
+# DG Group Workspace — .gitignore
+# NEVER commit these files
+
+# Sensitive configs & keys
+*.env
+*.key
+*.secret
+*.pem
+.env*
+openclaw.json
+
+# Database — contains business data
+willos/data/*.db
+willos/data/*.db-journal
+willos/data/*.log
+
+# Raw business data (CSV, Excel)
+data/
+*.csv
+*.xlsx
+*.xls
+
+# Personal memory files
+MEMORY.md
+NOVA-BRIEF.md
+memory/
+avatars/
+
+# Dashboard
+dashboard/credits.json
+
+# OS & editor
+.DS_Store
+*.log
+node_modules/

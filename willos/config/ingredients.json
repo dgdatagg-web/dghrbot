@@ -1,0 +1,22 @@
+{
+  "items": [
+    { "id": "heo", "name": "Heo", "unit": "phần" },
+    { "id": "ga", "name": "Gà", "unit": "phần" },
+    { "id": "tom", "name": "Tôm", "unit": "phần" },
+    { "id": "bo", "name": "Bò", "unit": "phần" },
+    { "id": "ca_bao", "name": "Cá bào", "unit": "gói" },
+    { "id": "kho_muc", "name": "Khô mực", "unit": "gói" },
+    { "id": "trung", "name": "Trứng", "unit": "quả" },
+    { "id": "miso", "name": "Miso", "unit": "hộp" },
+    { "id": "khoai_tay", "name": "Khoai tây", "unit": "kg" },
+    { "id": "ca_rot", "name": "Cà rốt", "unit": "kg" },
+    { "id": "ca_rot_bao", "name": "Cà rốt bào", "unit": "phần" },
+    { "id": "bap_cai", "name": "Bắp cải", "unit": "kg" },
+    { "id": "dau_hu", "name": "Đậu hũ", "unit": "bịch" },
+    { "id": "com", "name": "Cơm", "unit": "bát" },
+    { "id": "mi", "name": "Mì", "unit": "rổ" },
+    { "id": "packaging", "name": "Packaging", "unit": "bộ" },
+    { "id": "sot", "name": "Sốt các loại", "unit": "hộp" }
+  ],
+  "note": "Thêm items mới vào đây. unit mặc định = phần nếu không khai báo."
+}

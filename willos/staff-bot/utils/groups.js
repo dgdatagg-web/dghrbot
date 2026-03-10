@@ -38,6 +38,16 @@ const FINANCE_TOPICS = {
   nhaphang: 13,  // BÁO CÁO THU/MUA/TỒN KHO
 };
 
+// ── BOD topic thread IDs (confirmed) ─────────────────────────────────────────
+const BOD_TOPICS = {
+  weekly_report:  1,    // TỔNG HỢP — general demands, GM reports
+  monthly_report: 1,    // TỔNG HỢP — monthly summary
+  bod_update:     1,    // TỔNG HỢP — any general BOD notice
+  bod_finance:    173,  // TÀI CHÍNH/ĐẦU TƯ — revenue, expenses, investment, debt
+  dev_update:     175,  // DEV/IT — bug fixes, updates, releases
+  dev_release:    175,  // DEV/IT — new releases
+};
+
 const ROUTING = {
   // ── Real-time ops → HR only ──────────────────────────────────────────────────
   checkin:   [GROUPS.HR],
@@ -73,9 +83,13 @@ const ROUTING = {
   weekly_leaderboard: [GROUPS.MANAGERS],  // Mon 08:00
   forgot_checkout:    [GROUPS.MANAGERS],  // 22:30
 
-  // ── Management reports → BOD ─────────────────────────────────────────────────
-  weekly_report:  [GROUPS.BOD],
-  monthly_report: [GROUPS.BOD],
+  // ── Management reports → BOD topics ─────────────────────────────────────────
+  weekly_report:  [GROUPS.BOD],   // thread 1 TỔNG HỢP
+  monthly_report: [GROUPS.BOD],   // thread 1 TỔNG HỢP
+  bod_update:     [GROUPS.BOD],   // thread 1 TỔNG HỢP
+  bod_finance:    [GROUPS.BOD],   // thread 173 TÀI CHÍNH/ĐẦU TƯ
+  dev_update:     [GROUPS.BOD],   // thread 175 DEV/IT
+  dev_release:    [GROUPS.BOD],   // thread 175 DEV/IT
 };
 
 /**
@@ -114,8 +128,10 @@ async function broadcastEvent(bot, event, text, opts = {}) {
   const targets = getGroups(event);
   const results = [];
   for (const gid of targets) {
-    // Auto-inject Finance topic thread ID if applicable
-    const threadId = gid === GROUPS.FINANCE ? FINANCE_TOPICS[event] : null;
+    // Auto-inject Finance or BOD topic thread ID if applicable
+    const threadId = gid === GROUPS.FINANCE ? (FINANCE_TOPICS[event] || null)
+                   : gid === GROUPS.BOD     ? (BOD_TOPICS[event]     || null)
+                   : null;
     const finalOpts = threadId
       ? { ...opts, message_thread_id: threadId }
       : opts;

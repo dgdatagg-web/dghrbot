@@ -334,4 +334,54 @@ if (require.main === module) {
     });
 }
 
-module.exports = { syncWorker, getWeekNumber, getMonthKey, deriveCaType };
+
+// ─── Master sheet daily summary sync ─────────────────────────────────────────
+// Pushes a one-row daily ops summary to Will's master Google Sheet.
+
+function syncDailySummaryToMaster(db) {
+  try {
+    const config = loadConfig();
+    const masterSheetId = config?._meta?.masterSheetId;
+    const account       = config?._meta?.account || ACCOUNT;
+    if (!masterSheetId) {
+      console.warn('[sheets/master] No masterSheetId in sheets_config.json — skipping');
+      return;
+    }
+
+    const ict   = new Date(Date.now() + 7 * 60 * 60 * 1000);
+    const today = ict.toISOString().split('T')[0];
+
+    // Pull key metrics from db
+    const checkins  = db.prepare(`SELECT COUNT(*) as c FROM checkin_log WHERE date = ?`).get(today)?.c || 0;
+    const checkouts = db.prepare(`SELECT COUNT(*) as c FROM checkin_log WHERE date = ? AND checkout_time IS NOT NULL`).get(today)?.c || 0;
+    const bc_count  = db.prepare(`SELECT COUNT(*) as c FROM shift_report WHERE date = ? AND report_type LIKE 'bc%'`).get(today)?.c || 0;
+    const staff_total = db.prepare(`SELECT COUNT(*) as c FROM staff WHERE status = 'active'`).get()?.c || 0;
+
+    // Revenue — sum of today's entries if table exists
+    let revenue = 0;
+    try {
+      revenue = db.prepare(`SELECT COALESCE(SUM(amount),0) as r FROM revenue_reports WHERE date = ?`).get(today)?.r || 0;
+    } catch (_) {}
+
+    const row = {
+      date:         today,
+      staff_total,
+      checkins,
+      checkouts,
+      missed_checkouts: Math.max(0, checkins - checkouts),
+      bc_count,
+      revenue,
+      synced_at: new Date().toISOString(),
+    };
+
+    const headers = ['date','staff_total','checkins','checkouts','missed_checkouts','bc_count','revenue','synced_at'];
+    const result  = gogSheetsAppend(masterSheetId, 'Daily Summary', [headers.map(h => row[h] !== undefined ? String(row[h]) : '')]);
+    console.log(`[sheets/master] Daily summary synced for ${today}:`, JSON.stringify(result));
+
+  } catch (err) {
+    console.error('[sheets/master] Failed to sync daily summary:', err.message);
+  }
+}
+
+module.exports = { syncWorker, getWeekNumber, getMonthKey, deriveCaType, syncDailySummaryToMaster };
+

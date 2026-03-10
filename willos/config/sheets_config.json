@@ -1,33 +1,13 @@
 {
-  "bep": {
-    "2026_03": {
-      "spreadsheetId": "1kITcKg-59-ZrFkDr_9d6qpmpe_iumQWKVMpLVje9VSY",
-      "folderId": "1AyNjAtT9BFGb9C588Ho56D3nTNOBjRzX"
-    }
-  },
-  "bar": {
-    "2026_03": {
-      "spreadsheetId": "1iIjNPBB73wtlqw6FeiJlkTEsXgvjRtmW7OG-_YHnpZM",
-      "folderId": "1kAtgrD14J4hGRnfDCoQ7UfP8mqH32Dlh"
-    }
-  },
-  "bida": {
-    "2026_03": {
-      "spreadsheetId": "1pbtSqJIzkmZ6OXyanLvDTZj8IwCW32nBhez939oIDM0",
-      "folderId": "1bSHjabB5VV1YDWRlCgRCKFrryQHqwDWM"
-    }
-  },
   "_meta": {
-    "rootFolderId": "13xjNRK56yN6fb0K56q0eHsfrDVs4Wk_8",
-    "bepParentFolderId": "1oz88vgm2B58RnzqN0mLL_EXNIxsTpBs2",
-    "barParentFolderId": "1kkamYsVyMm4F3NETdICyuOUU5pFPIHao",
-    "bidaParentFolderId": "1uhVe__V6xNCz4qFvTrz6_fxjk19WE9tE"
+    "masterSheetId": "17ttiklpcqWQwm9Gz0oDCxvLHvuIEkjNlJ-AVOjiep2g",
+    "account": "dgdatagg@gmail.com",
+    "note": "Master sheet — all daily summaries go here. Dept sheets auto-created per week.",
+    "bepParentFolderId": "",
+    "barParentFolderId": "",
+    "bidaParentFolderId": ""
   },
-  "venue": {
-    "name": "Kansai Osaka",
-    "address": "398 Quốc Lộ 50, Bình Hưng, Bình Chánh, HCM",
-    "lat": 10.730422721731985,
-    "lng": 106.65595893446377,
-    "radius_meters": 150
-  }
+  "bep": {},
+  "bar": {},
+  "bida": {}
 }

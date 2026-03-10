@@ -82,8 +82,8 @@ async function completeCheckin(bot, chatId, staff, db, lat, lng, distanceResult)
   // Calculate late minutes (shift start = 08:00 ICT)
   const shiftStartHour = 8;
   const shiftStartMinute = 0;
-  const currentHour = ictNow.getHours();
-  const currentMinute = ictNow.getMinutes();
+  const currentHour = ictNow.getUTCHours();
+  const currentMinute = ictNow.getUTCMinutes();
   const totalCurrentMinutes = currentHour * 60 + currentMinute;
   const totalShiftStartMinutes = shiftStartHour * 60 + shiftStartMinute;
   const lateMinutes = Math.max(0, totalCurrentMinutes - totalShiftStartMinutes);
@@ -141,7 +141,7 @@ async function completeCheckin(bot, chatId, staff, db, lat, lng, distanceResult)
 
   // ── Queue to Sheets ──
   try {
-    const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
     queueRow('checkin_log', {
       date: today,
       staff_name: staff.name,
@@ -161,7 +161,7 @@ async function completeCheckin(bot, chatId, staff, db, lat, lng, distanceResult)
 
   // Build response
   const role = getRoleInfo(updatedStaff.role);
-  const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
   const expPart = expResult.delta !== 0 ? ` ${expResult.delta > 0 ? '+' : ''}${expResult.delta} EXP` : '';
   const latePart = lateMinutes >= 15 ? ` ⚠️ trễ ${lateMinutes}p` : '';
   const badgePart = newBadges.length > 0 ? ` 🏅x${newBadges.length}` : '';

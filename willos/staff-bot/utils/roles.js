@@ -306,15 +306,15 @@ function getSopAccess(roleKey, sopKey) {
  * Permission gates for reporting commands
  */
 function canSubmitMoca(staff) {
-  return staff.class_role === 'truong_ca' || ['creator', 'gm'].includes(staff.role);
+  return staff.class_role === 'truong_ca' || ['creator', 'gm', 'quanly'].includes(staff.role);
 }
 
 function canSubmitDongca(staff) {
-  return staff.class_role === 'truong_ca' || ['creator', 'gm'].includes(staff.role);
+  return staff.class_role === 'truong_ca' || ['creator', 'gm', 'quanly'].includes(staff.role);
 }
 
 function canViewRevenue(staff) {
-  return staff.class_role === 'truong_ca' || ['creator', 'gm'].includes(staff.role);
+  return staff.class_role === 'truong_ca' || ['creator', 'gm', 'quanly'].includes(staff.role);
 }
 
 function canSubmitNhaphang(staff) {

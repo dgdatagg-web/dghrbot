@@ -274,7 +274,7 @@ async function sendNhaphangReport(bot, msg, staff, data, db) {
   const { itemName, quantity, price, supplier, billFileId, today } = data;
 
   const ictNow = getIctNow();
-  const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
 
   // Save to procurement_log
   if (db && db.createProcurementLog) {

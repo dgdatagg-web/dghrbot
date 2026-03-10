@@ -451,13 +451,22 @@ async function sendWeekView(bot, chatId, db, week) {
 
     // Build display with shift types if available
     if (shiftDetail && Object.keys(shiftDetail).length > 0) {
-      const daysStr = days.map(d => {
-        const shift = shiftDetail[d];
-        return shift && shift !== 'làm' ? `${d}(${shift})` : d;
-      }).join(' ');
-      lines.push(`${roleInfo.icon} ${row.name}: ${daysStr || '(nghỉ tuần này)'}`);
+      // Show all 7 days with shift details — working and off
+      const allEntries = VALID_DAYS
+        .filter(d => shiftDetail[d] !== undefined)
+        .map(d => {
+          const shift = shiftDetail[d] || 'làm';
+          const isOff = ['off', 'nghi', 'nghỉ'].includes(
+            shift.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+          );
+          return isOff ? `${d}:nghỉ` : `${d}:${shift}`;
+        });
+      const daysStr = allEntries.length > 0 ? allEntries.join(' | ') : '(nghỉ tuần này)';
+      lines.push(`${roleInfo.icon} ${row.name}:\n    ${daysStr}`);
+    } else if (days.length > 0) {
+      lines.push(`${roleInfo.icon} ${row.name}: ${days.join(' ')} (chưa có giờ cụ thể)`);
     } else {
-      lines.push(`${roleInfo.icon} ${row.name}: ${days.join(' ')}`);
+      lines.push(`${roleInfo.icon} ${row.name}: (nghỉ tuần này)`);
     }
   }
   lines.push('━━━━━━━━━━━━━━━━━━━━');

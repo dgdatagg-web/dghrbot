@@ -133,7 +133,7 @@ async function handlePending(bot, msg, db) {
   if (state.step === 'photo') {
     const ictNow = getIctNow();
     const today = ictNow.toISOString().split('T')[0];
-    const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
     const hasPhoto = !!(photo && photo.length > 0);
     const skipPhoto = text === '/skip';
 

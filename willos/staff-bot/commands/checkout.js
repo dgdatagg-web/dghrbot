@@ -170,7 +170,7 @@ async function handle(bot, msg, args, db) {
     const checkoutTime = now;
     const durationMins = actualMinutes;
     const ictNow2 = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-    const timeStr = `${String(ictNow2.getHours()).padStart(2,'0')}:${String(ictNow2.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(ictNow2.getUTCHours()).padStart(2,'0')}:${String(ictNow2.getUTCMinutes()).padStart(2,'0')}`;
     queueRow('checkout_log', {
       date: openCheckin.date || today,
       staff_name: staff.name,

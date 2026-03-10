@@ -65,7 +65,7 @@ async function handle(bot, msg, args, db) {
 
   const ictNow = getIctNow();
   const today = ictNow.toISOString().split('T')[0];
-  const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
 
   // Check đã checkin chưa
   const checkin = db.getTodayCheckin(staff.id, today);
@@ -222,7 +222,7 @@ async function handlePendingDongca(bot, msg, db) {
     clearSession(telegramId);
 
     const ictNow = getIctNow();
-    const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
     savedData.timeStr = timeStr;
 
     await sendDongcaReport(bot, msg, staff, savedData.today, timeStr, savedData.checkin, savedData, db);

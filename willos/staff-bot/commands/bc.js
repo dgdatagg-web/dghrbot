@@ -96,7 +96,21 @@ async function handle(bot, msg, args, db) {
 
   const ictNow = getIctNow();
   const today = ictNow.toISOString().split('T')[0];
-  const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
+
+  // Early bc guard: warn if < 60 min on shift
+  const openCheckin = db.getAnyOpenCheckin(staff.id);
+  if (openCheckin && openCheckin.checkin_time) {
+    const minutesOnShift = Math.round((Date.now() - new Date(openCheckin.checkin_time).getTime()) / 60000);
+    if (minutesOnShift < 60) {
+      await bot.sendMessage(chatId,
+        `⚠️ Bạn mới vào ca được ${minutesOnShift} phút.\n` +
+        `Bàn giao ca thường làm cuối ca — bạn chắc muốn nộp ngay không?\n\n` +
+        `Gõ /bc lại để tiếp tục nếu đúng, hoặc bỏ qua nếu nhầm.`
+      );
+      return;
+    }
+  }
 
   // Quick mode: /bc [nội dung có sẵn]
   const noteText = args.join(' ').trim();
@@ -654,7 +668,7 @@ async function finalizeBcReport(bot, chatId, telegramId, state, db) {
   const role = getRoleInfo(staff.role);
   const ictNow = getIctNow();
   const today = state.today;
-  const timeStr = `${String(ictNow.getHours()).padStart(2,'0')}:${String(ictNow.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
 
   // Build report lines
   const lines = [];

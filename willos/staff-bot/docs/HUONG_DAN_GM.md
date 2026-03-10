@@ -1,5 +1,5 @@
 # Hướng Dẫn GM — DG HR Bot
-**Phiên bản:** 1.0 | **Cập nhật:** 2026-03-09
+**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
 **Áp dụng cho:** GM ⚔️
 
 > Tài liệu này dành riêng cho GM. GM có toàn quyền hệ thống.
@@ -13,11 +13,13 @@
 3. [Gán role — /setrole](#3-gán-role--setrole)
 4. [Tổng quan hệ thống — /tongquan](#4-tổng-quan-hệ-thống--tongquan)
 5. [Duyệt lên Quản lý — /approve](#5-duyệt-lên-quản-lý--approve)
-6. [Xử lý vi phạm](#6-xử-lý-vi-phạm)
-7. [Quản lý EXP thủ công](#7-quản-lý-exp-thủ-công)
-8. [Tình huống thường gặp](#8-tình-huống-thường-gặp)
-9. [Cron jobs — Hệ thống tự động](#9-cron-jobs--hệ-thống-tự-động)
-10. [Dữ liệu và bảo mật](#10-dữ-liệu-và-bảo-mật)
+6. [Báo cáo doanh thu — /baocaodoanhthu](#6-báo-cáo-doanh-thu--baocaodoanhthu)
+7. [Reward Engine — Townboard & Payout](#7-reward-engine--townboard--payout)
+8. [Xử lý vi phạm](#8-xử-lý-vi-phạm)
+9. [Quản lý EXP thủ công](#9-quản-lý-exp-thủ-công)
+10. [Tình huống thường gặp](#10-tình-huống-thường-gặp)
+11. [Cron jobs — Hệ thống tự động](#11-cron-jobs--hệ-thống-tự-động)
+12. [Dữ liệu và bảo mật](#12-dữ-liệu-và-bảo-mật)
 
 ---
 
@@ -153,7 +155,70 @@ Khi nhân viên đạt 1000+ EXP và được đề xuất lên Quản lý, cầ
 
 ---
 
-## 6. Xử Lý Vi Phạm
+## 6. Báo Cáo Doanh Thu — /baocaodoanhthu
+
+**Quyền truy cập:** GM, Creator, @ttminchi, @akerchientuong.
+Các quản lý khác không có quyền truy cập lệnh này.
+
+### Nộp báo cáo doanh thu hàng ngày
+```
+/baocaodoanhthu
+```
+Bot hướng dẫn 6 bước:
+1. Tiền mặt
+2. Chuyển khoản trực tiếp
+3. Grab/Online
+4. Chi phí
+5. Kết cuối ngày
+6. Chứng từ ảnh
+
+Sau khi hoàn tất → bot cross-check chứng từ và gửi tóm tắt cho GM/Creator.
+
+### Xem báo cáo đã nộp
+```
+/xemdoanhthu              → hôm nay
+/xemdoanhthu 2026-03-10   → ngày cụ thể
+```
+
+### Phân công người nộp báo cáo
+```
+/assignreporter [tên nhân viên]
+```
+Người được phân công nhận DM thông báo. Hạn nộp: 23:59 ngày hôm sau.
+
+---
+
+## 7. Reward Engine — Townboard & Payout
+
+### Đăng task / KPI mới
+```
+/posttask
+```
+Bot hỏi từng bước: loại task, tiêu đề, mô tả, phần thưởng EXP/cash, thời hạn. Tự động đăng lên HR group.
+
+### Xem Townboard
+```
+/tb
+```
+
+### Xác nhận thanh toán cash reward
+```
+/confirmpayout            → xem tất cả payout chờ thanh toán
+/confirmpayout [id]       → xác nhận đã trả tiền cho payout cụ thể
+```
+Sau khi xác nhận → nhân viên nhận DM thông báo đã được thanh toán.
+
+### Các lệnh quản lý reward khác
+```
+/completetask [id] [tên]   → xác nhận hoàn thành task
+/canceltask [id] [tên]     → huỷ task
+/kpihit [assignment_id]    → xác nhận đạt KPI
+/cashkpi [tên]             → tạo Cash KPI mới
+```
+
+---
+
+## 8. Xử Lý Vi Phạm
 
 ### Quy trình chuẩn
 1. **Xác minh** — xem log, hỏi quản lý ca xác nhận
@@ -171,7 +236,7 @@ Khi nhân viên đạt 1000+ EXP và được đề xuất lên Quản lý, cầ
 
 ---
 
-## 7. Quản Lý EXP Thủ Công
+## 9. Quản Lý EXP Thủ Công
 
 ### Khi nào cần can thiệp thủ công
 | Tình huống | Hành động |
@@ -189,7 +254,7 @@ Khi nhân viên đạt 1000+ EXP và được đề xuất lên Quản lý, cầ
 
 ---
 
-## 8. Tình Huống Thường Gặp
+## 10. Tình Huống Thường Gặp
 
 ### Nhân viên khiếu nại bị trừ EXP không đúng
 1. Kiểm tra log qua database (nếu cần báo kỹ thuật)
@@ -221,7 +286,7 @@ Khi nhân viên đạt 1000+ EXP và được đề xuất lên Quản lý, cầ
 
 ---
 
-## 9. Cron Jobs — Hệ Thống Tự Động
+## 11. Cron Jobs — Hệ Thống Tự Động
 
 Hệ thống chạy tự động theo lịch. GM cần biết để không can thiệp nhầm thời điểm.
 
@@ -239,7 +304,7 @@ Hệ thống chạy tự động theo lịch. GM cần biết để không can t
 
 ---
 
-## 10. Dữ Liệu Và Bảo Mật
+## 12. Dữ Liệu Và Bảo Mật
 
 ### Database location
 ```

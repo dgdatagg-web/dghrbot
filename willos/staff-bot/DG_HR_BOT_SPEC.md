@@ -69,6 +69,9 @@ When something changes:
 | Điều chỉnh EXP `/exp` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 | Archive nhân viên `/fire` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 | Xóa tài khoản `/delete` | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Reward Engine — post/complete/cancel/kpihit | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Reward Engine — confirmpayout/posttask | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Báo cáo doanh thu `/baocaodoanhthu` | ❌ | ❌ | ❌ | @ttminchi + @akerchientuong only | ✅ | ✅ |
 
 **Code location:** `utils/roles.js` → `PERMISSIONS` object, `canSubmitMoca()`, `canSubmitDongca()`, `canSubmitNhaphang()`, `canSubmitShift()`
 
@@ -176,6 +179,22 @@ When something changes:
 | `/fire [tên]` | Archive nhân viên nghỉ việc | Data giữ nguyên. Khôi phục: `/approve [tên]` |
 | `/setrole [@username] [role]` | Assign role cho nhân viên | Creator: mọi role. GM: tối đa quanly. Lookup theo @username. |
 | `/tongquan` | Tổng quan toàn hệ thống | Doanh thu, nhân sự, ca làm việc. |
+| `/baocaodoanhthu` | Báo cáo doanh thu hàng ngày | GM/Creator + @ttminchi + @akerchientuong. Guided 6-bước + chứng từ ảnh. |
+| `/xemdoanhthu [ngày?]` | Xem báo cáo doanh thu | GM/Creator only. |
+| `/assignreporter [tên]` | Phân công người nộp báo cáo doanh thu | GM/Creator only. |
+
+### Reward Engine — Quản lý trở lên
+
+| Lệnh | Chức năng | Ghi chú |
+|------|-----------|---------|
+| `/tb` | Townboard — xem tất cả task & KPI đang mở | Tất cả nhân viên. |
+| `/join [id]` | Tham gia task | Tất cả nhân viên. |
+| `/posttask` | Đăng task / KPI mới | GM/Creator. Guided flow. |
+| `/completetask [id] [tên]` | Xác nhận hoàn thành task | Quản lý trở lên. |
+| `/canceltask [id] [tên]` | Huỷ task của nhân viên | Quản lý trở lên. |
+| `/cashkpi [tên]` | Tạo Cash KPI cho nhân viên | Quản lý trở lên. Guided flow. |
+| `/kpihit [assignment_id]` | Xác nhận nhân viên đạt KPI | Quản lý trở lên. Mở payout row. |
+| `/confirmpayout` | Xác nhận thanh toán cash reward | GM/Creator. |
 
 ### Creator Only (Will)
 
@@ -249,7 +268,7 @@ Bot tự động đăng vào nhóm khi:
 | 2026-02-28 | 1.1 | Code hoàn chỉnh — 75/75 tests pass | Nova |
 | 2026-02-28 | 1.2 | Newbie auto-active, alias commands, no-show cron, inline approve | Nova |
 | 2026-03-09 | 2.0 | Full rewrite từ code thực tế. Sửa EXP sai (checkin +3 không phải +5, vắng -50 không phải -25, không có streak +1/ngày). Sửa lichca syntax. Comeback badge condition chính xác. Thêm permissions table đầy đủ. Thêm cron jobs section. | Claude (từ code) |
-| 2026-03-09 | 2.1 | `/setrole` rewrite: hỗ trợ target nhân viên bằng `@username` `/setrole [@username] [role]`. Creator gán mọi role. GM chỉ gán tối đa quanly. Thêm `getStaffByUsername()` vào db.js. Thông báo DM cho nhân viên khi role thay đổi. | Claude |
+| 2026-03-11 | 2.2 | Reward Engine commands added (Ch1–Ch9 complete). `/tb`, `/join`, `/posttask`, `/completetask`, `/canceltask`, `/cashkpi`, `/kpihit`, `/confirmpayout`. Permissions table updated. `/baocaodoanhthu` restricted to GM/Creator + @ttminchi + @akerchientuong. | Claude |
 
 ---
 

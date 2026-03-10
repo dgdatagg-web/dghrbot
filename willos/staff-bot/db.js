@@ -130,6 +130,22 @@ function runMigrations() {
     db.exec(`ALTER TABLE staff ADD COLUMN nickname TEXT;`);
   } catch (_) { /* column already exists */ }
 
+  // ESOP pool — fired EXP snapshot + leaderboard period snapshots
+  try { db.exec(`ALTER TABLE staff ADD COLUMN fired_exp INTEGER DEFAULT NULL;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE staff ADD COLUMN exp_week_start INTEGER DEFAULT 0;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE staff ADD COLUMN exp_week_reset_at TEXT DEFAULT NULL;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE staff ADD COLUMN exp_month_start INTEGER DEFAULT 0;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE staff ADD COLUMN exp_month_reset_at TEXT DEFAULT NULL;`); } catch (_) {}
+
+  // Bot settings table — key/value store (company_valuation, etc.)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS bot_settings (
+      key        TEXT PRIMARY KEY,
+      value      TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+
   // Add GPS location columns to checkin_log if missing (Sprint GPS)
   try { db.exec(`ALTER TABLE checkin_log ADD COLUMN lat REAL;`); } catch (_) { /* exists */ }
   try { db.exec(`ALTER TABLE checkin_log ADD COLUMN lng REAL;`); } catch (_) { /* exists */ }
@@ -404,7 +420,7 @@ function runMigrations() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       reward_id INTEGER NOT NULL REFERENCES reward_definitions(id),
       staff_id INTEGER NOT NULL REFERENCES staff(id),
-      status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'pending_approval', 'approved', 'cancelled')),
+      status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'pending_approval', 'approved', 'cancelled', 'completed')),
       assigned_at TEXT NOT NULL DEFAULT (datetime('now')),
       completed_at TEXT,
       approved_by INTEGER,
@@ -512,6 +528,10 @@ function runMigrations() {
 
   console.log('[DB] Migrations complete.');
 }
+
+// ─── ESOP/EXP pool migrations ─────────────────────────────────────────────────
+// fired_exp: snapshot of EXP at time of /fire — used for 50% retain on rehire
+// exp_weekly_snapshot / exp_monthly_snapshot: for leaderboard windows
 
 // ─── Bot config (key/value store) ─────────────────────────────────────────────
 // Used for: creator_silent_mode, and any future bot-wide preferences.
@@ -1480,4 +1500,19 @@ module.exports = {
   addRevenueReceipt,
   updateReceiptMatch,
   getReceiptsByReport,
+  // ESOP leaderboard period resets
+  resetWeeklyExpSnapshots: () => {
+    const ict = new Date(Date.now() + 7 * 3600000).toISOString();
+    getDb().prepare(`
+      UPDATE staff SET exp_week_start = exp, exp_week_reset_at = ?
+      WHERE status = 'active'
+    `).run(ict);
+  },
+  resetMonthlyExpSnapshots: () => {
+    const ict = new Date(Date.now() + 7 * 3600000).toISOString();
+    getDb().prepare(`
+      UPDATE staff SET exp_month_start = exp, exp_month_reset_at = ?
+      WHERE status = 'active'
+    `).run(ict);
+  },
 };

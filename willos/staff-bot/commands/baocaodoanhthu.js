@@ -23,7 +23,10 @@ const CREATOR_ACCOUNT = '80817777128';
 const CREATOR_NAME    = 'DO NGOC MINH';
 const DRIVE_FOLDER_ID = '1f5wqFNpV_5sUY9AISN-07CqWDTaFyh-Y';
 
-// ─── In-memory session state per chat ─────────────────────────────────────────
+// ─── Allowed reporters (username whitelist for non-GM/Creator access) ──────────
+const ALLOWED_REPORTER_USERNAMES = ['@ttminchi', '@akerchientuong'];
+
+
 // { [chatId]: { step, reportDate, data: {}, reportId } }
 const sessions = new Map();
 
@@ -71,13 +74,14 @@ async function handle(bot, msg, _args, db) {
 
   if (!staff) return bot.sendMessage(chatId, '❌ Bạn chưa đăng ký trong hệ thống.');
 
-  // Only assigned reporter OR GM/Creator can open a report
+  // Access gate — GM/Creator OR whitelisted managers OR assigned reporter
   const isPrivileged = ['gm', 'creator'].includes(staff.role);
+  const isWhitelisted = ALLOWED_REPORTER_USERNAMES.includes(staff.username);
   const reporter     = db.getActiveRevenueReporter();
 
-  if (!isPrivileged) {
+  if (!isPrivileged && !isWhitelisted) {
     if (!reporter || reporter.staff_id !== staff.id) {
-      return bot.sendMessage(chatId, '❌ Bạn không được phân công báo cáo doanh thu hôm nay.');
+      return bot.sendMessage(chatId, '❌ Bạn không có quyền truy cập báo cáo doanh thu.');
     }
   }
 

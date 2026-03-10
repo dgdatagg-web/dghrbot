@@ -1,7 +1,19 @@
-// viewpool.js
-// /viewpool — GM/Creator: full view of all active ESOP seats across all depts.
-
 'use strict';
+
+/**
+ * viewpool.js — /viewpool
+ * GM/Creator: full ESOP EXP pool snapshot.
+ * Shows every active staff member's EXP share and equity %.
+ */
+
+const {
+  getFullPoolSnapshot,
+  getCompanyValuation,
+  fmtVND,
+  fmtPct,
+  POOL_TOTAL_EXP,
+  EQUITY_PCT,
+} = require('../utils/esop');
 
 async function handle(bot, msg, args, db) {
   const chatId     = msg.chat.id;
@@ -12,45 +24,47 @@ async function handle(bot, msg, args, db) {
     return bot.sendMessage(chatId, '❌ Chỉ GM và Creator mới xem được.');
   }
 
-  // Pull all active seats, joined with staff
-  const rows = db.getDb().prepare(`
-    SELECT ep.*, s.name, s.department, s.role
-    FROM esop_pool ep
-    JOIN staff s ON ep.staff_id = s.id
-    WHERE ep.status = 'active'
-    ORDER BY ep.dept_id ASC, ep.share_pct DESC
-  `).all() || [];
+  const snapshot  = getFullPoolSnapshot(db.getDb());
+  const valuation = getCompanyValuation(db.getDb());
 
-  if (!rows.length) {
-    return bot.sendMessage(chatId, '📭 Chưa có ESOP seat nào được gán.');
+  if (!snapshot.length) {
+    return bot.sendMessage(chatId, '📭 Chưa có nhân viên nào có EXP trong hệ thống.');
   }
 
-  // Group by dept
-  const byDept = {};
-  for (const r of rows) {
-    const dept = r.dept_id || 'unknown';
-    if (!byDept[dept]) byDept[dept] = [];
-    byDept[dept].push(r);
+  const totalExp = snapshot[0]?.totalExp || 0;
+  const SEP = '━━━━━━━━━━━━━━━━━━━━';
+  const noteRow = valuation
+    ? db.getDb().prepare(`SELECT value FROM bot_settings WHERE key = 'valuation_note'`).get()
+    : null;
+
+  const lines = [
+    `📊 *ESOP EXP Pool — Toàn Hệ Thống*`,
+    SEP,
+    `Pool: 1.000.000.000 EXP = ${EQUITY_PCT}% equity`,
+    `Tổng EXP đang hoạt động: ${totalExp.toLocaleString('vi-VN')}`,
+    valuation ? `Định giá công ty: ${fmtVND(valuation)}` : `Định giá: chưa đặt`,
+    SEP,
+    ``,
+  ];
+
+  const medals = ['🥇', '🥈', '🥉'];
+
+  snapshot.forEach((s, i) => {
+    const rank   = medals[i] || `${i + 1}.`;
+    const valStr = s.estimatedValue ? ` ≈ ${fmtVND(s.estimatedValue)}` : '';
+    lines.push(`${rank} ${s.name}`);
+    lines.push(`   ⚡ ${s.exp.toLocaleString('vi-VN')} EXP — ${fmtPct(s.equityPct)} equity${valStr}`);
+  });
+
+  lines.push(``);
+  lines.push(SEP);
+  lines.push(`${snapshot.length} nhân viên đang giữ EXP pool`);
+  if (noteRow) lines.push(`\n_⚠️ ${noteRow.value}_`);
+  if (!valuation) {
+    lines.push(`💡 Dùng /setvaluation [số] để đặt định giá công ty`);
   }
 
-  const cliffIcon = (unlocked) => unlocked ? '✅' : '🔒';
-
-  let text = `📊 *ESOP Pool*\n━━━━━━━━━━━━━━━━━━━━\n`;
-
-  for (const [dept, members] of Object.entries(byDept)) {
-    text += `\n🏢 *${dept.toUpperCase()}*\n`;
-    for (const m of members) {
-      text += `👤 ${m.name} — ${m.share_pct}%\n`;
-      text += `   📅 Vesting: ${m.vesting_start}\n`;
-      text += `   Cliff: Y1 ${cliffIcon(m.cliff1_unlocked)} Y2 ${cliffIcon(m.cliff2_unlocked)} Y3 ${cliffIcon(m.cliff3_unlocked)}\n`;
-    }
-  }
-
-  const total = rows.reduce((s, r) => s + (r.share_pct || 0), 0);
-  text += `\n━━━━━━━━━━━━━━━━━━━━\n`;
-  text += `👥 Tổng: ${rows.length} người — ${total.toFixed(2)}% đã cấp`;
-
-  await bot.sendMessage(chatId, text, { parse_mode: 'Markdown' });
+  await bot.sendMessage(chatId, lines.join('\n'), { parse_mode: 'Markdown' });
 }
 
 module.exports = { handle };

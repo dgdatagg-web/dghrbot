@@ -105,8 +105,8 @@ function buildMilestones(staff, earnedBadgeKeys, checkinCount) {
       { text: 'Đủ 1000 EXP → apply Quản lý', done: currentRank >= 3 },
     ],
     quanly: [
-      { text: 'Unlock: Tài chính, Edit SOP', done: currentRank >= 3 },
-      { text: 'Submit lịch ca hàng tuần /lichca', done: false }, // operational, can't auto-check
+      { text: 'Unlock: /posttask, /completetask, /kpihit, /confirmpayout', done: currentRank >= 3 },
+      { text: 'Submit lịch ca hàng tuần /lichca', done: false },
       { text: '3 tháng KPI 100% 👑 KPI King', done: earnedBadgeKeys.has('kpi_king') },
     ],
   };

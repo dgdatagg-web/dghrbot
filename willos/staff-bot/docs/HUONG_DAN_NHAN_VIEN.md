@@ -1,5 +1,5 @@
 # Hướng Dẫn Nhân Viên — DG HR Bot
-**Phiên bản:** 1.0 | **Cập nhật:** 2026-03-09
+**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
 **Áp dụng cho:** Newbie 🐣 · Nhân viên ⚡ · Kỳ cựu 🔥
 
 ---
@@ -94,6 +94,30 @@ Nếu cần thoát: gõ `/cancel` hoặc `/huy`
 | `/leaderboard` hoặc `/lb` | Bảng xếp hạng EXP toàn nhóm |
 | `/roadmap` | Lộ trình thăng cấp + badges còn thiếu |
 | `/badges` | Bộ sưu tập huy hiệu đã đạt được |
+
+---
+
+## 5b. Townboard — Task & KPI
+
+Bot có hệ thống Townboard: **nhiệm vụ và KPI** được đăng để nhân viên tham gia và kiếm thêm phần thưởng.
+
+### Xem nhiệm vụ đang mở
+```
+/tb
+```
+Hiển thị tất cả task và KPI đang hoạt động, phần thưởng EXP + cash tương ứng.
+
+### Tham gia nhiệm vụ
+```
+/join [id]
+```
+Ví dụ: `/join 3` để tham gia task số 3.
+
+### Sau khi tham gia
+- Quản lý sẽ xác nhận khi bạn hoàn thành
+- EXP được cộng ngay sau khi xác nhận
+- Cash reward (nếu có) được xác nhận thanh toán riêng
+- Kiểm tra trạng thái bằng `/profile`
 
 ---
 

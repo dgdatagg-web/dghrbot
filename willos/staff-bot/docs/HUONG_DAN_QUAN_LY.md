@@ -1,5 +1,5 @@
 # Hướng Dẫn Quản Lý — DG HR Bot
-**Phiên bản:** 1.0 | **Cập nhật:** 2026-03-09
+**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
 **Áp dụng cho:** Quản lý 🛡️ · Trưởng ca (có thêm quyền `/moca` `/dongca`)
 
 > Tài liệu này dành riêng cho Quản lý. Các quyền ở đây **bổ sung thêm** vào quyền nhân viên thông thường.
@@ -14,9 +14,10 @@
 4. [Duyệt nhân viên — /approve](#4-duyệt-nhân-viên--approve)
 5. [Nhập hàng — /nhaphang](#5-nhập-hàng--nhaphang)
 6. [Xem báo cáo ca và tài chính](#6-xem-báo-cáo-ca-và-tài-chính)
-7. [Trách nhiệm quản lý vận hành](#7-trách-nhiệm-quản-lý-vận-hành)
-8. [Tình huống thường gặp](#8-tình-huống-thường-gặp)
-9. [Thông báo tự động trong nhóm](#9-thông-báo-tự-động-trong-nhóm)
+7. [Reward Engine — Task & KPI](#7-reward-engine--task--kpi)
+8. [Trách nhiệm quản lý vận hành](#8-trách-nhiệm-quản-lý-vận-hành)
+9. [Tình huống thường gặp](#9-tình-huống-thường-gặp)
+10. [Thông báo tự động trong nhóm](#10-thông-báo-tự-động-trong-nhóm)
 
 ---
 
@@ -139,7 +140,45 @@ Quản lý có quyền xem:
 
 ---
 
-## 7. Trách Nhiệm Quản Lý Vận Hành
+## 7. Reward Engine — Task & KPI
+
+Quản lý có quyền tạo, xác nhận và huỷ task/KPI cho nhân viên.
+
+### Xem Townboard
+```
+/tb
+```
+Danh sách tất cả task và KPI đang mở. Nhân viên xem và join qua đây.
+
+### Xác nhận nhân viên hoàn thành task
+```
+/completetask [id] [tên nhân viên]
+```
+Ví dụ: `/completetask 3 Minh Tuấn`
+- EXP cộng ngay cho nhân viên
+- Cash reward (nếu có) → payout row mở, chờ GM xác nhận thanh toán
+
+### Huỷ task của nhân viên
+```
+/canceltask [id] [tên nhân viên]
+```
+EXP đã cộng sẽ bị hoàn lại nếu task đã từng completed.
+
+### Xác nhận nhân viên đạt Cash KPI
+```
+/kpihit [assignment_id]
+```
+Dùng ID từ `/tb`. Gửi DM tức thì cho nhân viên. Mở payout row chờ GM xác nhận tiền.
+
+### Tạo Cash KPI cho nhân viên
+```
+/cashkpi [tên nhân viên]
+```
+Bot hỏi từng bước: tên KPI, số tiền thưởng, thời hạn. Tự động assign cho nhân viên.
+
+---
+
+## 8. Trách Nhiệm Quản Lý Vận Hành
 
 ### Hàng ngày
 | Thời điểm | Việc cần làm |

@@ -69,14 +69,20 @@ async function handle(bot, msg, args, db) {
       return bot.sendMessage(chatId, `⚠️ ${target.name} đã bị archive rồi.`);
     }
 
-    db.updateStaffStatus(target.telegram_id, 'archived');
+    // Snapshot EXP before zeroing — used for 50% retain on rehire if GM/Creator grants
+    const firedExp = target.exp || 0;
+    db.getDb().prepare(`
+      UPDATE staff SET status = 'archived', fired_exp = ?, exp = 0 WHERE id = ?
+    `).run(firedExp, target.id);
 
     return bot.sendMessage(chatId,
       `🔴 ${target.name} đã bị archive.\n` +
       `• Status: archived\n` +
-      `• Data (exp_log, checkin_log) vẫn được giữ\n` +
-      `• Nhân viên này không còn xuất hiện trong leaderboard\n\n` +
-      `Để khôi phục: /approve ${target.name}`
+      `• EXP (${firedExp}) đã reset về 0 — ESOP pool share mất\n` +
+      `• Data cá nhân (lịch sử ca, bàn giao) vẫn được giữ\n` +
+      `• Không còn xuất hiện trong leaderboard\n\n` +
+      `Để khôi phục (fresh start): /rehire @${(target.username||'').replace('@','')}\n` +
+      `Để khôi phục (giữ 50% EXP cũ): /rehire @${(target.username||'').replace('@','')} retain`
     );
   }
 

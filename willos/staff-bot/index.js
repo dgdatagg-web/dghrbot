@@ -116,6 +116,9 @@ const completetask    = require('./commands/completetask');
 const canceltask      = require('./commands/canceltask');
 const confirmpayout   = require('./commands/confirmpayout');
 const cashkpi         = require('./commands/cashkpi');
+const kpihit          = require('./commands/kpihit');
+const rehire          = require('./commands/rehire');
+const setvaluation    = require('./commands/setvaluation');
 
 /**
  * Parse command text into args array
@@ -293,6 +296,14 @@ bot.onText(/^\/esopstatus(\s|$)/i, (msg) => {
   safeHandle(esopstatus.handle, bot, msg, parseArgs(msg.text));
 });
 
+bot.onText(/^\/rehire(\s|$)/i, (msg) => {
+  safeHandle(rehire.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/setvaluation(\s|$)/i, (msg) => {
+  safeHandle(setvaluation.handle, bot, msg, parseArgs(msg.text));
+});
+
 bot.onText(/^\/grantaccess(\s|$)/i, (msg) => {
   safeHandle(grantaccess.handle, bot, msg, parseArgs(msg.text));
 });
@@ -319,6 +330,10 @@ bot.onText(/^\/join\s+(\d+)$/i, (msg) => {
 
 bot.onText(/^\/completetask(\s|$)/i, (msg) => {
   safeHandle(completetask.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/kpihit(\s|$)/i, (msg) => {
+  safeHandle(kpihit.handle, bot, msg, parseArgs(msg.text));
 });
 
 bot.onText(/^\/canceltask(\s|$)/i, (msg) => {
@@ -463,12 +478,11 @@ bot.onText(/^\/start(\s|$)/i, async (msg) => {
     // Build action suggestions by role
     let actions = '';
     if (['creator', 'gm'].includes(staff.role)) {
-      actions = `📋 /approve — duyệt nhân viên mới\n📊 /leaderboard — xem bảng xếp hạng\n💡 /help — tất cả lệnh`;
+      actions = `📋 /approve — duyệt nhân viên mới\n🏆 /tb — xem Townboard\n💡 /help — tất cả lệnh`;
     } else if (staff.role === 'quanly') {
-      actions = `✅ /checkin — vào ca\n📊 /leaderboard — bảng xếp hạng\n📋 /approve — duyệt nhân viên`;
+      actions = `✅ /checkin — vào ca\n🏆 /tb — xem Townboard\n📋 /approve — duyệt nhân viên`;
     } else {
-      const isTruongCa = staff.class_role === 'truong_ca';
-      actions = `✅ /checkin — bắt đầu ca\n📋 /bc — bàn giao ca\n👤 /me — xem stats của bạn`;
+      actions = `✅ /checkin — bắt đầu ca\n🏆 /tb — xem task đang mở\n👤 /me — xem stats của bạn`;
     }
 
     return bot.sendMessage(chatId,
@@ -827,6 +841,10 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     '/me [tên?] — Xem profile',
     '/leaderboard — Bảng xếp hạng',
     '/roadmap — Lộ trình thăng cấp',
+    '',
+    '🏆 TOWNBOARD',
+    '/tb — Xem task & KPI đang mở',
+    '/join [id] — Tham gia task',
   ];
 
   // Shift reports
@@ -852,6 +870,19 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     lines.push('/addstaff [tên] — Thêm nhân viên thủ công');
     lines.push('/update @username [field] [value] — Cập nhật thông tin');
     lines.push('/delete [tên] — Xóa nhân viên');
+    lines.push('', '🏆 REWARD ENGINE');
+    lines.push('/tb — Townboard: xem tất cả task & KPI đang mở');
+    lines.push('/posttask — Đăng task / KPI mới lên Townboard');
+    lines.push('/completetask [id] [tên] — Xác nhận hoàn thành task');
+    lines.push('/canceltask [id] [tên] — Huỷ task của nhân viên');
+    lines.push('/cashkpi [tên] — Tạo Cash KPI cho nhân viên');
+    lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
+    lines.push('/confirmpayout — Xác nhận thanh toán cash reward');
+  } else if (isManager) {
+    lines.push('', '🏆 REWARD ENGINE');
+    lines.push('/tb — Townboard: xem task & KPI đang mở');
+    lines.push('/completetask [id] [tên] — Xác nhận hoàn thành task');
+    lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
   }
 
   lines.push('━━━━━━━━━━━━━━━━━━━━');
@@ -1092,6 +1123,27 @@ cron.schedule('0 9 1 * *', async () => {
     console.log(`[CRON] Monthly KPI analysis done — ${analyzed} analyzed, ${pending} pending data`);
   } catch (err) {
     console.error('[CRON] monthly-kpi error:', err.message);
+  }
+}, { timezone: 'Asia/Ho_Chi_Minh' });
+
+// ─── ESOP Leaderboard Period Resets ──────────────────────────────────────────
+// Weekly snapshot: every Monday 00:01 ICT — freeze exp_week_start for all active staff
+cron.schedule('1 0 * * 1', () => {
+  try {
+    db.resetWeeklyExpSnapshots();
+    console.log('[CRON] Weekly EXP snapshot reset — leaderboard period restarted');
+  } catch (err) {
+    console.error('[CRON] weekly-exp-reset error:', err.message);
+  }
+}, { timezone: 'Asia/Ho_Chi_Minh' });
+
+// Monthly snapshot: 1st of each month 00:01 ICT
+cron.schedule('1 0 1 * *', () => {
+  try {
+    db.resetMonthlyExpSnapshots();
+    console.log('[CRON] Monthly EXP snapshot reset — leaderboard period restarted');
+  } catch (err) {
+    console.error('[CRON] monthly-exp-reset error:', err.message);
   }
 }, { timezone: 'Asia/Ho_Chi_Minh' });
 

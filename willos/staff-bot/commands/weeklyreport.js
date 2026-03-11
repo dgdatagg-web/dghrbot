@@ -19,7 +19,7 @@
 const { canMicroManage } = require('../utils/roles');
 
 const BOD_GROUP_ID   = -1003827938422;   // [DG] BOD GROUP — GM + Creator
-const HR_GROUP_ID    = -1001003764628939; // [DG] BÁO CÁO — staff + managers
+const HR_GROUP_ID    = -1003764628939;    // [DG] Nhóm Báo Cáo Công Việc / HR
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

@@ -118,6 +118,7 @@ async function fireReminder0945(bot, db) {
 
 /**
  * Fire the 14:00 reminder — nhắc bàn giao ca
+ * Only remind staff who have checked in today AND haven't submitted BC yet
  */
 async function fireReminder1400(bot, db) {
   console.log('[Reminder] 14:00 — check bc...');
@@ -128,6 +129,11 @@ async function fireReminder1400(bot, db) {
   let sent = 0;
 
   for (const staff of staffList) {
+    // Only remind staff who actually checked in today
+    const checkin = db.getTodayCheckin(staff.id, today);
+    if (!checkin) continue;
+
+    // Skip if already submitted BC today
     if (hasReportToday(db, staff.id, 'bc', today)) continue;
 
     await sendReminder(bot, staff.private_chat_id,

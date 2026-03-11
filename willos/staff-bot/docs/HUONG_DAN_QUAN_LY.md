@@ -1,5 +1,5 @@
 # Hướng Dẫn Quản Lý — DG HR Bot
-**Phiên bản:** 1.2 | **Cập nhật:** 2026-03-11
+**Phiên bản:** 1.3 | **Cập nhật:** 2026-03-12
 **Áp dụng cho:** Quản lý 🛡️ · Trưởng ca (có thêm quyền `/moca` `/dongca`)
 
 > Tài liệu này dành riêng cho Quản lý. Các quyền ở đây **bổ sung thêm** vào quyền nhân viên thông thường.
@@ -14,7 +14,7 @@
 4. [Duyệt nhân viên — /approve](#4-duyệt-nhân-viên--approve)
 5. [Nhập hàng — /nhaphang](#5-nhập-hàng--nhaphang)
 6. [Xem báo cáo ca và tài chính](#6-xem-báo-cáo-ca-và-tài-chính)
-7. [Reward Engine — Task & KPI](#7-reward-engine--task--kpi)
+7. [Reward Engine — Task & KPI (Sắp Ra Mắt)](#7-reward-engine--task--kpi-sắp-ra-mắt)
 8. [Điểm Hiệu Suất Tổng Hợp — /score](#8-điểm-hiệu-suất-tổng-hợp--score)
 9. [Trách nhiệm quản lý vận hành](#9-trách-nhiệm-quản-lý-vận-hành)
 10. [Tình huống thường gặp](#10-tình-huống-thường-gặp)
@@ -141,9 +141,12 @@ Quản lý có quyền xem:
 
 ---
 
-## 7. Reward Engine — Task & KPI
+## 7. Reward Engine — Task & KPI (Sắp Ra Mắt)
 
-Quản lý có quyền tạo, xác nhận và huỷ task/KPI cho nhân viên.
+> 🚧 Tính năng Reward Engine đang được phát triển và sẽ sớm ra mắt.
+> Các lệnh bên dưới đã có trong hệ thống nhưng chưa được kích hoạt.
+
+Khi mở, quản lý sẽ có quyền:
 
 ### Xem Townboard
 ```
@@ -157,7 +160,7 @@ Danh sách tất cả task và KPI đang mở. Nhân viên xem và join qua đâ
 ```
 Ví dụ: `/completetask 3 Minh Tuấn`
 - EXP cộng ngay cho nhân viên
-- Cash reward (nếu có) → payout row mở, chờ GM xác nhận thanh toán
+- Cash reward (nếu có) → chờ GM xác nhận thanh toán
 
 ### Huỷ task của nhân viên
 ```
@@ -169,13 +172,14 @@ EXP đã cộng sẽ bị hoàn lại nếu task đã từng completed.
 ```
 /kpihit [assignment_id]
 ```
-Dùng ID từ `/tb`. Gửi DM tức thì cho nhân viên. Mở payout row chờ GM xác nhận tiền.
 
 ### Tạo Cash KPI cho nhân viên
 ```
 /cashkpi [tên nhân viên]
 ```
 Bot hỏi từng bước: tên KPI, số tiền thưởng, thời hạn. Tự động assign cho nhân viên.
+
+> 💡 Khi tính năng này mở, bot sẽ thông báo. Hiện tại tập trung vào các lệnh cơ bản đã hoạt động.
 
 ---
 
@@ -222,6 +226,9 @@ Tier xếp hạng + điểm tổng hợp / 100.
 - Dữ liệu tính từ **30 ngày gần nhất** — rolling, không cố định theo tháng
 - Quản lý chỉ xem được điểm của **chính mình** — xem điểm nhân viên khác là quyền GM
 - Điểm thay đổi theo từng ngày khi dữ liệu mới vào
+- Nếu công ty chưa đặt KPI tháng → điểm công ty tính là 0 (hệ thống thông báo rõ)
+
+> 💡 **Mẹo nâng điểm:** Khuyến khích nhân viên check-in đúng giờ, nộp `/bc` đầy đủ, và giữ streak liên tiếp. Đây là 3 yếu tố ảnh hưởng lớn nhất đến điểm cá nhân — và điểm cá nhân chiếm 70% tổng điểm.
 
 ---
 

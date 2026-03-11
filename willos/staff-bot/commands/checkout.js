@@ -137,7 +137,8 @@ async function handle(bot, msg, args, db) {
   }
 
   // Get today's date (ICT UTC+7)
-  const now = new Date();
+  // Use Telegram's msg.date for accurate timestamp — immune to bot lag
+  const now = msg.date ? new Date(msg.date * 1000) : new Date();
   const ictOffset = 7 * 60 * 60 * 1000;
   const ictNow = new Date(now.getTime() + ictOffset);
   const today = ictNow.toISOString().split('T')[0];
@@ -185,7 +186,7 @@ async function handle(bot, msg, args, db) {
   // ── Auto close shift (fire & forget, after checkout recorded) ──
   checkAndAutoCloseShift(bot, db, staff).catch(() => {});
 
-  return bot.sendMessage(chatId, formatCheckout(staff, openCheckin.checkin_time));
+  return bot.sendMessage(chatId, formatCheckout(staff, openCheckin.checkin_time, now.toISOString()));
 }
 
 module.exports = { handle };

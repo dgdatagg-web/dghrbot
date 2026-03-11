@@ -37,7 +37,21 @@ function clearSession(telegramId) {
 
 function parsePrice(str) {
   if (!str) return null;
-  const cleaned = str.replace(/[.,_\s]/g, '');
+  let s = str.trim().toLowerCase();
+  // Support "180k" → 180000, "1.5k" → 1500
+  if (s.endsWith('k')) {
+    const num = parseFloat(s.replace(/k$/, '').replace(/[.,_\s]/g, ''));
+    return isNaN(num) ? null : Math.round(num * 1000);
+  }
+  // Support "1tr" → 1000000, "1tr5" or "1.5tr" → 1500000
+  if (s.includes('tr')) {
+    const parts = s.split('tr');
+    const main = parseFloat(parts[0].replace(/[.,_\s]/g, '')) || 0;
+    const frac = parts[1] ? parseFloat(parts[1]) / 10 : 0;
+    const num = (main + frac) * 1000000;
+    return isNaN(num) ? null : Math.round(num);
+  }
+  const cleaned = s.replace(/[.,_\s₫đd]/g, '');
   const parsed = parseInt(cleaned, 10);
   return isNaN(parsed) ? null : parsed;
 }
@@ -72,6 +86,7 @@ async function handle(bot, msg, args, db) {
   pendingNhaphang.set(telegramId, {
     step: 1,
     data: { staffId: staff.id, today },
+    items: [],  // batch items
     expiry: Date.now() + TIMEOUT_MS,
     timeoutHandle,
     chatId,
@@ -186,9 +201,22 @@ async function handlePendingNhaphang(bot, msg, db) {
   if (state.step === 5) {
     // Nếu user nhập text ở bước chờ ảnh → bỏ qua bill
     state.data.billFileId = null;
-    const savedData = { ...state.data };
-    clearSession(telegramId);
-    await sendNhaphangReport(bot, msg, staff, savedData, db);
+    state.items.push({ ...state.data });
+    // Ask to add another item
+    state.step = 7;
+    await bot.sendMessage(chatId,
+      `✅ Đã ghi: *${state.data.itemName}* × ${state.data.quantity}\n\n` +
+      `Thêm món khác?`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '➕ Thêm món', callback_data: 'nhaphang_add_more' },
+            { text: '✅ Xong — Gửi báo cáo', callback_data: 'nhaphang_done' },
+          ]]
+        }
+      }
+    );
     return true;
   }
 
@@ -196,9 +224,35 @@ async function handlePendingNhaphang(bot, msg, db) {
   if (state.step === 6) {
     // Nếu user gõ text thay vì gửi ảnh → skip
     state.data.billFileId = null;
-    const savedData = { ...state.data };
-    clearSession(telegramId);
-    await sendNhaphangReport(bot, msg, staff, savedData, db);
+    state.items.push({ ...state.data });
+    state.step = 7;
+    await bot.sendMessage(chatId,
+      `✅ Đã ghi: *${state.data.itemName}* × ${state.data.quantity}\n\n` +
+      `Thêm món khác?`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '➕ Thêm món', callback_data: 'nhaphang_add_more' },
+            { text: '✅ Xong — Gửi báo cáo', callback_data: 'nhaphang_done' },
+          ]]
+        }
+      }
+    );
+    return true;
+  }
+
+  // Step 7: Waiting for inline button (add more / done)
+  if (state.step === 7) {
+    // User typed text instead of pressing button — treat as new item name
+    state.data = { staffId: state.data.staffId, today: state.data.today, itemName: input };
+    state.step = 2;
+    await bot.sendMessage(chatId,
+      `✅ Hàng: *${input}*\n\n` +
+      `Số lượng + đơn vị:\n` +
+      `(VD: 2kg, 5 bịch, 10 hộp)`,
+      { parse_mode: 'Markdown' }
+    );
     return true;
   }
 
@@ -215,16 +269,30 @@ async function handleNhaphangPhoto(bot, msg, db) {
 
   // Reset timeout
   if (state.timeoutHandle) clearTimeout(state.timeoutHandle);
+  state.expiry = Date.now() + TIMEOUT_MS;
+  state.timeoutHandle = setSessionTimeout(bot, telegramId, state.chatId);
 
   // Get largest photo
   const photo = msg.photo[msg.photo.length - 1];
   state.data.billFileId = photo.file_id;
 
-  const staff = db.getStaffByTelegramId(telegramId);
-  const savedData = { ...state.data };
-  clearSession(telegramId);
+  state.items.push({ ...state.data });
 
-  await sendNhaphangReport(bot, msg, staff, savedData, db);
+  // Ask to add another
+  state.step = 7;
+  await bot.sendMessage(state.chatId,
+    `✅ Đã ghi: *${state.data.itemName}* × ${state.data.quantity} (📎 bill)\n\n` +
+    `Thêm món khác?`,
+    {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [[
+          { text: '➕ Thêm món', callback_data: 'nhaphang_add_more' },
+          { text: '✅ Xong — Gửi báo cáo', callback_data: 'nhaphang_done' },
+        ]]
+      }
+    }
+  );
   return true;
 }
 
@@ -237,17 +305,40 @@ async function handleNhaphangCallback(bot, query, db) {
     return bot.answerCallbackQuery(query.id, { text: '⏰ Phiên đã hết hạn. Gõ /nhaphang để bắt đầu lại.', show_alert: true });
   }
 
+  // Reset timeout
+  if (state.timeoutHandle) clearTimeout(state.timeoutHandle);
+  state.expiry = Date.now() + TIMEOUT_MS;
+  state.timeoutHandle = setSessionTimeout(bot, telegramId, state.chatId);
+
+  // ── Add another item ──
+  if (query.data === 'nhaphang_add_more') {
+    state.step = 1;
+    state.data = { staffId: state.data.staffId, today: state.data.today };
+    await bot.answerCallbackQuery(query.id);
+    await bot.sendMessage(state.chatId,
+      `📦 Món tiếp theo:\nTên hàng / nguyên liệu:`
+    );
+    return;
+  }
+
+  // ── Done — send batch report ──
+  if (query.data === 'nhaphang_done') {
+    const staff = db.getStaffByTelegramId(telegramId);
+    if (!staff) return bot.answerCallbackQuery(query.id);
+    const items = [...state.items];
+    clearSession(telegramId);
+    await bot.answerCallbackQuery(query.id);
+    await sendNhaphangBatchReport(bot, { chat: { id: state.chatId, type: 'private' } }, staff, items, db);
+    return;
+  }
+
+  // ── Photo flow (existing) ──
   if (state.step !== 5) {
     return bot.answerCallbackQuery(query.id).catch(() => {});
   }
 
   if (query.data === 'nhaphang_photo') {
     state.step = 6;
-    // Reset timeout
-    if (state.timeoutHandle) clearTimeout(state.timeoutHandle);
-    state.expiry = Date.now() + TIMEOUT_MS;
-    state.timeoutHandle = setSessionTimeout(bot, telegramId, state.chatId);
-
     await bot.answerCallbackQuery(query.id);
     await bot.sendMessage(state.chatId, `📷 Gửi ảnh bill vào đây 👇`);
     return;
@@ -255,19 +346,116 @@ async function handleNhaphangCallback(bot, query, db) {
 
   if (query.data === 'nhaphang_skip_photo') {
     state.data.billFileId = null;
-    const savedData = { ...state.data };
-    clearSession(telegramId);
-
-    const staff = db.getStaffByTelegramId(telegramId);
-    if (!staff) return bot.answerCallbackQuery(query.id);
-
+    state.items.push({ ...state.data });
+    state.step = 7;
     await bot.answerCallbackQuery(query.id);
-    const fakeMsg = { chat: { id: state.chatId, type: 'private' } };
-    await sendNhaphangReport(bot, fakeMsg, staff, savedData, db);
+    await bot.sendMessage(state.chatId,
+      `✅ Đã ghi: *${state.data.itemName}* × ${state.data.quantity}\n\n` +
+      `Thêm món khác?`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '➕ Thêm món', callback_data: 'nhaphang_add_more' },
+            { text: '✅ Xong — Gửi báo cáo', callback_data: 'nhaphang_done' },
+          ]]
+        }
+      }
+    );
     return;
   }
 
   await bot.answerCallbackQuery(query.id).catch(() => {});
+}
+
+/**
+ * Send a batch nhaphang report — multiple items in one message
+ */
+async function sendNhaphangBatchReport(bot, msg, staff, items, db) {
+  const ictNow = getIctNow();
+  const timeStr = `${String(ictNow.getUTCHours()).padStart(2,'0')}:${String(ictNow.getUTCMinutes()).padStart(2,'0')}`;
+  const today = items[0]?.today || ictNow.toISOString().split('T')[0];
+  let totalPrice = 0;
+
+  // Save each item + sheets queue
+  for (const item of items) {
+    totalPrice += item.price || 0;
+
+    if (db && db.createProcurementLog) {
+      db.createProcurementLog({
+        staffId: item.staffId,
+        itemName: item.itemName,
+        quantity: item.quantity,
+        price: item.price,
+        supplier: item.supplier,
+        billFileId: item.billFileId,
+        date: today,
+      });
+    }
+
+    try {
+      queueRow('nhaphang_log', {
+        date: today,
+        staff_name: staff.name,
+        item: item.itemName,
+        quantity: item.quantity,
+        price: item.price,
+        supplier: item.supplier || '',
+        has_bill: item.billFileId ? 'yes' : 'no',
+      });
+    } catch (e) {
+      console.error('[nhaphang] queueRow error:', e.message);
+    }
+  }
+
+  // Auto EXP (once per batch, not per item)
+  try {
+    const { autoExp } = require('../utils/exp_rules');
+    await autoExp(bot, db, staff, 'nhaphang_submit');
+  } catch (e) {
+    console.error('[nhaphang] autoExp error:', e.message);
+  }
+
+  // Build report
+  const itemLines = items.map((item, i) =>
+    `${i + 1}. ${item.itemName} × ${item.quantity} — ${formatCurrency(item.price)}` +
+    (item.supplier ? ` (${item.supplier})` : '') +
+    (item.billFileId ? ' 📎' : '')
+  );
+
+  const reportMsg =
+    `📦 NHẬP HÀNG — ${formatDate(today)}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `👤 ${staff.name} | ⏰ ${timeStr}\n` +
+    itemLines.join('\n') + '\n' +
+    (items.length > 1 ? `\n💰 TỔNG: ${formatCurrency(totalPrice)}\n` : '') +
+    `━━━━━━━━━━━━━━━━━━━━`;
+
+  const topicId = 174;
+  // Send first bill photo if any
+  const firstBill = items.find(i => i.billFileId);
+  if (firstBill) {
+    await broadcastPhoto(bot, 'nhaphang', firstBill.billFileId, {
+      caption: reportMsg,
+      message_thread_id: topicId,
+    });
+  } else {
+    await broadcastEvent(bot, 'nhaphang', reportMsg, {
+      message_thread_id: topicId,
+    });
+  }
+
+  const confirmMsg =
+    `✅ Đã ghi nhận nhập hàng! (${items.length} món)\n` +
+    `━━━━━━━━━━━━━━━\n` +
+    itemLines.join('\n') + '\n' +
+    (items.length > 1 ? `💰 Tổng: ${formatCurrency(totalPrice)}\n` : '') +
+    `━━━━━━━━━━━━━━━`;
+
+  const chatId = msg.chat.id;
+  if (msg.chat.type === 'private' || String(chatId) !== String(GROUPS.FINANCE)) {
+    await bot.sendMessage(chatId, confirmMsg);
+  }
 }
 
 async function sendNhaphangReport(bot, msg, staff, data, db) {

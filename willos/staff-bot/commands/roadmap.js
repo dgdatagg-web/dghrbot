@@ -31,6 +31,40 @@ async function handle(bot, msg, args, db) {
   const earnedBadgeKeys = new Set(badgeRows.map(b => b.badge_key));
   const checkinCount = db.getCheckinCount(target.id);
 
+  // ── Creator / GM — special roadmap ──
+  if (['creator', 'gm'].includes(target.role)) {
+    const roleInfo = getRoleInfo(target.role);
+    const allStaff = db.getAllActiveStaff ? db.getAllActiveStaff() : [];
+    const staffCount = allStaff.length;
+    const badgeCount = badgeRows.length;
+    const badgeIconStr = badgeCount > 0 ? formatBadges(badgeRows) : '(chưa có)';
+
+    const lines = [
+      `🗺️ ROADMAP — ${target.name}`,
+      SEP,
+      `${roleInfo.icon} ${roleInfo.label.toUpperCase()} — Bạn không leo rank. Bạn xây rank cho người khác.`,
+      ``,
+      target.role === 'creator'
+        ? `🏗️ Architect — người thiết kế hệ thống`
+        : `⚔️ General — chỉ huy toàn quân`,
+      ``,
+      `📊 HỆ THỐNG CỦA BẠN:`,
+      `  👥 ${staffCount} nhân viên active`,
+      `  📋 ${checkinCount} lượt checkin ghi nhận`,
+      ``,
+      `🎯 MỤC TIÊU CREATOR:`,
+      `  ${staffCount >= 5 ? '✅' : '⬜'} 5+ nhân viên active`,
+      `  ${staffCount >= 15 ? '✅' : '⬜'} 15+ nhân viên active`,
+      `  ${earnedBadgeKeys.has('mentor') ? '✅' : '⬜'} 🎓 Đào tạo 1 Newbie lên Nhân viên`,
+      `  ⬜ 🏆 Reward Engine live — quest + cash + ESOP`,
+      `  ⬜ 📊 Dashboard — staff performance realtime`,
+      ``,
+      SEP,
+      `🏅 BADGES: ${badgeIconStr}  (${badgeCount}/11)`,
+    ];
+    return bot.sendMessage(chatId, lines.join('\n'));
+  }
+
   const milestones = buildMilestones(target, earnedBadgeKeys, checkinCount);
 
   const lines = [

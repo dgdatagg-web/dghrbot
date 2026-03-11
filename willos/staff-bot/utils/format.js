@@ -144,9 +144,9 @@ function formatCheckin(staff, expDelta, newExp) {
 /**
  * Format checkout response
  */
-function formatCheckout(staff, checkinTime) {
+function formatCheckout(staff, checkinTime, checkoutTime) {
   const role = getRoleInfo(staff.role);
-  const now = new Date();
+  const now = checkoutTime ? new Date(checkoutTime) : new Date();
   const checkin = new Date(checkinTime);
   const diffMs = now - checkin;
   const hours = Math.floor(diffMs / (1000 * 60 * 60));

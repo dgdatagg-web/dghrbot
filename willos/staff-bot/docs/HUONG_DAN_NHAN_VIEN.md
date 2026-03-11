@@ -1,5 +1,5 @@
 # Hướng Dẫn Nhân Viên — DG HR Bot
-**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
+**Phiên bản:** 1.2 | **Cập nhật:** 2026-03-12
 **Áp dụng cho:** Newbie 🐣 · Nhân viên ⚡ · Kỳ cựu 🔥
 
 ---
@@ -10,6 +10,8 @@
 3. [Checkout cuối ca](#3-checkout-cuối-ca)
 4. [Bàn giao ca](#4-bàn-giao-ca)
 5. [Xem thông tin cá nhân](#5-xem-thông-tin-cá-nhân)
+5b. [Điểm hiệu suất — /score](#5b-điểm-hiệu-suất--score)
+5c. [Townboard — Task & KPI](#5c-townboard--task--kpi-sắp-ra-mắt)
 6. [Hệ thống EXP](#6-hệ-thống-exp)
 7. [Huy hiệu (Badges)](#7-huy-hiệu-badges)
 8. [Thăng cấp](#8-thăng-cấp)
@@ -91,33 +93,52 @@ Nếu cần thoát: gõ `/cancel` hoặc `/huy`
 | Lệnh | Chức năng |
 |------|-----------|
 | `/profile` hoặc `/me` hoặc `/stats` | Xem EXP, role, streak, số ca |
+| `/score` | Xem điểm hiệu suất tổng hợp — bạn đang ở tier nào |
 | `/leaderboard` hoặc `/lb` | Bảng xếp hạng EXP toàn nhóm |
 | `/roadmap` | Lộ trình thăng cấp + badges còn thiếu |
 | `/badges` | Bộ sưu tập huy hiệu đã đạt được |
 
 ---
 
-## 5b. Townboard — Task & KPI
+## 5b. Điểm Hiệu Suất — /score
+
+Bot tính điểm hiệu suất tổng hợp của bạn dựa trên **30 ngày làm việc gần nhất**.
+
+### Cách xem
+```
+/score
+```
+
+### Điểm của bạn gồm 3 phần
+| Phần | Tỷ trọng | Ý nghĩa |
+|------|---------|---------|
+| 👤 Cá nhân | 70% | Chuyên cần, báo cáo ca, lỗi đơn, EXP, streak |
+| 👥 Nhóm | 20% | Trung bình phòng ban của bạn |
+| 🏢 Công ty | 10% | KPI công ty tháng này |
+
+### Xếp hạng Tier
+| Tier | Điểm | Ý nghĩa |
+|------|------|---------|
+| ⚡ S | 90–100 | Xuất sắc — top nhân viên |
+| 🔥 A | 75–89 | Mạnh — hiệu suất rất tốt |
+| ✅ B | 60–74 | Ổn định — đang làm tốt |
+| 📈 C | 45–59 | Đang phát triển — cần cố gắng thêm |
+| ⚠️ D | 0–44 | Cần cải thiện |
+
+> **Mẹo:** Check-in đúng giờ, nộp `/bc` đầy đủ, và giữ streak liên tiếp là cách nhanh nhất để lên tier cao.
+
+---
+
+## 5c. Townboard — Task & KPI (Sắp Ra Mắt)
 
 Bot có hệ thống Townboard: **nhiệm vụ và KPI** được đăng để nhân viên tham gia và kiếm thêm phần thưởng.
 
-### Xem nhiệm vụ đang mở
-```
-/tb
-```
-Hiển thị tất cả task và KPI đang hoạt động, phần thưởng EXP + cash tương ứng.
+> 🚧 Tính năng này đang được phát triển. Sẽ sớm ra mắt!
 
-### Tham gia nhiệm vụ
-```
-/join [id]
-```
-Ví dụ: `/join 3` để tham gia task số 3.
-
-### Sau khi tham gia
-- Quản lý sẽ xác nhận khi bạn hoàn thành
-- EXP được cộng ngay sau khi xác nhận
-- Cash reward (nếu có) được xác nhận thanh toán riêng
-- Kiểm tra trạng thái bằng `/profile`
+Khi mở:
+- `/tb` — Xem nhiệm vụ đang mở
+- `/join [id]` — Tham gia nhiệm vụ
+- EXP và cash reward sẽ được cộng khi quản lý xác nhận hoàn thành
 
 ---
 

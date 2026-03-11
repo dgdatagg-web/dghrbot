@@ -431,46 +431,61 @@ async function submitShift(bot, chatId, db, target, week, days, shiftDetail, sub
 
 async function sendWeekView(bot, chatId, db, week) {
   const schedules = db.getShiftsByWeek(week);
+  const allStaff = db.getAllActiveStaff ? db.getAllActiveStaff() : [];
 
-  if (!schedules || schedules.length === 0) {
-    return bot.sendMessage(chatId,
-      `📅 Tuần ${week}\n\n` +
-      `Chưa có lịch ca nào được submit.\n` +
-      `Dùng /lichca [tên]: T2 T3 T5 để submit.`
-    );
-  }
+  // Build map of staff who have schedules
+  const scheduledIds = new Set((schedules || []).map(s => s.staff_id));
 
   const lines = [`📅 LỊCH CA — ${week}`, '━━━━━━━━━━━━━━━━━━━━'];
-  for (const row of schedules) {
-    let days;
-    let shiftDetail;
-    try { days = JSON.parse(row.days); } catch { days = []; }
-    try { shiftDetail = row.shift_detail ? JSON.parse(row.shift_detail) : null; } catch { shiftDetail = null; }
 
-    const roleInfo = getRoleInfo(row.role);
+  if (schedules && schedules.length > 0) {
+    for (const row of schedules) {
+      let days;
+      let shiftDetail;
+      try { days = JSON.parse(row.days); } catch { days = []; }
+      try { shiftDetail = row.shift_detail ? JSON.parse(row.shift_detail) : null; } catch { shiftDetail = null; }
 
-    // Build display with shift types if available
-    if (shiftDetail && Object.keys(shiftDetail).length > 0) {
-      // Show all 7 days with shift details — working and off
-      const allEntries = VALID_DAYS
-        .filter(d => shiftDetail[d] !== undefined)
-        .map(d => {
-          const shift = shiftDetail[d] || 'làm';
-          const isOff = ['off', 'nghi', 'nghỉ'].includes(
-            shift.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-          );
-          return isOff ? `${d}:nghỉ` : `${d}:${shift}`;
-        });
-      const daysStr = allEntries.length > 0 ? allEntries.join(' | ') : '(nghỉ tuần này)';
-      lines.push(`${roleInfo.icon} ${row.name}:\n    ${daysStr}`);
-    } else if (days.length > 0) {
-      lines.push(`${roleInfo.icon} ${row.name}: ${days.join(' ')} (chưa có giờ cụ thể)`);
-    } else {
-      lines.push(`${roleInfo.icon} ${row.name}: (nghỉ tuần này)`);
+      const roleInfo = getRoleInfo(row.role);
+
+      // Build display with shift types if available
+      if (shiftDetail && Object.keys(shiftDetail).length > 0) {
+        const allEntries = VALID_DAYS
+          .filter(d => shiftDetail[d] !== undefined)
+          .map(d => {
+            const shift = shiftDetail[d] || 'làm';
+            const isOff = ['off', 'nghi', 'nghỉ'].includes(
+              shift.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+            );
+            return isOff ? `${d}:nghỉ` : `${d}:${shift}`;
+          });
+        const daysStr = allEntries.length > 0 ? allEntries.join(' | ') : '(nghỉ tuần này)';
+        lines.push(`${roleInfo.icon} ${row.name}:\n    ${daysStr}`);
+      } else if (days.length > 0) {
+        lines.push(`${roleInfo.icon} ${row.name}: ${days.join(' ')} (chưa có giờ cụ thể)`);
+      } else {
+        lines.push(`${roleInfo.icon} ${row.name}: (nghỉ tuần này)`);
+      }
     }
   }
+
+  // Show unscheduled active staff
+  const unscheduled = allStaff.filter(s => !scheduledIds.has(s.id));
+  if (unscheduled.length > 0) {
+    lines.push('');
+    lines.push('⚠️ CHƯA CÓ LỊCH:');
+    for (const s of unscheduled) {
+      const roleInfo = getRoleInfo(s.role);
+      lines.push(`  ${roleInfo.icon} ${s.name}`);
+    }
+  }
+
   lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push(`Tổng: ${schedules.length} nhân viên`);
+  const scheduledCount = schedules ? schedules.length : 0;
+  lines.push(`✅ ${scheduledCount} đã xếp | ⚠️ ${unscheduled.length} chưa có lịch`);
+
+  if (scheduledCount === 0 && unscheduled.length > 0) {
+    lines.push(`\nDùng /lichca [tên]: T2:tối T3:9h-13h để submit.`);
+  }
 
   return bot.sendMessage(chatId, lines.join('\n'));
 }

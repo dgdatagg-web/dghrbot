@@ -13,6 +13,8 @@ const BADGE_DEFS = [
   { key: 'kpi_king',    icon: '👑',  name: 'KPI King',   desc: '3 tháng KPI 100% liên tiếp' },
   { key: 'clean_slate', icon: '🧹',  name: 'Clean Slate',desc: '30 ngày không vi phạm' },
   { key: 'comeback',    icon: '⚡',  name: 'Comeback',   desc: 'Từ EXP âm → positive' },
+  { key: 'architect',   icon: '🏗️',  name: 'Architect',  desc: 'Creator — người xây dựng hệ thống' },
+  { key: 'general',     icon: '⚔️',  name: 'General',    desc: 'GM — chỉ huy toàn quân' },
 ];
 
 /**
@@ -99,6 +101,14 @@ function checkAndAwardBadges(dbModule, staff, prevExp = null) {
         // Chỉ award khi prevExp THỰC SỰ ÂM (< 0), không phải = 0
         return prevExp < 0 && staff.exp > 0;
       },
+    },
+    {
+      key: 'architect',
+      condition: () => staff.role === 'creator',
+    },
+    {
+      key: 'general',
+      condition: () => staff.role === 'gm',
     },
   ];
 

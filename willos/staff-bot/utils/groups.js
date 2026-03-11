@@ -14,12 +14,12 @@
 'use strict';
 
 const GROUPS = {
-  BOD:       -1001003827938422,  // [DG] BOD GROUP — Creator leads, GM reports
-  MANAGERS:  -1001003763800722,  // [DG] MANAGERS — GM leads, Creator watches
-  HR:        -1001003764628939,  // [DG] BÁO CÁO Công Việc / HR — real-time ops
-  KANSAI:    -1001003796440045,  // [DG] Kansai Osaka — bep system
-  MARKETING: -1001003334004161,  // [DG] Marketing / Social
-  FINANCE:   -1001003778798020,  // [DG] Tài Chính-Kế Toán-Thu Mua
+  BOD:       -1003827938422,   // [DG] BOD GROUP — Creator leads, GM reports
+  MANAGERS:  -1003763800722,   // [DG] BAN QUẢN LÝ — GM leads, Creator watches
+  HR:        -1003764628939,   // [DG] Nhóm Báo Cáo Công Việc / HR — real-time ops
+  KANSAI:    -1003796440045,   // [DG] Kansai Osaka — bep system
+  MARKETING: -1003334004161,   // [DG] Marketing / Social
+  FINANCE:   -1003778798020,   // [DG] TÀI CHÍNH - KẾ TOÁN - THU MUA
 };
 
 /**
@@ -38,7 +38,15 @@ const FINANCE_TOPICS = {
   nhaphang: 13,  // BÁO CÁO THU/MUA/TỒN KHO
 };
 
-// ── BOD topic thread IDs (confirmed) ─────────────────────────────────────────
+// ── HR topic thread IDs (confirmed) ──────────────────────────────────────────
+const HR_TOPICS = {
+  bc:       172,  // BÁO CÁO CA
+  checkin:  172,
+  checkout: 172,
+  moca:     172,
+  dongca:   172,
+};
+
 const BOD_TOPICS = {
   weekly_report:  1,    // TỔNG HỢP — general demands, GM reports
   monthly_report: 1,    // TỔNG HỢP — monthly summary
@@ -128,13 +136,19 @@ async function broadcastEvent(bot, event, text, opts = {}) {
   const targets = getGroups(event);
   const results = [];
   for (const gid of targets) {
-    // Auto-inject Finance or BOD topic thread ID if applicable
-    const threadId = gid === GROUPS.FINANCE ? (FINANCE_TOPICS[event] || null)
-                   : gid === GROUPS.BOD     ? (BOD_TOPICS[event]     || null)
-                   : null;
+    // Determine correct topic thread ID per group
+    // Each group has its own topic structure — never leak one group's topics to another
+    let threadId;
+    if (gid === GROUPS.FINANCE)      threadId = FINANCE_TOPICS[event] || null;
+    else if (gid === GROUPS.BOD)     threadId = BOD_TOPICS[event]     || null;
+    else if (gid === GROUPS.HR)      threadId = HR_TOPICS[event]      || null;
+    else                             threadId = null;  // MANAGERS, MARKETING, KANSAI — no topics
+
+    // Strip caller's message_thread_id — we manage topics centrally
+    const { message_thread_id: _strip, ...cleanOpts } = opts;
     const finalOpts = threadId
-      ? { ...opts, message_thread_id: threadId }
-      : opts;
+      ? { ...cleanOpts, message_thread_id: threadId }
+      : cleanOpts;
     const result = await bot.sendMessage(gid, text, finalOpts).catch(err => {
       console.error(`[GROUPS] Failed to send '${event}' to ${gid}:`, err.message);
       return null;

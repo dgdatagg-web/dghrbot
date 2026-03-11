@@ -929,12 +929,13 @@ function addExp(staffId, delta, reason, byTelegramId) {
   `).run(staffId, delta, reason, byTelegramId ? String(byTelegramId) : null);
 
   // Check role promotion based on EXP thresholds
+  // NEVER touch gm/creator roles — they are manually assigned, immune to EXP-based changes
   const { getRoleFromExp } = require('./utils/roles');
-  const newRole = getRoleFromExp(newExp);
   let leveledUp = false;
-  if (newRole && newRole !== staff.role) {
-    // Only auto-promote up to 'quanly' (not gm/creator which require manual)
-    const autoPromoteRoles = ['newbie', 'nhanvien', 'quanly'];
+  const newRole = getRoleFromExp(newExp);
+  if (!['gm', 'creator'].includes(staff.role) && newRole && newRole !== staff.role) {
+    // Only auto-promote up through progression (not gm/creator)
+    const autoPromoteRoles = ['nhanvien', 'kycuu', 'quanly'];
     if (autoPromoteRoles.includes(newRole)) {
       const promotedDates = JSON.parse(staff.promoted_dates || '{}');
       promotedDates[newRole] = new Date().toISOString().split('T')[0];

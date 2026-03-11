@@ -186,11 +186,17 @@ async function autoExp(bot, db, staff, type, extra) {
       rule = EXP_RULES.bc_submit;
     } else if (type === 'nhaphang') {
       rule = EXP_RULES.nhaphang_submit;
+    } else if (type === 'moca') {
+      rule = EXP_RULES.moca;
+    } else if (type === 'dongca') {
+      rule = EXP_RULES.dongca;
     } else if (EXP_RULES[type]) {
       rule = EXP_RULES[type];
     } else {
       return;
     }
+
+    if (!rule || !rule.reason) return;
 
     // Award EXP
     const oldExp = staff.exp || 0;

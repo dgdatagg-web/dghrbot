@@ -85,6 +85,8 @@ const lichca    = require('./commands/lichca');
 const roadmap   = require('./commands/roadmap');
 const fire      = require('./commands/fire');
 const bc        = require('./commands/bc');
+const moca      = require('./commands/moca');
+const dongca    = require('./commands/dongca');
 const nhaphang  = require('./commands/nhaphang');
 const badgesCmd = require('./commands/badges_cmd');
 const reminder  = require('./commands/reminder');
@@ -118,6 +120,8 @@ const confirmpayout   = require('./commands/confirmpayout');
 const cashkpi         = require('./commands/cashkpi');
 const kpihit          = require('./commands/kpihit');
 const score           = require('./commands/score');
+const compositeall    = require('./commands/compositeall');
+const compositeview   = require('./commands/compositeview');
 const rehire          = require('./commands/rehire');
 const setvaluation    = require('./commands/setvaluation');
 
@@ -313,44 +317,52 @@ bot.onText(/^\/revokeaccess(\s|$)/i, (msg) => {
   safeHandle(revokeaccess.handle, bot, msg, parseArgs(msg.text));
 });
 
+// ─── Reward Engine — DISABLED (under construction) ──────────────────────────
+// Commands exist but respond with "coming soon" until reward engine is finalized
+const REWARD_COMING_SOON = '🚧 Tính năng này đang được phát triển. Sẽ sớm ra mắt!';
+
 bot.onText(/^\/tb$/, async (msg) => {
-  await handleTownboard(bot, msg);
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/posttask(\s|$)/i, (msg) => {
-  Promise.resolve(posttask.handle(bot, msg, parseArgs(msg.text), db, botUsername))
-    .catch(err => {
-      console.error('[CMD ERROR]', err);
-      bot.sendMessage(msg.chat.id, `❌ Có lỗi xảy ra. Vui lòng thử lại sau.\n\nError: ${err.message}`).catch(() => {});
-    });
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/join\s+(\d+)$/i, (msg) => {
-  safeHandle(join.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/completetask(\s|$)/i, (msg) => {
-  safeHandle(completetask.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/kpihit(\s|$)/i, (msg) => {
-  safeHandle(kpihit.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/score(\s|$)/i, (msg) => {
   safeHandle(score.handle, bot, msg, parseArgs(msg.text));
 });
 
+bot.onText(/^\/compositeall(\s|$)/i, (msg) => {
+  safeHandle(compositeall.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/compositeview(\s|$)/i, (msg) => {
+  safeHandle(compositeview.handle, bot, msg, parseArgs(msg.text));
+});
+
 bot.onText(/^\/canceltask(\s|$)/i, (msg) => {
-  safeHandle(canceltask.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/confirmpayout(\s|$)/i, (msg) => {
-  safeHandle(confirmpayout.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/cashkpi(\s|$)/i, (msg) => {
-  safeHandle(cashkpi.handle, bot, msg, parseArgs(msg.text));
+  bot.sendMessage(msg.chat.id, REWARD_COMING_SOON);
 });
 
 bot.onText(/^\/badges(\s|$)/i, (msg) => {
@@ -381,6 +393,14 @@ bot.onText(/^\/(addstaff|themstaff|addnv)(\s|$)/i, (msg) => {
 
 bot.onText(/^\/bc(\s|$)/i, (msg) => {
   safeHandle(bc.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/moca(\s|$)/i, (msg) => {
+  safeHandle(moca.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/dongca(\s|$)/i, (msg) => {
+  safeHandle(dongca.handle, bot, msg, parseArgs(msg.text));
 });
 
 bot.onText(/^\/nhaphang(\s|$)/i, (msg) => {
@@ -483,11 +503,11 @@ bot.onText(/^\/start(\s|$)/i, async (msg) => {
     // Build action suggestions by role
     let actions = '';
     if (['creator', 'gm'].includes(staff.role)) {
-      actions = `📋 /approve — duyệt nhân viên mới\n🏆 /tb — xem Townboard\n💡 /help — tất cả lệnh`;
+      actions = `📋 /approve — duyệt nhân viên mới\n👤 /me — xem profile\n💡 /help — tất cả lệnh`;
     } else if (staff.role === 'quanly') {
-      actions = `✅ /checkin — vào ca\n🏆 /tb — xem Townboard\n📋 /approve — duyệt nhân viên`;
+      actions = `✅ /checkin — vào ca\n📋 /approve — duyệt nhân viên\n💡 /help — tất cả lệnh`;
     } else {
-      actions = `✅ /checkin — bắt đầu ca\n🏆 /tb — xem task đang mở\n👤 /me — xem stats của bạn`;
+      actions = `✅ /checkin — bắt đầu ca\n👤 /me — xem stats của bạn\n💡 /help — tất cả lệnh`;
     }
 
     return bot.sendMessage(chatId,
@@ -706,6 +726,8 @@ bot.on('message', async (msg) => {
   if (msg.chat.type !== 'private') return;
 
   // Try each guided handler in priority order
+  if (await moca.handlePendingMoca(bot, msg, db)) return;
+  if (await dongca.handlePendingDongca(bot, msg, db)) return;
   if (await bc.handlePendingBc(bot, msg, db)) return;
   if (await nhaphang.handlePendingNhaphang(bot, msg, db)) return;
   if (await bosung.handlePending(bot, msg, db)) return;
@@ -738,6 +760,14 @@ bot.on('callback_query', async (query) => {
   if (data.startsWith('bc_')) {
     return bc.handleBcCallback(bot, query, db).catch(err => {
       console.error('[CB bc]', err);
+      bot.answerCallbackQuery(query.id).catch(() => {});
+    });
+  }
+
+  // Route /moca callbacks
+  if (data.startsWith('moca_')) {
+    return moca.handleMocaCallback(bot, query, db).catch(err => {
+      console.error('[CB moca]', err);
       bot.answerCallbackQuery(query.id).catch(() => {});
     });
   }
@@ -844,12 +874,9 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     '/checkin — Bắt đầu ca',
     '/checkout — Kết thúc ca',
     '/me [tên?] — Xem profile',
+    '/score — Xem điểm hiệu suất của bạn',
     '/leaderboard — Bảng xếp hạng',
     '/roadmap — Lộ trình thăng cấp',
-    '',
-    '🏆 TOWNBOARD',
-    '/tb — Xem task & KPI đang mở',
-    '/join [id] — Tham gia task',
   ];
 
   // Shift reports
@@ -857,6 +884,10 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
   lines.push('', '📋 BÁO CÁO CA');
   lines.push('/bc — Bàn giao ca');
   if (isKho) lines.push('/nhaphang — Nhập hàng (kho)');
+  if (isTruongCa) {
+    lines.push('/moca — Mở ca (trưởng ca / quản lý)');
+    lines.push('/dongca — Đóng ca cuối ngày');
+  }
 
   // Manager
   if (isManager) {
@@ -875,21 +906,11 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     lines.push('/addstaff [tên] — Thêm nhân viên thủ công');
     lines.push('/update @username [field] [value] — Cập nhật thông tin');
     lines.push('/delete [tên] — Xóa nhân viên');
-    lines.push('', '🏆 REWARD ENGINE');
-    lines.push('/tb — Townboard: xem tất cả task & KPI đang mở');
-    lines.push('/posttask — Đăng task / KPI mới lên Townboard');
-    lines.push('/completetask [id] [tên] — Xác nhận hoàn thành task');
-    lines.push('/canceltask [id] [tên] — Huỷ task của nhân viên');
-    lines.push('/cashkpi [tên] — Tạo Cash KPI cho nhân viên');
-    lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
-    lines.push('/confirmpayout — Xác nhận thanh toán cash reward');
-    lines.push('/score [tên] — Xem điểm hiệu suất tổng hợp của nhân viên');
+    lines.push('/compositeall — Bảng hiệu suất toàn bộ nhân viên');
+    lines.push('/compositeview [tên] — Chi tiết hiệu suất nhân viên');
+    lines.push('/score [tên] — Xem điểm của nhân viên khác');
   } else if (isManager) {
-    lines.push('', '🏆 REWARD ENGINE');
-    lines.push('/tb — Townboard: xem task & KPI đang mở');
-    lines.push('/completetask [id] [tên] — Xác nhận hoàn thành task');
-    lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
-    lines.push('/score — Xem điểm hiệu suất của bản thân');
+    // Reward engine hidden — under construction
   }
 
   lines.push('━━━━━━━━━━━━━━━━━━━━');

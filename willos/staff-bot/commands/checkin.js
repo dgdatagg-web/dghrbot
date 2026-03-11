@@ -69,12 +69,13 @@ async function checkAndAutoOpenShift(bot, db, staff) {
 /**
  * Complete the actual checkin after location is verified.
  */
-async function completeCheckin(bot, chatId, staff, db, lat, lng, distanceResult) {
+async function completeCheckin(bot, chatId, staff, db, lat, lng, distanceResult, msgDate) {
   const telegramId = String(staff.telegram_id);
   const isGroup = false; // location messages are always in private or group, but we handle in private for location step
 
   // Get today's date (ICT UTC+7)
-  const now = new Date();
+  // Use Telegram's msg.date (seconds since epoch) for accurate timestamp — immune to bot lag
+  const now = msgDate ? new Date(msgDate * 1000) : new Date();
   const ictOffset = 7 * 60 * 60 * 1000;
   const ictNow = new Date(now.getTime() + ictOffset);
   const today = ictNow.toISOString().split('T')[0];
@@ -201,7 +202,8 @@ async function handle(bot, msg, args, db) {
   }
 
   // Get today's date (ICT UTC+7)
-  const now = new Date();
+  // Use Telegram's msg.date for date calculation — immune to bot restart lag
+  const now = msg.date ? new Date(msg.date * 1000) : new Date();
   const ictOffset = 7 * 60 * 60 * 1000;
   const ictNow = new Date(now.getTime() + ictOffset);
   const today = ictNow.toISOString().split('T')[0];
@@ -264,14 +266,28 @@ async function handleLocation(bot, msg, db) {
   const chatId = msg.chat.id;
   const pending = pendingCheckins.get(telegramId);
 
-  if (!pending) return false;
+  if (!pending) {
+    // No pending checkin — likely bot restarted after user sent /checkin
+    // Tell user to retry instead of silently ignoring
+    bot.sendMessage(chatId,
+      '⚠️ Phiên checkin đã hết hạn (có thể do bot vừa khởi động lại).\nGõ /checkin lại nhé!',
+      { reply_markup: { remove_keyboard: true } }
+    ).catch(() => {});
+    return true;
+  }
 
   // Clear pending + timeout
   if (pending._timeout) clearTimeout(pending._timeout);
   pendingCheckins.delete(telegramId);
 
-  const lat = msg.location.latitude;
-  const lng = msg.location.longitude;
+  const lat = msg.location?.latitude;
+  const lng = msg.location?.longitude;
+
+  // Guard: live location end events or corrupted location data
+  if (lat == null || lng == null) {
+    bot.sendMessage(chatId, '⚠️ Không nhận được tọa độ. Hãy gửi vị trí (không phải live location) nhé!', { reply_markup: { remove_keyboard: true } }).catch(() => {});
+    return true;
+  }
 
   // Get staff (fresh from DB)
   const staff = db.getStaffByTelegramId(telegramId);
@@ -297,7 +313,7 @@ async function handleLocation(bot, msg, db) {
   }
 
   // Within venue — complete checkin
-  await completeCheckin(bot, chatId, staff, db, lat, lng, locationResult);
+  await completeCheckin(bot, chatId, staff, db, lat, lng, locationResult, msg.date);
   return true;
 }
 

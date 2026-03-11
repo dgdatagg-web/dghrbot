@@ -79,7 +79,7 @@
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
     <span class="badge purple">🛡️ Quản lý · 👑 Trưởng ca</span>
-    <span class="badge">Cập nhật 10/03/2026</span>
+    <span class="badge" id="badge-date">Cập nhật</span>
   </div>
 </div>
 
@@ -371,8 +371,19 @@
 </div>
 
 <footer>
-  DG HR BOT · Hướng dẫn Quản lý · DG Group — Kansai Osaka · Cập nhật 10/03/2026
+  DG HR BOT · Hướng dẫn Quản lý · DG Group — Kansai Osaka · <span id="footer-date"></span>
 </footer>
 
+<script>
+  (function() {
+    var d = new Date();
+    var day   = String(d.getDate()).padStart(2,'0');
+    var month = String(d.getMonth()+1).padStart(2,'0');
+    var year  = d.getFullYear();
+    var str   = day + '/' + month + '/' + year;
+    document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
+    document.getElementById('badge-date').textContent  = 'Cập nhật ' + str;
+  })();
+</script>
 </body>
 </html>

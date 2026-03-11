@@ -372,7 +372,7 @@
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
     <span class="badge">Nhân viên · Kỳ cựu · Newbie</span>
-    <span class="badge">Cập nhật 11/03/2026 — Ch1–Ch8 live</span>
+    <span class="badge" id="badge-date">Cập nhật — Ch1–Ch8 live</span>
   </div>
 </div>
 
@@ -667,8 +667,19 @@
 <footer>
   DG HR BOT · DG Group — Kansai Osaka ·
   Source of truth: <a href="https://github.com/dgdatagg-web/dghrbot">github.com/dgdatagg-web/dghrbot</a> ·
-  Cập nhật 10/03/2026
+  <span id="footer-date"></span>
 </footer>
 
+<script>
+  (function() {
+    var d = new Date();
+    var day   = String(d.getDate()).padStart(2,'0');
+    var month = String(d.getMonth()+1).padStart(2,'0');
+    var year  = d.getFullYear();
+    var str   = day + '/' + month + '/' + year;
+    document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
+    document.getElementById('badge-date').textContent  = 'Cập nhật ' + str + ' — Ch1–Ch8 live';
+  })();
+</script>
 </body>
 </html>

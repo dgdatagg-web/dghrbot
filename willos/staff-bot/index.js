@@ -117,6 +117,7 @@ const canceltask      = require('./commands/canceltask');
 const confirmpayout   = require('./commands/confirmpayout');
 const cashkpi         = require('./commands/cashkpi');
 const kpihit          = require('./commands/kpihit');
+const score           = require('./commands/score');
 const rehire          = require('./commands/rehire');
 const setvaluation    = require('./commands/setvaluation');
 
@@ -334,6 +335,10 @@ bot.onText(/^\/completetask(\s|$)/i, (msg) => {
 
 bot.onText(/^\/kpihit(\s|$)/i, (msg) => {
   safeHandle(kpihit.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/score(\s|$)/i, (msg) => {
+  safeHandle(score.handle, bot, msg, parseArgs(msg.text));
 });
 
 bot.onText(/^\/canceltask(\s|$)/i, (msg) => {
@@ -878,11 +883,13 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     lines.push('/cashkpi [tên] — Tạo Cash KPI cho nhân viên');
     lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
     lines.push('/confirmpayout — Xác nhận thanh toán cash reward');
+    lines.push('/score [tên] — Xem điểm hiệu suất tổng hợp của nhân viên');
   } else if (isManager) {
     lines.push('', '🏆 REWARD ENGINE');
     lines.push('/tb — Townboard: xem task & KPI đang mở');
     lines.push('/completetask [id] [tên] — Xác nhận hoàn thành task');
     lines.push('/kpihit [assignment_id] — Xác nhận nhân viên đạt KPI');
+    lines.push('/score — Xem điểm hiệu suất của bản thân');
   }
 
   lines.push('━━━━━━━━━━━━━━━━━━━━');

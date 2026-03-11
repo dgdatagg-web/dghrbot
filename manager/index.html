@@ -84,6 +84,7 @@
 </div>
 
 <nav class="nav">
+  <a href="#moi">Có gì mới</a>
   <a href="#nguyen-tac">Nguyên tắc</a>
   <a href="#nhan-vien">Lệnh nhân viên</a>
   <a href="#quan-ly">Lệnh quản lý</a>
@@ -94,6 +95,29 @@
 </nav>
 
 <div class="container">
+
+  <!-- CÓ GÌ MỚI -->
+  <div class="section" id="moi">
+    <div class="section-title">Có gì mới</div>
+    <h2>Cập Nhật Gần Đây</h2>
+    <div class="callout success">
+      <strong>12/03/2026 — Session 43: KPI Công Ty & Sửa lỗi</strong><br>
+      ✅ <strong>/companyscore</strong> — Xem tiến độ KPI công ty (GM đặt, tất cả xem được)<br>
+      ✅ <strong>Group routing sống lại</strong> — Mọi thông báo giờ đến đúng nhóm<br>
+      ✅ <strong>Checkout</strong> bảo vệ thời gian âm<br>
+      ✅ <strong>Moca</strong> chống mở ca trùng<br>
+      ✅ <strong>Leaderboard</strong> T2 + T6, gửi thêm vào HR GROUP
+    </div>
+    <div class="callout success">
+      <strong>12/03/2026 — Điểm hiệu suất & Cải tiến</strong><br>
+      ✅ <strong>/score</strong> — Xem điểm hiệu suất tổng hợp: tier S/A/B/C/D, công thức 70/20/10<br>
+      ✅ <strong>/nhaphang</strong> nâng cấp — Nhập nhiều món liên tiếp, giá hỗ trợ 180k / 1tr5 / 1.5tr<br>
+      ✅ <strong>/lichca view</strong> cải tiến — Hiện tất cả nhân viên kể cả người chưa có lịch<br>
+      ✅ <strong>/leaderboard</strong> chính xác hơn — Tính theo tuần/tháng/tất cả thời gian thực tế<br>
+      🛡️ Sửa crash GPS + autoExp — hệ thống ổn định hơn<br>
+      🚧 <strong>Reward Engine</strong> — Townboard, Quest, Cash KPI đang phát triển — sẽ sớm ra mắt!
+    </div>
+  </div>
 
   <!-- NGUYÊN TẮC -->
   <div class="section" id="nguyen-tac">
@@ -138,7 +162,9 @@
         <thead><tr><th>Lệnh</th><th>Chức năng</th></tr></thead>
         <tbody>
           <tr><td><span class="cmd">/profile</span> / <span class="cmd">/me</span> / <span class="cmd">/stats</span></td><td>Xem EXP, role, streak, số ca</td></tr>
-          <tr><td><span class="cmd">/leaderboard</span> / <span class="cmd">/lb</span></td><td>Bảng xếp hạng EXP toàn bộ nhân viên</td></tr>
+          <tr><td><span class="cmd">/score</span></td><td>Xem điểm hiệu suất tổng hợp — tier S/A/B/C/D</td></tr>
+          <tr><td><span class="cmd">/companyscore</span></td><td>Xem tiến độ KPI công ty — progress bar + % đạt</td></tr>
+          <tr><td><span class="cmd">/leaderboard</span> / <span class="cmd">/lb</span></td><td>Bảng xếp hạng EXP — tuần / tháng / tất cả</td></tr>
           <tr><td><span class="cmd">/roadmap</span></td><td>Lộ trình thăng cấp + badges còn thiếu</td></tr>
           <tr><td><span class="cmd">/badges</span></td><td>Bộ sưu tập huy hiệu cá nhân</td></tr>
         </tbody>
@@ -359,12 +385,12 @@
       <div class="cron-item"><div class="cron-time">08:00 ICT</div><div class="cron-desc">Birthday check<span>Cảnh báo sinh nhật hôm nay và 7 ngày tới vào nhóm.</span></div></div>
       <div class="cron-item"><div class="cron-time">08:45 ICT</div><div class="cron-desc">Reminder /moca<span>Nhắc trưởng ca nộp báo cáo mở ca nếu chưa làm.</span></div></div>
       <div class="cron-item"><div class="cron-time">14:00 ICT</div><div class="cron-desc">Reminder /bc<span>Nhắc nhân viên nộp bàn giao ca.</span></div></div>
-      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Bot gửi danh sách nhân viên chưa checkout cho quản lý. Dùng /forcecheckout nếu cần.</span></div></div>
+      <div class="cron-item"><div class="cron-time">01:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Bot gửi danh sách nhân viên chưa checkout cho quản lý. Dùng /forcecheckout nếu cần.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:59 ICT</div><div class="cron-desc">Cửa sổ báo cáo DT<span>Nhắc reporter nộp doanh thu trong 24h.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:00 ICT</div><div class="cron-desc">Cảnh báo báo cáo DT trễ<span>Alert GM/Creator nếu báo cáo hôm qua chưa được nộp.</span></div></div>
-      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày đăng vào nhóm.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:33 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày → MANAGERS + HR GROUP.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Ai có lịch ca mà không check-in → -50 EXP tự động.</span></div></div>
-      <div class="cron-item"><div class="cron-time">T2 08:00 ICT</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần đăng vào nhóm.</span></div></div>
+      <div class="cron-item"><div class="cron-time">T2+T6 08:00</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần → MANAGERS + HR GROUP.</span></div></div>
     </div>
   </div>
 
@@ -382,7 +408,7 @@
     var year  = d.getFullYear();
     var str   = day + '/' + month + '/' + year;
     document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
-    document.getElementById('badge-date').textContent  = 'Cập nhật ' + str;
+    document.getElementById('badge-date').textContent  = 'Cập nhật 12/03/2026';
   })();
 </script>
 </body>

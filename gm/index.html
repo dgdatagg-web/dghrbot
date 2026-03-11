@@ -77,20 +77,49 @@
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
     <span class="badge gold">⚔️ GM</span>
-    <span class="badge" id="badge-date">Cập nhật — Reward Engine live</span>
+    <span class="badge" id="badge-date">Cập nhật 12/03/2026</span>
   </div>
 </div>
 
 <nav class="nav">
+  <a href="#moi">Có gì mới</a>
   <a href="#nhan-vien">Lệnh nhân viên</a>
   <a href="#quan-ly">Lệnh quản lý</a>
   <a href="#gm">Lệnh GM</a>
+  <a href="#score">Hiệu suất</a>
   <a href="#exp-system">EXP</a>
   <a href="#nhom">Trong nhóm</a>
   <a href="#cron">Tự động</a>
 </nav>
 
 <div class="container">
+
+  <!-- CÓ GÌ MỚI -->
+  <div class="section" id="moi">
+    <div class="section-title">Có gì mới</div>
+    <h2>Cập Nhật Gần Đây</h2>
+    <div class="callout success">
+      <strong>12/03/2026 — Session 43: KPI Công Ty & Sửa lỗi vận hành</strong><br>
+      ✅ <strong>/setcompanykpi</strong> — Đặt KPI công ty: chọn chỉ số, mục tiêu, kỳ áp dụng (GM/Creator only)<br>
+      ✅ <strong>/companyscore</strong> — Xem tiến độ KPI công ty + cập nhật điểm hiện tại<br>
+      ✅ <strong>Group routing sống lại</strong> — Mọi thông báo (checkin, BC, scorecard, leaderboard) giờ đến đúng nhóm<br>
+      ✅ <strong>Cron timing cập nhật</strong> — Daily scorecard → 23:33, Forgot checkout → 01:30, Leaderboard → T2+T6<br>
+      ✅ <strong>Checkout</strong> bảo vệ thời gian âm — không cho checkout ra số giờ < 0<br>
+      ✅ <strong>Moca</strong> chống mở ca trùng — không mở 2 ca cùng ngày<br>
+      ✅ <strong>Leaderboard</strong> gửi thêm vào HR GROUP
+    </div>
+    <div class="callout success">
+      <strong>12/03/2026 — Hệ thống Hiệu Suất & Cải tiến lớn</strong><br>
+      ✅ <strong>/score [tên]</strong> — Xem điểm hiệu suất tổng hợp: cá nhân 70% + nhóm 20% + công ty 10%<br>
+      ✅ <strong>/compositeall</strong> — Bảng xếp hạng hiệu suất toàn bộ nhân viên (GM only)<br>
+      ✅ <strong>/compositeview [tên]</strong> — Chi tiết đầy đủ hiệu suất 1 nhân viên (GM only)<br>
+      ✅ <strong>/nhaphang</strong> nâng cấp — Nhập nhiều món liên tiếp, giá hỗ trợ 180k / 1tr5 / 1.5tr<br>
+      ✅ <strong>/lichca view</strong> cải tiến — Hiện tất cả nhân viên kể cả người chưa có lịch<br>
+      ✅ <strong>/leaderboard</strong> chính xác hơn — Tính theo tuần/tháng/tất cả thời gian thực tế<br>
+      🛡️ Sửa crash checkin GPS + autoExp — hệ thống ổn định hơn<br>
+      🚧 <strong>Reward Engine</strong> — Townboard, Quest, Cash KPI đang phát triển — sẽ sớm ra mắt!
+    </div>
+  </div>
 
   <!-- LỆNH NHÂN VIÊN -->
   <div class="section" id="nhan-vien">
@@ -104,7 +133,8 @@
           <tr><td><span class="cmd">/checkout</span></td><td>Ra ca — ghi nhận giờ và tổng thời gian</td></tr>
           <tr><td><span class="cmd">/bc</span></td><td>Bàn giao ca — bot hỏi từng mục, kết quả tự lên nhóm</td></tr>
           <tr><td><span class="cmd">/profile</span> / <span class="cmd">/me</span></td><td>EXP, role, streak, số ca</td></tr>
-          <tr><td><span class="cmd">/leaderboard</span> / <span class="cmd">/lb</span></td><td>Bảng xếp hạng EXP</td></tr>
+          <tr><td><span class="cmd">/score</span></td><td>Điểm hiệu suất tổng hợp — tier S/A/B/C/D</td></tr>
+          <tr><td><span class="cmd">/leaderboard</span> / <span class="cmd">/lb</span></td><td>Bảng xếp hạng EXP — tuần / tháng / tất cả</td></tr>
           <tr><td><span class="cmd">/staff</span></td><td>Danh sách nhân viên — nhấn tên để xem profile</td></tr>
         </tbody>
       </table>
@@ -317,28 +347,118 @@
       </div>
     </div>
 
-    <h3>Reward Engine — Live (Chunks 1–4)</h3>
-
     <div class="cmd-block">
-      <div class="cmd-block-header"><span class="cmd-name">/tb</span><span class="role-tag all">Tất cả</span></div>
+      <div class="cmd-block-header"><span class="cmd-name">/setcompanykpi</span><span class="role-tag you">GM · Creator</span></div>
       <div class="cmd-block-body">
-        <p>Xem Townboard — danh sách tất cả quest/KPI/activity đang active. Mỗi card có nút <code>/join [id]</code>.</p>
+        <p>Đặt KPI công ty — mục tiêu tháng/quý cho toàn bộ tổ chức. Interactive flow.</p>
+        <ul>
+          <li>Chọn từ danh sách gợi ý (doanh thu, chuyên cần, BC compliance...) hoặc tự nhập</li>
+          <li>Set mục tiêu (số) + kỳ áp dụng (VD: "Tháng 3/2026")</li>
+          <li>Sau khi xác nhận → thông báo lên MANAGERS group</li>
+          <li><span class="cmd">/setcompanykpi delete [key]</span> — xóa KPI</li>
+        </ul>
+        <div class="warning-note">💡 KPI công ty chiếm 10% điểm hiệu suất tổng hợp — ảnh hưởng đến toàn bộ nhân viên.</div>
       </div>
     </div>
 
     <div class="cmd-block">
-      <div class="cmd-block-header"><span class="cmd-name">/posttask</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-header"><span class="cmd-name">/companyscore [key?] [giá trị?]</span><span class="role-tag you">GM · Creator (update) · Tất cả (xem)</span></div>
       <div class="cmd-block-body">
-        <p>Đăng quest/KPI/activity mới — interactive flow. Chọn loại, phần thưởng (EXP/tiền/item), hạn chót, số lượng tham gia. Sau khi đăng tự gửi thông báo lên group HR với deep link <code>/start taskinfo_[id]</code>.</p>
+        <p>Xem và cập nhật tiến độ KPI công ty.</p>
         <ul>
-          <li><strong>quest</strong> — nhiệm vụ một lần, single hoặc group target</li>
-          <li><strong>cash_kpi</strong> — KPI tiền mặt cá nhân, GM gán riêng cho staff</li>
-          <li><strong>activity</strong> — hoạt động lặp lại (ví dụ: bóng đá thứ 7, cầu lông thứ 2), open join</li>
+          <li><span class="cmd">/companyscore</span> — xem tất cả KPI + progress bar</li>
+          <li><span class="cmd">/companyscore revenue_monthly 450000000</span> — cập nhật giá trị hiện tại</li>
+          <li>Khi KPI đạt mục tiêu → 🎉 thông báo tự động</li>
+          <li>Khi TẤT CẢ KPI đạt → Company bonus multiplier kích hoạt!</li>
         </ul>
       </div>
     </div>
 
+    <h3 style="color:var(--yellow);">🚧 Reward Engine — Sắp Ra Mắt</h3>
+    <div class="callout warning">
+      <strong>Các lệnh Reward Engine đang được phát triển.</strong> Code đã sẵn sàng — sẽ kích hoạt khi hệ thống cơ bản ổn định. Bot sẽ thông báo khi mở.
+    </div>
+
+    <div class="cmd-block" style="opacity:0.6;">
+      <div class="cmd-block-header"><span class="cmd-name">/tb</span><span class="role-tag">🚧 Sắp mở</span></div>
+      <div class="cmd-block-body"><p>Xem Townboard — danh sách tất cả quest/KPI/activity đang active.</p></div>
+    </div>
+
+    <div class="cmd-block" style="opacity:0.6;">
+      <div class="cmd-block-header"><span class="cmd-name">/posttask</span><span class="role-tag">🚧 Sắp mở</span></div>
+      <div class="cmd-block-body"><p>Đăng quest/KPI/activity mới — interactive flow. Chọn loại, phần thưởng (EXP/tiền/item), hạn chót, số lượng tham gia.</p></div>
+    </div>
+
+    <div class="cmd-block" style="opacity:0.6;">
+      <div class="cmd-block-header"><span class="cmd-name">/confirmpayout [id]</span><span class="role-tag">🚧 Sắp mở</span></div>
+      <div class="cmd-block-body"><p>Xác nhận thanh toán cash reward. Không có args → xem tất cả payout đang chờ.</p></div>
+    </div>
+
+    <div class="cmd-block" style="opacity:0.6;">
+      <div class="cmd-block-header"><span class="cmd-name">/completetask · /canceltask · /kpihit · /cashkpi</span><span class="role-tag">🚧 Sắp mở</span></div>
+      <div class="cmd-block-body"><p>Xác nhận hoàn thành, huỷ task, xác nhận KPI đạt, tạo Cash KPI mới.</p></div>
+    </div>
+
   </div>
+
+  <!-- HIỆU SUẤT -->
+  <div class="section" id="score">
+    <div class="section-title">Hệ thống hiệu suất</div>
+    <h2>Điểm Hiệu Suất Tổng Hợp</h2>
+    <p>Mọi nhân viên được tính điểm dựa trên 30 ngày gần nhất. Công thức: <strong>Cá nhân 70% + Nhóm 20% + Công ty 10%</strong></p>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/score [tên?]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Xem điểm hiệu suất. Không có tên → xem của mình. Có tên → xem của nhân viên bất kỳ.</p>
+        <ul>
+          <li>3 lớp hiển thị: Tier headline → Thanh 70/20/10 → Chi tiết 5 chỉ số cá nhân</li>
+          <li>5 chỉ số: Chuyên cần (30%) · BC compliance (25%) · Lỗi đơn (20%) · EXP trajectory (15%) · Streak (10%)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/compositeall [trang?]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Bảng xếp hạng hiệu suất toàn bộ nhân viên. 15 người/trang.</p>
+        <ul>
+          <li>Header: KPI công ty + tổng nhân viên + điểm trung bình + phân bổ tier</li>
+          <li>Bảng: rank, tier icon, tên, thanh điểm, điểm cá nhân/nhóm/công ty</li>
+          <li>VD: <code>1. ⚡ Minh Tuấn ████████ 87.5 (92/71/60)</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/compositeview [tên]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Chi tiết đầy đủ hiệu suất 1 nhân viên — 4 lớp.</p>
+        <ul>
+          <li><strong>Headline:</strong> Tên, tier, điểm, xếp hạng (#N / tổng), phòng ban</li>
+          <li><strong>Tổng hợp:</strong> Thanh điểm cá nhân / nhóm / công ty</li>
+          <li><strong>Chi tiết cá nhân:</strong> 5 chỉ số con + dữ liệu cụ thể (bao nhiêu ca, bao nhiêu BC...)</li>
+          <li><strong>Nhóm:</strong> TB phòng ban — chuyên cần, BC compliance, error rate</li>
+        </ul>
+        <div class="warning-note">💡 Dùng khi review hiệu suất, chuẩn bị feedback, hoặc đánh giá trước promote.</div>
+      </div>
+    </div>
+
+    <h3>Bảng xếp hạng Tier</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tier</th><th>Điểm</th><th>Ý nghĩa</th></tr></thead>
+        <tbody>
+          <tr><td>⚡ S</td><td>90–100</td><td>Xuất sắc — top nhân viên</td></tr>
+          <tr><td>🔥 A</td><td>75–89</td><td>Mạnh — hiệu suất rất tốt</td></tr>
+          <tr><td>✅ B</td><td>60–74</td><td>Ổn định — đang làm tốt</td></tr>
+          <tr><td>📈 C</td><td>45–59</td><td>Đang phát triển — cần cố gắng thêm</td></tr>
+          <tr><td>⚠️ D</td><td>0–44</td><td>Cần cải thiện</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="section" id="exp-system">
     <div class="section-title">Cơ chế tích lũy</div>
     <h2>EXP System</h2>
@@ -408,8 +528,8 @@
           <tr><td>/moca · /dongca</td><td>Báo cáo mở / đóng ca</td></tr>
           <tr><td>/bc hoàn thành</td><td>Bàn giao ca theo bộ phận</td></tr>
           <tr><td>/nhaphang hoàn thành</td><td>Phiếu nhập hàng + ảnh hóa đơn</td></tr>
-          <tr><td>22:30 ICT (auto)</td><td>Bảng điểm danh ngày</td></tr>
-          <tr><td>T2 08:00 ICT (auto)</td><td>Bảng xếp hạng EXP tuần</td></tr>
+          <tr><td>23:33 ICT (auto)</td><td>Bảng điểm danh ngày</td></tr>
+          <tr><td>T2+T6 08:00 ICT (auto)</td><td>Bảng xếp hạng EXP tuần</td></tr>
           <tr><td>23:30 ICT (auto)</td><td>No-show → trừ EXP tự động</td></tr>
           <tr><td>08:00 ICT (auto)</td><td>🎂 Sinh nhật nhân viên hôm nay + 7 ngày tới</td></tr>
         </tbody>
@@ -425,12 +545,12 @@
       <div class="cron-item"><div class="cron-time">08:00 ICT</div><div class="cron-desc">Birthday check<span>Alert sinh nhật hôm nay + 7 ngày tới vào nhóm. Cập nhật ngày sinh: /update @username dob DD/MM/YYYY</span></div></div>
       <div class="cron-item"><div class="cron-time">08:45 ICT</div><div class="cron-desc">Reminder /moca<span>Nhắc trưởng ca nếu chưa mở ca.</span></div></div>
       <div class="cron-item"><div class="cron-time">14:00 ICT</div><div class="cron-desc">Reminder /bc<span>Nhắc nhân viên bàn giao ca.</span></div></div>
-      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Danh sách nhân viên chưa checkout gửi cho GM/QL. Dùng /forcecheckout nếu cần.</span></div></div>
+      <div class="cron-item"><div class="cron-time">01:30 ICT</div><div class="cron-desc">Nhắc checkout<span>Danh sách nhân viên chưa checkout gửi cho GM/QL. Dùng /forcecheckout nếu cần.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:59 ICT</div><div class="cron-desc">Cửa sổ báo cáo DT<span>Nhắc reporter nộp doanh thu. Cửa sổ 24h.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:00 ICT</div><div class="cron-desc">Cảnh báo báo cáo DT trễ<span>Alert GM nếu báo cáo ngày hôm qua chưa được nộp.</span></div></div>
-      <div class="cron-item"><div class="cron-time">22:30 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày.</span></div></div>
+      <div class="cron-item"><div class="cron-time">23:33 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày → MANAGERS + HR GROUP.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Có lịch ca không check-in → -50 EXP tự động.</span></div></div>
-      <div class="cron-item"><div class="cron-time">T2 08:00 ICT</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần.</span></div></div>
+      <div class="cron-item"><div class="cron-time">T2+T6 08:00</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần → MANAGERS + HR GROUP.</span></div></div>
     </div>
   </div>
 
@@ -448,7 +568,7 @@
     var year  = d.getFullYear();
     var str   = day + '/' + month + '/' + year;
     document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
-    document.getElementById('badge-date').textContent  = 'Cập nhật ' + str + ' — Reward Engine live';
+    document.getElementById('badge-date').textContent  = 'Cập nhật 12/03/2026';
   })();
 </script>
 </body>

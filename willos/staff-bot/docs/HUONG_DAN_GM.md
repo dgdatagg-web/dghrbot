@@ -1,5 +1,5 @@
 # Hướng Dẫn GM — DG HR Bot
-**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
+**Phiên bản:** 1.2 | **Cập nhật:** 2026-03-11
 **Áp dụng cho:** GM ⚔️
 
 > Tài liệu này dành riêng cho GM. GM có toàn quyền hệ thống.
@@ -15,11 +15,12 @@
 5. [Duyệt lên Quản lý — /approve](#5-duyệt-lên-quản-lý--approve)
 6. [Báo cáo doanh thu — /baocaodoanhthu](#6-báo-cáo-doanh-thu--baocaodoanhthu)
 7. [Reward Engine — Townboard & Payout](#7-reward-engine--townboard--payout)
-8. [Xử lý vi phạm](#8-xử-lý-vi-phạm)
-9. [Quản lý EXP thủ công](#9-quản-lý-exp-thủ-công)
-10. [Tình huống thường gặp](#10-tình-huống-thường-gặp)
-11. [Cron jobs — Hệ thống tự động](#11-cron-jobs--hệ-thống-tự-động)
-12. [Dữ liệu và bảo mật](#12-dữ-liệu-và-bảo-mật)
+8. [Điểm Hiệu Suất Tổng Hợp — /score](#8-điểm-hiệu-suất-tổng-hợp--score)
+9. [Xử lý vi phạm](#9-xử-lý-vi-phạm)
+10. [Quản lý EXP thủ công](#10-quản-lý-exp-thủ-công)
+11. [Tình huống thường gặp](#11-tình-huống-thường-gặp)
+12. [Cron jobs — Hệ thống tự động](#12-cron-jobs--hệ-thống-tự-động)
+13. [Dữ liệu và bảo mật](#13-dữ-liệu-và-bảo-mật)
 
 ---
 
@@ -218,7 +219,62 @@ Sau khi xác nhận → nhân viên nhận DM thông báo đã được thanh to
 
 ---
 
-## 8. Xử Lý Vi Phạm
+## 8. Điểm Hiệu Suất Tổng Hợp — /score
+
+Xem điểm tổng hợp hiệu suất 30 ngày của bất kỳ nhân viên nào.
+
+### Cú pháp
+```
+/score                  → xem điểm của chính mình
+/score [tên nhân viên]  → xem điểm của nhân viên bất kỳ (GM/Creator only)
+```
+
+### Ví dụ
+```
+/score
+/score Minh Tuấn
+/score Thu Hà
+```
+
+### Nội dung hiển thị — 3 lớp
+
+**Lớp 1 — Headline**
+- Tên nhân viên, Tier xếp hạng, điểm tổng hợp / 100
+
+**Lớp 2 — Tổng hợp 70/20/10**
+| Thành phần | Tỷ trọng | Nội dung |
+|-----------|---------|---------|
+| 👤 Cá nhân | 70% | Điểm hiệu suất cá nhân của nhân viên đó |
+| 👥 Nhóm | 20% | Trung bình phòng ban của nhân viên |
+| 🏢 Công ty | 10% | % KPI công ty đạt được trong tháng |
+
+**Lớp 3 — Chi tiết cá nhân**
+| Chỉ số | Tỷ trọng trong phần cá nhân |
+|--------|--------------------------|
+| Chuyên cần (check-in / 30 ngày) | 30% |
+| Báo cáo ca (BC nộp / ngày có mặt) | 25% |
+| Lỗi đơn (don_saisot_log) | 20% |
+| EXP trajectory (net EXP 30 ngày) | 15% |
+| Streak (ngày liên tiếp sạch) | 10% |
+
+### Bảng xếp hạng Tier
+| Tier | Điểm | Ý nghĩa |
+|------|------|---------|
+| ⚡ S | 90–100 | Xuất sắc |
+| 🔥 A | 75–89 | Mạnh |
+| ✅ B | 60–74 | Ổn định |
+| 📈 C | 45–59 | Đang phát triển |
+| ⚠️ D | 0–44 | Cần cải thiện |
+
+### Lưu ý
+- Dữ liệu tính từ **30 ngày gần nhất** — luôn rolling, không cố định theo tháng
+- Nhân viên thông thường chỉ xem được điểm của chính mình
+- GM và Creator xem được điểm của bất kỳ ai
+- Nếu công ty chưa đặt KPI tháng → điểm công ty tính là 0 (hệ thống thông báo rõ)
+
+---
+
+## 9. Xử Lý Vi Phạm
 
 ### Quy trình chuẩn
 1. **Xác minh** — xem log, hỏi quản lý ca xác nhận
@@ -236,7 +292,7 @@ Sau khi xác nhận → nhân viên nhận DM thông báo đã được thanh to
 
 ---
 
-## 9. Quản Lý EXP Thủ Công
+## 10. Quản Lý EXP Thủ Công
 
 ### Khi nào cần can thiệp thủ công
 | Tình huống | Hành động |
@@ -254,7 +310,7 @@ Sau khi xác nhận → nhân viên nhận DM thông báo đã được thanh to
 
 ---
 
-## 10. Tình Huống Thường Gặp
+## 11. Tình Huống Thường Gặp
 
 ### Nhân viên khiếu nại bị trừ EXP không đúng
 1. Kiểm tra log qua database (nếu cần báo kỹ thuật)
@@ -286,7 +342,7 @@ Sau khi xác nhận → nhân viên nhận DM thông báo đã được thanh to
 
 ---
 
-## 11. Cron Jobs — Hệ Thống Tự Động
+## 12. Cron Jobs — Hệ Thống Tự Động
 
 Hệ thống chạy tự động theo lịch. GM cần biết để không can thiệp nhầm thời điểm.
 
@@ -304,7 +360,7 @@ Hệ thống chạy tự động theo lịch. GM cần biết để không can t
 
 ---
 
-## 12. Dữ Liệu Và Bảo Mật
+## 13. Dữ Liệu Và Bảo Mật
 
 ### Database location
 ```

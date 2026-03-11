@@ -1,5 +1,5 @@
 # Hướng Dẫn Quản Lý — DG HR Bot
-**Phiên bản:** 1.1 | **Cập nhật:** 2026-03-11
+**Phiên bản:** 1.2 | **Cập nhật:** 2026-03-11
 **Áp dụng cho:** Quản lý 🛡️ · Trưởng ca (có thêm quyền `/moca` `/dongca`)
 
 > Tài liệu này dành riêng cho Quản lý. Các quyền ở đây **bổ sung thêm** vào quyền nhân viên thông thường.
@@ -15,9 +15,10 @@
 5. [Nhập hàng — /nhaphang](#5-nhập-hàng--nhaphang)
 6. [Xem báo cáo ca và tài chính](#6-xem-báo-cáo-ca-và-tài-chính)
 7. [Reward Engine — Task & KPI](#7-reward-engine--task--kpi)
-8. [Trách nhiệm quản lý vận hành](#8-trách-nhiệm-quản-lý-vận-hành)
-9. [Tình huống thường gặp](#9-tình-huống-thường-gặp)
-10. [Thông báo tự động trong nhóm](#10-thông-báo-tự-động-trong-nhóm)
+8. [Điểm Hiệu Suất Tổng Hợp — /score](#8-điểm-hiệu-suất-tổng-hợp--score)
+9. [Trách nhiệm quản lý vận hành](#9-trách-nhiệm-quản-lý-vận-hành)
+10. [Tình huống thường gặp](#10-tình-huống-thường-gặp)
+11. [Thông báo tự động trong nhóm](#11-thông-báo-tự-động-trong-nhóm)
 
 ---
 
@@ -178,7 +179,53 @@ Bot hỏi từng bước: tên KPI, số tiền thưởng, thời hạn. Tự đ
 
 ---
 
-## 8. Trách Nhiệm Quản Lý Vận Hành
+## 8. Điểm Hiệu Suất Tổng Hợp — /score
+
+Xem điểm tổng hợp hiệu suất cá nhân của chính mình.
+
+### Cú pháp
+```
+/score
+```
+
+### Nội dung hiển thị — 3 lớp
+
+**Lớp 1 — Headline**
+Tier xếp hạng + điểm tổng hợp / 100.
+
+**Lớp 2 — Tổng hợp 70/20/10**
+| Thành phần | Tỷ trọng | Nội dung |
+|-----------|---------|---------|
+| 👤 Cá nhân | 70% | Điểm hiệu suất cá nhân |
+| 👥 Nhóm | 20% | Trung bình phòng ban |
+| 🏢 Công ty | 10% | % KPI công ty đạt tháng này |
+
+**Lớp 3 — Chi tiết cá nhân**
+| Chỉ số | Tỷ trọng |
+|--------|---------|
+| Chuyên cần (check-in 30 ngày) | 30% |
+| Báo cáo ca (BC đầy đủ) | 25% |
+| Lỗi đơn | 20% |
+| EXP tăng trưởng | 15% |
+| Streak ngày liên tiếp | 10% |
+
+### Bảng xếp hạng Tier
+| Tier | Điểm | Ý nghĩa |
+|------|------|---------|
+| ⚡ S | 90–100 | Xuất sắc |
+| 🔥 A | 75–89 | Mạnh |
+| ✅ B | 60–74 | Ổn định |
+| 📈 C | 45–59 | Đang phát triển |
+| ⚠️ D | 0–44 | Cần cải thiện |
+
+### Lưu ý
+- Dữ liệu tính từ **30 ngày gần nhất** — rolling, không cố định theo tháng
+- Quản lý chỉ xem được điểm của **chính mình** — xem điểm nhân viên khác là quyền GM
+- Điểm thay đổi theo từng ngày khi dữ liệu mới vào
+
+---
+
+## 9. Trách Nhiệm Quản Lý Vận Hành
 
 ### Hàng ngày
 | Thời điểm | Việc cần làm |
@@ -198,7 +245,7 @@ Bot hỏi từng bước: tên KPI, số tiền thưởng, thời hạn. Tự đ
 
 ---
 
-## 8. Tình Huống Thường Gặp
+## 10. Tình Huống Thường Gặp
 
 ### Nhân viên quên checkout
 - Nhắc nhân viên checkout nếu còn kịp
@@ -229,7 +276,7 @@ Bot hỏi từng bước: tên KPI, số tiền thưởng, thời hạn. Tự đ
 
 ---
 
-## 9. Thông Báo Tự Động Trong Nhóm
+## 11. Thông Báo Tự Động Trong Nhóm
 
 Bot tự đăng vào nhóm khi có các sự kiện:
 

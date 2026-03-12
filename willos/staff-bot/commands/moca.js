@@ -131,6 +131,15 @@ async function handle(bot, msg, args, db) {
   const today = ictNow.toISOString().split('T')[0];
   const defaultTime = ictTimeStr(ictNow);
 
+  // Double-open guard — one moca per day per staff
+  const existingMoca = db.getShiftReportByDate(staff.id, 'moca', today);
+  if (existingMoca) {
+    return bot.sendMessage(chatId,
+      `⚠️ Bạn đã báo cáo mở bếp hôm nay rồi!\n` +
+      `Nếu cần sửa, liên hệ quản lý.`
+    );
+  }
+
   clearSession(telegramId);
 
   const timeoutHandle = setSessionTimeout(bot, telegramId, chatId);

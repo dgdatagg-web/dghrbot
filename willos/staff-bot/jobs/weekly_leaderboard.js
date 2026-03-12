@@ -209,11 +209,11 @@ function startWeeklyLeaderboardJob(bot, dbModule, firedJobs) {
 
   const TARGET_HOUR      = 8;
   const TARGET_MINUTE    = 0;
-  const TARGET_DAY       = 1; // Monday
+  const TARGET_DAYS      = [1, 5]; // Monday + Friday
 
   setInterval(async () => {
     const { hours, minutes, dayOfWeek } = getIctTime();
-    if (dayOfWeek !== TARGET_DAY || hours !== TARGET_HOUR || minutes !== TARGET_MINUTE) return;
+    if (!TARGET_DAYS.includes(dayOfWeek) || hours !== TARGET_HOUR || minutes !== TARGET_MINUTE) return;
 
     const date = getIctDate();
     const jobKey = `weekly_leaderboard_${date}`;
@@ -233,7 +233,7 @@ function startWeeklyLeaderboardJob(bot, dbModule, firedJobs) {
     }
   }, 60 * 1000);
 
-  console.log('[JOB] weekly_leaderboard scheduled — fires Monday 08:00 ICT');
+  console.log('[JOB] weekly_leaderboard scheduled — fires Mon + Fri 08:00 ICT');
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────

@@ -9,6 +9,8 @@
 
 'use strict';
 
+const { broadcastEvent } = require('../utils/groups');
+
 async function handle(bot, msg, args, db) {
   const chatId = msg.chat.id;
   const telegramId = String(msg.from.id);
@@ -76,30 +78,39 @@ async function handle(bot, msg, args, db) {
   const actionLabel = action === 'approved' ? '✅ DUYỆT' : '❌ TỪ CHỐI';
   const actionEmoji = action === 'approved' ? '✅' : '❌';
 
-  // Notify actor
-  await bot.sendMessage(chatId,
-    `${actionLabel} tăng ca\n` +
+  const resultMsg =
+    `${actionLabel} TĂNG CA\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 ${match.name} (${match.department || '—'})\n` +
     `📅 ${match.date} đến ${match.requested_end}\n` +
     `📝 ${match.reason}\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
-    `Duyệt bởi: ${actor.name}`
+    `Duyệt bởi: ${actor.name}`;
+
+  // Notify actor
+  await bot.sendMessage(chatId, resultMsg);
+
+  // Broadcast to MANAGERS group
+  await broadcastEvent(bot, 'approveot', resultMsg).catch(e =>
+    console.error('[approveot] broadcast error:', e.message)
   );
 
-  // DM the staff member if they have private_chat_id
+  // DM the staff member — try private_chat_id first, fall back to telegram_id
   try {
     const targetStaff = db.getStaffById(match.staff_id);
-    if (targetStaff && targetStaff.private_chat_id) {
-      await bot.sendMessage(targetStaff.private_chat_id,
-        `${actionEmoji} Yêu cầu tăng ca của bạn đã được ${action === 'approved' ? 'DUYỆT' : 'TỪ CHỐI'}.\n` +
-        `━━━━━━━━━━━━━━━━━━━━\n` +
-        `📅 ${match.date} đến ${match.requested_end}\n` +
-        `👤 Duyệt bởi: ${actor.name}\n` +
-        (action === 'approved'
-          ? `✅ Giờ làm thêm sẽ được tính vào chấm công tháng này.`
-          : `⚠️ Giờ làm thêm hôm nay sẽ không tính vào lương.`)
-      ).catch(() => {});
+    if (targetStaff) {
+      const dmTarget = targetStaff.private_chat_id || targetStaff.telegram_id;
+      if (dmTarget) {
+        await bot.sendMessage(dmTarget,
+          `${actionEmoji} Yêu cầu tăng ca của bạn đã được ${action === 'approved' ? 'DUYỆT' : 'TỪ CHỐI'}.\n` +
+          `━━━━━━━━━━━━━━━━━━━━\n` +
+          `📅 ${match.date} đến ${match.requested_end}\n` +
+          `👤 Duyệt bởi: ${actor.name}\n` +
+          (action === 'approved'
+            ? `✅ Giờ làm thêm sẽ được tính vào chấm công tháng này.`
+            : `⚠️ Giờ làm thêm hôm nay sẽ không tính vào lương.`)
+        ).catch(() => {});
+      }
     }
   } catch (e) {
     console.error('[approveot] DM error:', e.message);

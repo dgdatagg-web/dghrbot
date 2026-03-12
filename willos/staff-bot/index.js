@@ -122,6 +122,8 @@ const kpihit          = require('./commands/kpihit');
 const score           = require('./commands/score');
 const compositeall    = require('./commands/compositeall');
 const compositeview   = require('./commands/compositeview');
+const setcompanykpi   = require('./commands/setcompanykpi');
+const companyscore    = require('./commands/companyscore');
 const rehire          = require('./commands/rehire');
 const setvaluation    = require('./commands/setvaluation');
 
@@ -259,6 +261,7 @@ bot.on('message', async (msg) => {
     await doanhthu.handleStep(bot, msg, db).catch(err => console.error('[Revenue] step error:', err.message));
     await posttask.handleStep(bot, msg, db).catch(err => console.error('[Posttask] step error:', err.message));
     await cashkpi.handleStep(bot, msg, db).catch(err => console.error('[Cashkpi] step error:', err.message));
+    await setcompanykpi.handleStep(bot, msg, db).catch(err => console.error('[SetCompanyKpi] step error:', err.message));
   }
 });
 
@@ -351,6 +354,14 @@ bot.onText(/^\/compositeall(\s|$)/i, (msg) => {
 
 bot.onText(/^\/compositeview(\s|$)/i, (msg) => {
   safeHandle(compositeview.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/setcompanykpi(\s|$)/i, (msg) => {
+  safeHandle(setcompanykpi.handle, bot, msg, parseArgs(msg.text));
+});
+
+bot.onText(/^\/companyscore(\s|$)/i, (msg) => {
+  safeHandle(companyscore.handle, bot, msg, parseArgs(msg.text));
 });
 
 bot.onText(/^\/canceltask(\s|$)/i, (msg) => {
@@ -804,6 +815,20 @@ bot.on('callback_query', async (query) => {
     });
   }
 
+  // Route /setcompanykpi callbacks
+  if (data.startsWith('ckpi_') && data !== 'ckpi_period_skip') {
+    return setcompanykpi.handleCallback(bot, query, db).catch(err => {
+      console.error('[CB setcompanykpi]', err);
+      bot.answerCallbackQuery(query.id).catch(() => {});
+    });
+  }
+  if (data === 'ckpi_period_skip') {
+    return setcompanykpi.handlePeriodSkip(bot, query).catch(err => {
+      console.error('[CB setcompanykpi period]', err);
+      bot.answerCallbackQuery(query.id).catch(() => {});
+    });
+  }
+
   // Approve/Reject callbacks (admin only)
   const creatorIds = (process.env.CREATOR_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
   const gmIds = (process.env.GM_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -908,6 +933,8 @@ bot.onText(/^\/help(\s|$)/i, (msg) => {
     lines.push('/delete [tên] — Xóa nhân viên');
     lines.push('/compositeall — Bảng hiệu suất toàn bộ nhân viên');
     lines.push('/compositeview [tên] — Chi tiết hiệu suất nhân viên');
+    lines.push('/setcompanykpi — Đặt KPI công ty');
+    lines.push('/companyscore — Xem tiến độ KPI công ty');
     lines.push('/score [tên] — Xem điểm của nhân viên khác');
   } else if (isManager) {
     // Reward engine hidden — under construction
@@ -1039,10 +1066,10 @@ cron.schedule('0 23 * * *', () => {
   runMasterSheetSync().catch(err => console.error('[CRON] master_sheet error:', err.message));
 }, { timezone: 'Asia/Ho_Chi_Minh' });
 
-// ─── Cron: Forgot checkout alert — 22:30 ICT ─────────────────────────────────
+// ─── Cron: Forgot checkout alert — 01:30 ICT (+1 day) ─────────────────────────
 // Alert GMs/Managers of staff who checked in but never checked out.
 // No EXP deduction — management reviews and decides manually.
-cron.schedule('30 22 * * *', async () => {
+cron.schedule('30 1 * * *', async () => {
   try {
     const ictNow = new Date(Date.now() + 7 * 60 * 60 * 1000);
     const today = ictNow.toISOString().split('T')[0];
@@ -1059,7 +1086,7 @@ cron.schedule('30 22 * * *', async () => {
     });
 
     const msg =
-      `⚠️ CHƯA CHECKOUT — 22:30\n` +
+      `⚠️ CHƯA CHECKOUT — 01:30\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
       `${lines.join('\n')}\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +

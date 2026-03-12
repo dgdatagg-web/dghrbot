@@ -1,5 +1,5 @@
 # Hướng Dẫn GM — DG HR Bot
-**Phiên bản:** 1.3 | **Cập nhật:** 2026-03-12
+**Phiên bản:** 1.4 | **Cập nhật:** 2026-03-12
 **Áp dụng cho:** GM ⚔️
 
 > Tài liệu này dành riêng cho GM. GM có toàn quyền hệ thống.
@@ -344,6 +344,59 @@ Xem chi tiết đầy đủ hiệu suất **một nhân viên cụ thể** — b
 
 ---
 
+## 8d. Đặt KPI Công Ty — /setcompanykpi
+
+GM và Creator đặt mục tiêu KPI cho toàn công ty. KPI công ty chiếm **10% điểm hiệu suất tổng hợp** của tất cả nhân viên.
+
+### Cú pháp
+```
+/setcompanykpi             → bắt đầu flow đặt KPI mới (interactive)
+/setcompanykpi delete [key] → xóa KPI
+```
+
+### Flow đặt KPI
+1. Chọn loại KPI từ danh sách gợi ý (doanh thu, chuyên cần, BC compliance...) hoặc nhập tự do
+2. Nhập mục tiêu (con số)
+3. Chọn kỳ áp dụng (VD: "Tháng 3/2026") hoặc bỏ qua
+4. Xác nhận → KPI lưu + thông báo MANAGERS group
+
+### Ví dụ KPI
+| KPI key | Ý nghĩa | Mục tiêu ví dụ |
+|---------|---------|----------------|
+| revenue_monthly | Doanh thu tháng | 500,000,000 |
+| attendance_rate | Tỷ lệ chuyên cần | 95 |
+| bc_compliance | Tỷ lệ nộp BC | 90 |
+| customer_rating | Đánh giá khách hàng | 4.5 |
+
+> 💡 KPI gợi ý hiện tại là tĩnh. Trong tương lai, LEON sẽ phân tích dữ liệu và gợi ý KPI phù hợp theo từng bộ phận.
+
+---
+
+## 8e. Xem Tiến Độ KPI Công Ty — /companyscore
+
+### Cú pháp
+```
+/companyscore                          → xem tất cả KPI + progress bar
+/companyscore [key] [giá trị hiện tại] → cập nhật điểm (GM/Creator only)
+```
+
+### Ví dụ
+```
+/companyscore
+/companyscore revenue_monthly 450000000
+/companyscore attendance_rate 92
+```
+
+### Khi KPI đạt mục tiêu
+- Bot thông báo 🎉 khi một KPI hit target
+- Khi **TẤT CẢ** KPI đạt → Company bonus multiplier kích hoạt (sắp ra mắt)
+
+### Ai xem được
+- **Tất cả nhân viên** xem được bảng KPI (view only)
+- **GM/Creator** mới có quyền cập nhật giá trị
+
+---
+
 ## 9. Xử Lý Vi Phạm
 
 ### Quy trình chuẩn
@@ -419,8 +472,9 @@ Hệ thống chạy tự động theo lịch. GM cần biết để không can t
 | Job | Thời gian | Chức năng |
 |-----|-----------|-----------|
 | No-show detection | **23:30 ICT** hàng ngày | So lịch ca vs check-in. Ai có lịch mà không check-in → trừ -50 EXP |
-| Bảng điểm danh | Mỗi sáng | Đăng vào nhóm |
-| Bảng xếp hạng EXP | Đầu tuần | Đăng vào nhóm |
+| Daily scorecard | **23:33 ICT** hàng ngày | Đăng vào MANAGERS + HR GROUP |
+| Forgot checkout | **01:30 ICT** ngày hôm sau | Danh sách nhân viên chưa checkout |
+| Bảng xếp hạng EXP | **T2 + T6 08:00** | Đăng vào MANAGERS + HR GROUP |
 | Nhắc moca | **08:45** | Nhắc trưởng ca |
 | Nhắc bàn giao | **14:00** | Nhắc nhân viên nộp `/bc` |
 

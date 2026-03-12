@@ -367,8 +367,8 @@ function startDailyScorecardJob(bot, dbModule, firedJobs) {
 
   const TOPIC_ID = 172;
 
-  const TARGET_HOUR   = 22;
-  const TARGET_MINUTE = 30;
+  const TARGET_HOUR   = 23;
+  const TARGET_MINUTE = 33;
 
   setInterval(async () => {
     const { hours, minutes } = getIctTime();
@@ -392,7 +392,7 @@ function startDailyScorecardJob(bot, dbModule, firedJobs) {
     }
   }, 60 * 1000);
 
-  console.log('[JOB] daily_scorecard scheduled — fires at 22:30 ICT');
+  console.log('[JOB] daily_scorecard scheduled — fires at 23:33 ICT');
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────

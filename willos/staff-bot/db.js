@@ -447,14 +447,22 @@ function runMigrations() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS company_kpi_targets (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      reward_id INTEGER NOT NULL REFERENCES reward_definitions(id),
+      reward_id INTEGER REFERENCES reward_definitions(id),
       kpi_key TEXT NOT NULL,
       target_value REAL NOT NULL,
-      current_value REAL,
+      current_value REAL DEFAULT 0,
       hit INTEGER NOT NULL DEFAULT 0,
-      evaluated_at TEXT
+      period TEXT,
+      set_by INTEGER,
+      evaluated_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
     )
   `);
+
+  // Migration: add columns to company_kpi_targets for standalone GM workflow
+  try { db.exec(`ALTER TABLE company_kpi_targets ADD COLUMN period TEXT;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE company_kpi_targets ADD COLUMN set_by INTEGER;`); } catch (_) {}
+  try { db.exec(`ALTER TABLE company_kpi_targets ADD COLUMN created_at TEXT DEFAULT (datetime('now'));`); } catch (_) {}
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS townboard_posts (
@@ -1386,6 +1394,68 @@ function getReceiptsByReport(reportId) {
   return getDb().prepare(`SELECT * FROM revenue_receipts WHERE report_id = ?`).all(reportId);
 }
 
+// ─── Company KPI Targets ─────────────────────────────────────────────────────
+
+function getCompanyKpiTargets(period) {
+  if (period) {
+    return getDb().prepare(`
+      SELECT * FROM company_kpi_targets WHERE period = ? ORDER BY id
+    `).all(period);
+  }
+  return getDb().prepare(`SELECT * FROM company_kpi_targets ORDER BY id`).all();
+}
+
+function getCompanyKpiByKey(kpiKey, period) {
+  if (period) {
+    return getDb().prepare(`
+      SELECT * FROM company_kpi_targets WHERE kpi_key = ? AND period = ?
+    `).get(kpiKey, period);
+  }
+  return getDb().prepare(`
+    SELECT * FROM company_kpi_targets WHERE kpi_key = ? ORDER BY id DESC LIMIT 1
+  `).get(kpiKey);
+}
+
+function upsertCompanyKpi({ kpiKey, targetValue, currentValue, period, setBy }) {
+  const existing = period
+    ? getDb().prepare(`SELECT id FROM company_kpi_targets WHERE kpi_key = ? AND period = ?`).get(kpiKey, period)
+    : getDb().prepare(`SELECT id FROM company_kpi_targets WHERE kpi_key = ?`).get(kpiKey);
+
+  if (existing) {
+    return getDb().prepare(`
+      UPDATE company_kpi_targets
+      SET target_value = ?, current_value = COALESCE(?, current_value), period = COALESCE(?, period), set_by = ?, evaluated_at = datetime('now')
+      WHERE id = ?
+    `).run(targetValue, currentValue, period, setBy, existing.id);
+  }
+  return getDb().prepare(`
+    INSERT INTO company_kpi_targets (kpi_key, target_value, current_value, period, set_by, hit)
+    VALUES (?, ?, ?, ?, ?, 0)
+  `).run(kpiKey, targetValue, currentValue || 0, period, setBy);
+}
+
+function updateCompanyKpiScore(kpiKey, currentValue, period) {
+  const target = period
+    ? getDb().prepare(`SELECT id, target_value FROM company_kpi_targets WHERE kpi_key = ? AND period = ?`).get(kpiKey, period)
+    : getDb().prepare(`SELECT id, target_value FROM company_kpi_targets WHERE kpi_key = ?`).get(kpiKey);
+
+  if (!target) return null;
+
+  const hit = currentValue >= target.target_value ? 1 : 0;
+  getDb().prepare(`
+    UPDATE company_kpi_targets SET current_value = ?, hit = ?, evaluated_at = datetime('now') WHERE id = ?
+  `).run(currentValue, hit, target.id);
+
+  return { id: target.id, kpiKey, targetValue: target.target_value, currentValue, hit: hit === 1 };
+}
+
+function deleteCompanyKpi(kpiKey, period) {
+  if (period) {
+    return getDb().prepare(`DELETE FROM company_kpi_targets WHERE kpi_key = ? AND period = ?`).run(kpiKey, period);
+  }
+  return getDb().prepare(`DELETE FROM company_kpi_targets WHERE kpi_key = ?`).run(kpiKey);
+}
+
 module.exports = {
   initDb,
   getDb,
@@ -1516,4 +1586,10 @@ module.exports = {
       WHERE status = 'active'
     `).run(ict);
   },
+  // Company KPI targets
+  getCompanyKpiTargets,
+  getCompanyKpiByKey,
+  upsertCompanyKpi,
+  updateCompanyKpiScore,
+  deleteCompanyKpi,
 };

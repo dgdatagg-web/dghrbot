@@ -6,6 +6,8 @@
 
 'use strict';
 
+const { broadcastEvent } = require('../utils/groups');
+
 async function handle(bot, msg, args, db) {
   const chatId = msg.chat.id;
   const telegramId = String(msg.from.id);
@@ -71,7 +73,22 @@ async function handle(bot, msg, args, db) {
     `Chờ quản lý duyệt. Nếu không được duyệt, giờ OT sẽ không tính vào lương.`
   );
 
-  // Notify GMs and managers with private_chat_id
+  // Broadcast to MANAGERS group
+  const groupMsg =
+    `🔔 YÊU CẦU TĂNG CA\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `👤 ${staff.name} (${staff.department || '—'})\n` +
+    `📅 ${today}\n` +
+    `⏰ Kết thúc dự kiến: ${requestedEnd}\n` +
+    `📝 ${reason}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `Dùng /approveot để duyệt hoặc từ chối.`;
+
+  await broadcastEvent(bot, 'tangca', groupMsg).catch(e =>
+    console.error('[tangca] broadcast error:', e.message)
+  );
+
+  // Also DM managers with private_chat_id
   try {
     const allStaff = db.getStaffWithPrivateChatId();
     const notifyRoles = ['gm', 'creator', 'quanly'];
@@ -79,17 +96,11 @@ async function handle(bot, msg, args, db) {
       if (!notifyRoles.includes(mgr.role)) continue;
       if (mgr.id === staff.id) continue;
       await bot.sendMessage(mgr.private_chat_id,
-        `🔔 YÊU CẦU TĂNG CA\n` +
-        `━━━━━━━━━━━━━━━━━━━━\n` +
-        `👤 ${staff.name} (${staff.department || '—'})\n` +
-        `⏰ Kết thúc dự kiến: ${requestedEnd}\n` +
-        `📝 ${reason}\n` +
-        `━━━━━━━━━━━━━━━━━━━━\n` +
-        `Dùng /approveot để duyệt hoặc từ chối.`
+        groupMsg
       ).catch(() => {});
     }
   } catch (e) {
-    console.error('[tangca] notify error:', e.message);
+    console.error('[tangca] DM notify error:', e.message);
   }
 }
 

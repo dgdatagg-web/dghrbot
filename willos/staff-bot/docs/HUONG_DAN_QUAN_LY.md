@@ -1,5 +1,5 @@
 # Hướng Dẫn Quản Lý — DG HR Bot
-**Phiên bản:** 1.3 | **Cập nhật:** 2026-03-12
+**Phiên bản:** 1.4 | **Cập nhật:** 2026-03-12
 **Áp dụng cho:** Quản lý 🛡️ · Trưởng ca (có thêm quyền `/moca` `/dongca`)
 
 > Tài liệu này dành riêng cho Quản lý. Các quyền ở đây **bổ sung thêm** vào quyền nhân viên thông thường.
@@ -295,8 +295,8 @@ Bot tự đăng vào nhóm khi có các sự kiện:
 | `/dongca` hoàn thành | Báo cáo đóng ca + tổng kết |
 | `/bc` hoàn thành | Bàn giao ca theo bộ phận |
 | `/nhaphang` hoàn thành | Phiếu nhập hàng + ảnh |
-| Mỗi sáng (cron) | Bảng điểm danh ngày |
-| Mỗi tuần (cron) | Bảng xếp hạng EXP |
+| Mỗi đêm (cron) | Bảng điểm danh ngày (23:33) |
+| T2 + T6 (cron) | Bảng xếp hạng EXP (08:00) |
 | 23:30 ICT (cron) | Phát hiện no-show → trừ EXP |
 
 ---

@@ -1,5 +1,5 @@
 # Hướng Dẫn Nhân Viên — DG HR Bot
-**Phiên bản:** 1.2 | **Cập nhật:** 2026-03-12
+**Phiên bản:** 1.3 | **Cập nhật:** 2026-03-12
 **Áp dụng cho:** Newbie 🐣 · Nhân viên ⚡ · Kỳ cựu 🔥
 
 ---
@@ -94,6 +94,7 @@ Nếu cần thoát: gõ `/cancel` hoặc `/huy`
 |------|-----------|
 | `/profile` hoặc `/me` hoặc `/stats` | Xem EXP, role, streak, số ca |
 | `/score` | Xem điểm hiệu suất tổng hợp — bạn đang ở tier nào |
+| `/companyscore` | Xem tiến độ KPI công ty — GM đặt, tất cả xem được |
 | `/leaderboard` hoặc `/lb` | Bảng xếp hạng EXP toàn nhóm |
 | `/roadmap` | Lộ trình thăng cấp + badges còn thiếu |
 | `/badges` | Bộ sưu tập huy hiệu đã đạt được |

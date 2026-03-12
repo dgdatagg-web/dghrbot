@@ -26,7 +26,18 @@ function getChecklistConfig() {
         const configPath2 = path.join(__dirname, '..', '..', 'config', 'bc_checklist.json');
         _checklistConfig = require(configPath2);
       } catch (e2) {
+        console.error('[bc] ⚠️ bc_checklist.json NOT FOUND — /bc will have no checklist items');
         _checklistConfig = {};
+      }
+    }
+    // Validate: config must have at least one department with items
+    const depts = Object.keys(_checklistConfig);
+    if (depts.length === 0) {
+      console.error('[bc] ⚠️ bc_checklist.json is empty — no departments configured');
+    } else {
+      const emptyCa = depts.filter(d => !_checklistConfig[d] || Object.keys(_checklistConfig[d]).length === 0);
+      if (emptyCa.length > 0) {
+        console.error(`[bc] ⚠️ Empty checklist for departments: ${emptyCa.join(', ')}`);
       }
     }
   }

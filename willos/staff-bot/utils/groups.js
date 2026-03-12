@@ -67,6 +67,8 @@ const ROUTING = {
 
   // ── Staff management → MANAGERS ──────────────────────────────────────────────
   dangky:      [GROUPS.MANAGERS],
+  tangca:      [GROUPS.MANAGERS],
+  approveot:   [GROUPS.MANAGERS],
   bosung:      [GROUPS.MANAGERS],
   birthday:    [GROUPS.MANAGERS],
   staff_onoff: [GROUPS.MANAGERS],
@@ -87,9 +89,9 @@ const ROUTING = {
   posttask: [GROUPS.HR],
 
   // ── Analytics cron → MANAGERS ────────────────────────────────────────────────
-  daily_scorecard:    [GROUPS.MANAGERS],  // 22:30 daily
-  weekly_leaderboard: [GROUPS.MANAGERS],  // Mon 08:00
-  forgot_checkout:    [GROUPS.MANAGERS],  // 22:30
+  daily_scorecard:    [GROUPS.MANAGERS],  // 23:33 daily
+  weekly_leaderboard: [GROUPS.MANAGERS, GROUPS.HR],  // Mon + Fri 08:00
+  forgot_checkout:    [GROUPS.MANAGERS],  // 01:30+1
 
   // ── Management reports → BOD topics ─────────────────────────────────────────
   weekly_report:  [GROUPS.BOD],   // thread 1 TỔNG HỢP

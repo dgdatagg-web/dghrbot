@@ -161,7 +161,17 @@ async function handle(bot, msg, args, db) {
 
   // Calculate actual minutes worked
   const checkinTime = openCheckin.checkin_time ? new Date(openCheckin.checkin_time) : null;
-  const actualMinutes = checkinTime ? Math.round((now - checkinTime) / 60000) : null;
+  let actualMinutes = checkinTime ? Math.round((now - checkinTime) / 60000) : null;
+
+  // Guard: negative time means clock/timezone issue — reject, don't corrupt data
+  if (actualMinutes !== null && actualMinutes < 0) {
+    console.error(`[checkout] negative time detected: ${actualMinutes}min for staff ${staff.id}, checkin ${openCheckin.id}`);
+    return bot.sendMessage(chatId,
+      `⚠️ Lỗi: thời gian ca bị âm (${actualMinutes} phút).\n` +
+      `Checkin lúc: ${openCheckin.checkin_time}\n` +
+      `Liên hệ quản lý để dùng /forcecheckout.`
+    );
+  }
 
   // Update checkout — use checkin id (midnight-safe), record actual_minutes
   db.updateCheckout(openCheckin.id, now.toISOString(), actualMinutes);

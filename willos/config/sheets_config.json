@@ -7,6 +7,11 @@
     "barParentFolderId": "",
     "bidaParentFolderId": ""
   },
+  "venue": {
+    "lat": 10.7305334,
+    "lng": 106.6559577,
+    "radius_meters": 100
+  },
   "bep": {},
   "bar": {},
   "bida": {}

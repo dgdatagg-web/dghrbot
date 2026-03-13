@@ -92,6 +92,7 @@
   <a href="#exp-system">EXP System</a>
   <a href="#nhom">Trong nhóm</a>
   <a href="#cron">Tự động</a>
+  <a href="#thongbao-feedback">Thông báo & Feedback</a>
 </nav>
 
 <div class="container">
@@ -100,6 +101,13 @@
   <div class="section" id="moi">
     <div class="section-title">Có gì mới</div>
     <h2>Cập Nhật Gần Đây</h2>
+    <div class="callout success">
+      <strong>13/03/2026 — Thông Báo & Phản Hồi</strong><br>
+      ✅ <strong>/thongbao</strong> — Gửi thông báo đến nhân viên (DM + nhóm) + tracking đã đọc <span class="new-tag">NEW</span><br>
+      ✅ <strong>/xemthongbao</strong> — Xem lịch sử thông báo + ai đã đọc / chưa đọc <span class="new-tag">NEW</span><br>
+      ✅ <strong>/xemfeedback</strong> — Xem + xử lý phản hồi từ nhân viên <span class="new-tag">NEW</span><br>
+      ✅ Phản ánh (⚠️) tự động escalate → MANAGERS + BOD
+    </div>
     <div class="callout success">
       <strong>13/03/2026 — Reward Engine + Xuất hàng + Doanh thu nâng cấp</strong><br>
       ✅ <strong>Reward Engine LIVE</strong> — /tb, /join, /posttask, /completetask, /kpihit, /cashkpi, /confirmpayout, /canceltask — tất cả hoạt động<br>
@@ -410,6 +418,50 @@
       <div class="cron-item"><div class="cron-time">23:33 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày → MANAGERS + HR GROUP.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Ai có lịch ca mà không check-in → -50 EXP tự động.</span></div></div>
       <div class="cron-item"><div class="cron-time">T2+T6 08:00</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần → MANAGERS + HR GROUP.</span></div></div>
+    </div>
+  </div>
+
+  <!-- THÔNG BÁO & FEEDBACK -->
+  <div class="section" id="thongbao-feedback">
+    <div class="section-title">Quản lý giao tiếp</div>
+    <h2>Thông Báo & Phản Hồi Nhân Viên</h2>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/thongbao</span><span class="role-tag you">Quản lý · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Gửi thông báo đến nhân viên. Flow hướng dẫn 4 bước:</p>
+        <ol>
+          <li>Nhập nội dung thông báo</li>
+          <li>Chọn mức độ: 🔴 Khẩn cấp / 🟢 Bình thường</li>
+          <li>Chọn đối tượng: Tất cả / Phòng ban</li>
+          <li>Xác nhận gửi → DM nhân viên + broadcast nhóm MANAGERS</li>
+        </ol>
+        <p>Nhân viên nhận nút "📋 Đã đọc" trong DM.</p>
+        <p><strong>Quick mode:</strong> <code>/thongbao Nội dung nhanh</code> — nhảy thẳng chọn mức độ.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemthongbao [id?]</span><span class="role-tag you">Quản lý · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Xem lịch sử thông báo đã gửi.</p>
+        <ul>
+          <li><code>/xemthongbao</code> — 10 thông báo gần nhất</li>
+          <li><code>/xemthongbao 5</code> — chi tiết #5: nội dung + ai đã đọc / chưa đọc</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemfeedback [id?]</span><span class="role-tag you">Quản lý · GM</span></div>
+      <div class="cmd-block-body">
+        <p>Xem phản hồi từ nhân viên.</p>
+        <ul>
+          <li><code>/xemfeedback</code> — tất cả feedback đang mở</li>
+          <li><code>/xemfeedback 12</code> — chi tiết #12 + nút [📋 Đã ghi nhận] [✅ Đã giải quyết]</li>
+        </ul>
+        <p>Nhân viên nhận DM khi feedback được xử lý (trừ ẩn danh).</p>
+      </div>
     </div>
   </div>
 

@@ -90,6 +90,7 @@
   <a href="#exp-system">EXP</a>
   <a href="#nhom">Trong nhóm</a>
   <a href="#cron">Tự động</a>
+  <a href="#thongbao-feedback-gm">Thông báo & Feedback</a>
 </nav>
 
 <div class="container">
@@ -98,6 +99,14 @@
   <div class="section" id="moi">
     <div class="section-title">Có gì mới</div>
     <h2>Cập Nhật Gần Đây</h2>
+    <div class="callout success">
+      <strong>13/03/2026 — Thông Báo & Phản Hồi System</strong><br>
+      ✅ <strong>/thongbao</strong> — Gửi thông báo: nội dung → mức độ → phòng ban → DM + nhóm + tracking đã đọc <span class="new-tag">NEW</span><br>
+      ✅ <strong>/xemthongbao</strong> — Xem lịch sử thông báo + danh sách ai đã đọc / chưa đọc <span class="new-tag">NEW</span><br>
+      ✅ <strong>/feedback</strong> — Nhân viên gửi góp ý / phản ánh / câu hỏi (ẩn danh hoặc có tên) <span class="new-tag">NEW</span><br>
+      ✅ <strong>/xemfeedback</strong> — Xem + xử lý feedback: ghi nhận / giải quyết + DM nhân viên <span class="new-tag">NEW</span><br>
+      ✅ Phản ánh (⚠️) tự động escalate → MANAGERS + BOD
+    </div>
     <div class="callout success">
       <strong>13/03/2026 — Reward Engine LIVE + Xuất hàng + Doanh thu v2</strong><br>
       ✅ <strong>Reward Engine TOÀN BỘ</strong> — /tb, /posttask, /join, /completetask, /kpihit, /cashkpi, /confirmpayout, /canceltask — TẤT CẢ LIVE<br>
@@ -615,6 +624,65 @@
       <div class="cron-item"><div class="cron-time">23:33 ICT</div><div class="cron-desc">Daily scorecard<span>Bảng điểm danh ngày → MANAGERS + HR GROUP.</span></div></div>
       <div class="cron-item"><div class="cron-time">23:30 ICT</div><div class="cron-desc">No-show detection<span>Có lịch ca không check-in → -50 EXP tự động.</span></div></div>
       <div class="cron-item"><div class="cron-time">T2+T6 08:00</div><div class="cron-desc">Weekly leaderboard<span>Bảng xếp hạng EXP tuần → MANAGERS + HR GROUP.</span></div></div>
+    </div>
+  </div>
+
+  <!-- THÔNG BÁO & FEEDBACK SYSTEM -->
+  <div class="section" id="thongbao-feedback-gm">
+    <div class="section-title">Quản lý giao tiếp</div>
+    <h2>Thông Báo & Phản Hồi System</h2>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/thongbao</span><span class="role-tag you">GM</span></div>
+      <div class="cmd-block-body">
+        <p>Gửi thông báo. Flow hướng dẫn 4 bước:</p>
+        <ol>
+          <li>Nhập nội dung (hoặc dùng quick mode: <code>/thongbao Nội dung nhanh</code>)</li>
+          <li>Chọn mức độ: 🔴 Khẩn cấp / 🟢 Bình thường</li>
+          <li>Chọn đối tượng: 👥 Tất cả / Phòng ban cụ thể</li>
+          <li>Xác nhận → DM từng nhân viên + broadcast MANAGERS group</li>
+        </ol>
+        <p>Nhân viên nhận nút "📋 Đã đọc" trong DM. Tracking tự động.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemthongbao [id?]</span><span class="role-tag you">GM</span></div>
+      <div class="cmd-block-body">
+        <p>Xem trạng thái thông báo:</p>
+        <ul>
+          <li><code>/xemthongbao</code> — 10 thông báo gần nhất (ID, ngày, mức độ, số người đã đọc)</li>
+          <li><code>/xemthongbao 7</code> — chi tiết #7: nội dung đầy đủ + danh sách ✅ đã đọc / ⬜ chưa đọc</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/feedback</span><span class="role-tag">Nhân viên</span></div>
+      <div class="cmd-block-body">
+        <p>Nhân viên dùng để gửi:</p>
+        <ul>
+          <li>💡 Góp ý</li>
+          <li>⚠️ Phản ánh (auto-escalate → MANAGERS + BOD)</li>
+          <li>❓ Câu hỏi</li>
+        </ul>
+        <p>Option gửi ẩn danh (🕶️). Routes to MANAGERS group (topic 482).</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xemfeedback [id?]</span><span class="role-tag you">GM</span></div>
+      <div class="cmd-block-body">
+        <p>Xem + xử lý feedback:</p>
+        <ul>
+          <li><code>/xemfeedback</code> — tất cả feedback đang mở</li>
+          <li><code>/xemfeedback 15</code> — chi tiết #15 + nút: [📋 Đã ghi nhận] [✅ Đã giải quyết]</li>
+        </ul>
+        <p>Khi bấm nút → cập nhật trạng thái + DM nhân viên (trừ ẩn danh).</p>
+        <p style="margin-top:8px;color:var(--muted);font-size:13px;">
+          Trạng thái: 🔵 Mở → 📋 Đã ghi nhận → ✅ Đã giải quyết
+        </p>
+      </div>
     </div>
   </div>
 

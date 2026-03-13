@@ -101,6 +101,13 @@
     <div class="section-title">Có gì mới</div>
     <h2>Cập Nhật Gần Đây</h2>
     <div class="callout success">
+      <strong>13/03/2026 — Reward Engine + Xuất hàng + Doanh thu nâng cấp</strong><br>
+      ✅ <strong>Reward Engine LIVE</strong> — /tb, /join, /posttask, /completetask, /kpihit, /cashkpi, /confirmpayout, /canceltask — tất cả hoạt động<br>
+      ✅ <strong>/distributebonus</strong> — Phân phối thưởng công ty: preview → calculate → approve (GM/Creator)<br>
+      ✅ <strong>/xuathang</strong> — Xuất hàng: nhiều món, ảnh phiếu xuất, báo cáo tự lên Finance<br>
+      ✅ <strong>/baocaodoanhthu</strong> nâng cấp — Tách: 🎱 Bida (TM+CK) + 🍳 Bếp (TM+CK) + 🛵 Grab
+    </div>
+    <div class="callout success">
       <strong>12/03/2026 — Session 43: KPI Công Ty & Sửa lỗi</strong><br>
       ✅ <strong>/companyscore</strong> — Xem tiến độ KPI công ty (GM đặt, tất cả xem được)<br>
       ✅ <strong>Group routing sống lại</strong> — Mọi thông báo giờ đến đúng nhóm<br>
@@ -217,6 +224,17 @@
       <div class="cmd-block-header"><span class="cmd-name">/nhaphang</span><span class="role-tag you">Kho · Quản lý</span></div>
       <div class="cmd-block-body">
         <p>Nhập hàng. Chụp ảnh hóa đơn → gửi cho bot → phiếu nhập tự động lên nhóm.</p>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xuathang</span><span class="role-tag you">Kho · Quản lý</span></div>
+      <div class="cmd-block-body">
+        <p>Xuất hàng. Nhập nhiều món liên tiếp — tên hàng → số lượng → phòng nhận → ảnh phiếu xuất.</p>
+        <ul>
+          <li>Batch: thêm nhiều món trong 1 phiên</li>
+          <li>Báo cáo tự lên FINANCE group (topic kho hàng)</li>
+        </ul>
       </div>
     </div>
 
@@ -365,6 +383,7 @@
           <tr><td>/dongca hoàn thành</td><td>Báo cáo đóng ca</td></tr>
           <tr><td>/bc hoàn thành</td><td>Bàn giao ca theo bộ phận</td></tr>
           <tr><td>/nhaphang hoàn thành</td><td>Phiếu nhập hàng + ảnh hóa đơn</td></tr>
+          <tr><td>/xuathang hoàn thành</td><td>Phiếu xuất hàng + ảnh phiếu xuất</td></tr>
           <tr><td>Mỗi sáng (auto)</td><td>Bảng điểm danh ngày</td></tr>
           <tr><td>Đầu tuần (auto)</td><td>Bảng xếp hạng EXP</td></tr>
           <tr><td>23:30 ICT (auto)</td><td>No-show phát hiện → trừ EXP</td></tr>
@@ -408,7 +427,7 @@
     var year  = d.getFullYear();
     var str   = day + '/' + month + '/' + year;
     document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
-    document.getElementById('badge-date').textContent  = 'Cập nhật 12/03/2026';
+    document.getElementById('badge-date').textContent  = 'Cập nhật 13/03/2026';
   })();
 </script>
 </body>

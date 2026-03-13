@@ -510,9 +510,9 @@
   <p>Hướng dẫn nhân viên · DG Group — Kansai Osaka</p>
   <div class="badge-row">
     <span class="badge green">✓ Live</span>
-    <span class="badge purple">EXP + Badges + Score</span>
-    <span class="badge glow">Reward Engine sắp mở</span>
-    <span class="badge" id="badge-date">v2.0 — 12/03/2026</span>
+    <span class="badge purple">EXP + Badges + Score + Rewards</span>
+    <span class="badge glow">Reward Engine LIVE</span>
+    <span class="badge" id="badge-date">v2.2 — 13/03/2026</span>
   </div>
 </div>
 
@@ -525,7 +525,7 @@
   <a href="#nhan-vien">Skills</a>
   <a href="#exp-system">EXP</a>
   <a href="#badges">Badges</a>
-  <a href="#coming" class="hot">Sắp mở</a>
+  <a href="#reward" class="hot">Rewards</a>
 </nav>
 
 <div class="container">
@@ -534,6 +534,15 @@
   <div class="section" id="moi">
     <div class="section-title">Patch Notes</div>
     <h2>Có Gì Mới</h2>
+    <div class="callout success">
+      <strong>v2.2 — 13/03/2026</strong><br>
+      ✅ <strong>Reward Engine LIVE</strong> — Townboard, Quest, Cash KPI, Bonus phân phối — tất cả đã mở!<br>
+      ✅ <strong>/tb</strong> — Xem bảng nhiệm vụ live<br>
+      ✅ <strong>/join [id]</strong> — Nhận quest / tham gia hoạt động<br>
+      ✅ <strong>/xuathang</strong> — Xuất hàng: nhập nhiều món, ảnh phiếu xuất, báo cáo lên Finance<br>
+      ✅ <strong>/baocaodoanhthu</strong> nâng cấp — Tách chi tiết Bida (TM+CK) + Bếp (TM+CK) + Grab<br>
+      ✅ <strong>/distributebonus</strong> — Phân phối thưởng công ty (GM)
+    </div>
     <div class="callout success">
       <strong>v2.1 — 12/03/2026</strong><br>
       ✅ <strong>/companyscore</strong> — Xem tiến độ KPI công ty + progress bar<br>
@@ -550,7 +559,7 @@
       🛡️ Sửa crash GPS + auto EXP — hệ thống ổn định hơn bao giờ hết
     </div>
     <div class="callout hype">
-      <strong>Coming Soon: Reward Engine + ESOP</strong> — Quest system, cash rewards, và cổ phần nhân viên. <a href="#coming" style="color:var(--orange);">Xem chi tiết</a>
+      <strong>Reward Engine: LIVE</strong> — Quest system, cash rewards, và composite score đã mở. <a href="#reward" style="color:var(--orange);">Xem chi tiết</a>
     </div>
   </div>
 
@@ -740,6 +749,8 @@
           <tr><td><span class="cmd">/roadmap</span></td><td>Lộ trình thăng cấp + badges còn thiếu</td></tr>
           <tr><td><span class="cmd">/badges</span></td><td>Bộ sưu tập huy hiệu đã mở khóa</td></tr>
           <tr><td><span class="cmd">/tangca [giờ] [lý do]</span></td><td>Xin tăng ca — cần được duyệt trước khi ở lại</td></tr>
+          <tr><td><span class="cmd">/tb</span></td><td>Xem Townboard — quest, KPI, hoạt động đang active <span class="new-tag">NEW</span></td></tr>
+          <tr><td><span class="cmd">/join [id]</span></td><td>Nhận quest / tham gia hoạt động <span class="new-tag">NEW</span></td></tr>
           <tr><td><span class="cmd">/esopstatus</span></td><td>Xem trạng thái cổ phần ESOP của bạn (nếu có)</td></tr>
           <tr><td><span class="cmd">/cancel</span></td><td>Hủy bước đang làm bất kỳ lúc nào</td></tr>
         </tbody>
@@ -810,13 +821,12 @@
     </div>
   </div>
 
-  <!-- ── Coming Soon ── -->
-  <div class="section" id="coming">
-    <div class="section-title">Coming Soon — Expansion Pack</div>
-    <h2>Sắp Mở: Reward Engine + ESOP</h2>
+  <!-- ── Reward Engine ── -->
+  <div class="section" id="reward">
+    <div class="section-title">Live — Reward Engine</div>
+    <h2>Reward Engine + ESOP</h2>
     <p style="color:var(--text); font-size:15px; margin-bottom:24px;">
-      Bạn đang chơi <strong>Phase 1</strong> — thu thập EXP, leo rank, mở badge. <br>
-      <strong>Phase 2</strong> sẽ biến EXP và hiệu suất thành phần thưởng thực sự: tiền mặt, quest, và cổ phần công ty.
+      <strong>Phase 2 đã mở!</strong> EXP và hiệu suất giờ biến thành phần thưởng thực sự: tiền mặt, quest, và cổ phần công ty.
     </p>
 
     <h3 style="color:var(--orange);">Reward Engine — Quest & Cash Rewards</h3>
@@ -824,7 +834,7 @@
       <div class="teaser-card">
         <div class="t-icon">📋</div>
         <div class="t-name">Townboard</div>
-        <p class="t-desc">Bảng nhiệm vụ live — quest, KPI, hoạt động. Nhận quest bằng 1 lệnh.</p>
+        <p class="t-desc">Bảng nhiệm vụ live — quest, KPI, hoạt động. Gõ <code style="color:var(--accent2);">/tb</code> để xem.</p>
       </div>
       <div class="teaser-card">
         <div class="t-icon">💰</div>
@@ -834,12 +844,12 @@
       <div class="teaser-card">
         <div class="t-icon">🎯</div>
         <div class="t-name">Quest System</div>
-        <p class="t-desc">Nhiệm vụ đặc biệt từ GM: solo quest, team quest, hoạt động nhóm.</p>
+        <p class="t-desc">Nhiệm vụ đặc biệt từ GM. Gõ <code style="color:var(--accent2);">/join [id]</code> để nhận quest.</p>
       </div>
       <div class="teaser-card">
         <div class="t-icon">🏆</div>
         <div class="t-name">Composite Score</div>
-        <p class="t-desc">Điểm hiệu suất tổng hợp quyết định thứ hạng — ảnh hưởng trực tiếp đến thưởng.</p>
+        <p class="t-desc">Điểm tổng hợp quyết định thứ hạng — ảnh hưởng trực tiếp đến thưởng.</p>
       </div>
     </div>
 
@@ -855,17 +865,17 @@
     </div>
 
     <div class="callout mission">
-      <strong>Để mở Phase 2, team cần hoàn thành Phase 1 trước.</strong><br><br>
-      Hệ thống đang thu thập dữ liệu từ mỗi lần bạn check-in, nộp BC, và checkout. Dữ liệu này là nền tảng để:<br>
-      1️⃣ Tính điểm hiệu suất chính xác<br>
-      2️⃣ Phân bổ reward công bằng<br>
-      3️⃣ Xác định ai đủ điều kiện ESOP<br><br>
-      <strong style="color:var(--orange);">Bạn cần làm gì bây giờ:</strong><br>
+      <strong>Phase 2 đã mở — tiếp tục giữ nền.</strong><br><br>
+      Reward Engine đang live. Dữ liệu từ mỗi lần bạn check-in, nộp BC, và checkout vẫn là nền tảng cho:<br>
+      1. Tính điểm hiệu suất chính xác<br>
+      2. Phân bổ reward công bằng<br>
+      3. Xác định ai đủ điều kiện ESOP<br><br>
+      <strong style="color:var(--orange);">Bạn cần làm gì:</strong><br>
       ✅ Check-in <strong>mỗi</strong> ca — đúng giờ<br>
       ✅ Nộp <strong>/bc</strong> cuối mỗi ca — không bỏ sót<br>
       ✅ <strong>/checkout</strong> khi ra về — giữ streak<br>
-      ✅ Báo lỗi nếu bot có vấn đề — giúp hệ thống tốt hơn<br><br>
-      <span style="font-size:15px; color:#fff;">Càng nhiều dữ liệu, càng sớm mở Reward Engine.<br>Bạn đang xây nền cho phần thưởng của chính mình.</span>
+      ✅ Xem <strong>/tb</strong> — nhận quest để kiếm thêm EXP + reward<br><br>
+      <span style="font-size:15px; color:#fff;">Dữ liệu của bạn đang quyết định phần thưởng của chính bạn.</span>
     </div>
   </div>
 
@@ -884,6 +894,7 @@
           <tr><td>/moca · /dongca</td><td>Báo cáo mở / đóng ca</td></tr>
           <tr><td>/bc hoàn thành</td><td>Bàn giao ca theo bộ phận</td></tr>
           <tr><td>/nhaphang</td><td>Phiếu nhập hàng + ảnh</td></tr>
+          <tr><td>/xuathang</td><td>Phiếu xuất hàng + ảnh phiếu xuất</td></tr>
           <tr><td>Mỗi sáng (auto)</td><td>Bảng điểm danh ngày</td></tr>
           <tr><td>Đầu tuần (auto)</td><td>Bảng xếp hạng EXP</td></tr>
           <tr><td>23:30 ICT (auto)</td><td>No-show detection → trừ EXP</td></tr>
@@ -924,7 +935,7 @@
 </div>
 
 <footer>
-  DG HR BOT v2.0 · DG Group — Kansai Osaka ·
+  DG HR BOT v2.2 · DG Group — Kansai Osaka ·
   Source: <a href="https://github.com/dgdatagg-web/dghrbot">github.com/dgdatagg-web/dghrbot</a> ·
   <span id="footer-date"></span>
 </footer>

@@ -99,6 +99,13 @@
     <div class="section-title">Có gì mới</div>
     <h2>Cập Nhật Gần Đây</h2>
     <div class="callout success">
+      <strong>13/03/2026 — Reward Engine LIVE + Xuất hàng + Doanh thu v2</strong><br>
+      ✅ <strong>Reward Engine TOÀN BỘ</strong> — /tb, /posttask, /join, /completetask, /kpihit, /cashkpi, /confirmpayout, /canceltask — TẤT CẢ LIVE<br>
+      ✅ <strong>/distributebonus</strong> — Phân phối thưởng công ty: preview → calculate → approve. DM từng nhân viên, full ledger cho HR + BOD<br>
+      ✅ <strong>/xuathang</strong> — Xuất hàng: nhiều món, ảnh phiếu xuất, tự lên Finance group (topic kho hàng)<br>
+      ✅ <strong>/baocaodoanhthu</strong> nâng cấp — 8 bước: 🎱 Bida (TM+CK) + 🍳 Bếp (TM+CK) + 🛵 Grab + Chi phí + Kết cuối + Chứng từ
+    </div>
+    <div class="callout success">
       <strong>12/03/2026 — Session 43: KPI Công Ty & Sửa lỗi vận hành</strong><br>
       ✅ <strong>/setcompanykpi</strong> — Đặt KPI công ty: chọn chỉ số, mục tiêu, kỳ áp dụng (GM/Creator only)<br>
       ✅ <strong>/companyscore</strong> — Xem tiến độ KPI công ty + cập nhật điểm hiện tại<br>
@@ -159,6 +166,17 @@
     <div class="cmd-block">
       <div class="cmd-block-header"><span class="cmd-name">/nhaphang</span><span class="role-tag">Kho · Quản lý</span></div>
       <div class="cmd-block-body"><p>Nhập hàng. Chụp ảnh hóa đơn → gửi bot → phiếu tự lên nhóm.</p></div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/xuathang</span><span class="role-tag">Kho · Quản lý</span></div>
+      <div class="cmd-block-body">
+        <p>Xuất hàng. Nhập nhiều món liên tiếp — tên → số lượng → phòng nhận → ảnh phiếu xuất.</p>
+        <ul>
+          <li>Batch: thêm nhiều món trong 1 phiên</li>
+          <li>Báo cáo tự lên FINANCE group (topic kho hàng)</li>
+        </ul>
+      </div>
     </div>
 
     <div class="cmd-block">
@@ -273,12 +291,15 @@
     <div class="cmd-block">
       <div class="cmd-block-header"><span class="cmd-name">/baocaodoanhthu</span><span class="role-tag you">Reporter được phân công</span></div>
       <div class="cmd-block-body">
-        <p>Nộp báo cáo doanh thu ngày. Quy trình 6 bước cố định — không thể bỏ qua.</p>
+        <p>Nộp báo cáo doanh thu ngày. Quy trình 8 bước — tách rõ nguồn thu.</p>
         <ul>
-          <li>Bước 1–5: nhập từng mục (tiền mặt, chuyển khoản, Grab, chi phí, kết cuối)</li>
-          <li>Bước 6: gửi ảnh chứng từ ngân hàng</li>
-          <li>Nova tự xác minh chứng từ — số tiền, tài khoản nhận, ngày chuyển khoản</li>
-          <li>Mismatch → báo cáo bị giữ + alert GM ngay lập tức</li>
+          <li>Bước 1–2: 🎱 Bida — tiền mặt + chuyển khoản</li>
+          <li>Bước 3–4: 🍳 Bếp — tiền mặt + chuyển khoản</li>
+          <li>Bước 5: 🛵 Grab (online)</li>
+          <li>Bước 6: Chi phí phát sinh</li>
+          <li>Bước 7: Kết cuối ngày</li>
+          <li>Bước 8: Ảnh chứng từ ngân hàng</li>
+          <li>Nova tự xác minh chứng từ — mismatch → alert GM</li>
         </ul>
         <div class="warning-note">⚠️ Chứng từ được lưu tự động lên Google Drive.</div>
       </div>
@@ -374,29 +395,71 @@
       </div>
     </div>
 
-    <h3 style="color:var(--yellow);">🚧 Reward Engine — Sắp Ra Mắt</h3>
-    <div class="callout warning">
-      <strong>Các lệnh Reward Engine đang được phát triển.</strong> Code đã sẵn sàng — sẽ kích hoạt khi hệ thống cơ bản ổn định. Bot sẽ thông báo khi mở.
-    </div>
+    <h3 style="color:var(--green);">Reward Engine — LIVE</h3>
 
-    <div class="cmd-block" style="opacity:0.6;">
-      <div class="cmd-block-header"><span class="cmd-name">/tb</span><span class="role-tag">🚧 Sắp mở</span></div>
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/tb</span><span class="role-tag">Tất cả</span></div>
       <div class="cmd-block-body"><p>Xem Townboard — danh sách tất cả quest/KPI/activity đang active.</p></div>
     </div>
 
-    <div class="cmd-block" style="opacity:0.6;">
-      <div class="cmd-block-header"><span class="cmd-name">/posttask</span><span class="role-tag">🚧 Sắp mở</span></div>
-      <div class="cmd-block-body"><p>Đăng quest/KPI/activity mới — interactive flow. Chọn loại, phần thưởng (EXP/tiền/item), hạn chót, số lượng tham gia.</p></div>
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/posttask</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Đăng quest/KPI/activity mới — interactive flow. Chọn loại, phần thưởng (EXP/tiền/item), hạn chót, số lượng tham gia.</p>
+        <ul>
+          <li>Quest thông báo tự động lên HR group kèm deep link</li>
+          <li>Staff = chỉ activity, Quản lý/GM = quest + cash_kpi + activity</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="cmd-block" style="opacity:0.6;">
-      <div class="cmd-block-header"><span class="cmd-name">/confirmpayout [id]</span><span class="role-tag">🚧 Sắp mở</span></div>
-      <div class="cmd-block-body"><p>Xác nhận thanh toán cash reward. Không có args → xem tất cả payout đang chờ.</p></div>
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/join [id]</span><span class="role-tag">Tất cả</span></div>
+      <div class="cmd-block-body"><p>Nhận quest / tham gia hoạt động. ID lấy từ Townboard.</p></div>
     </div>
 
-    <div class="cmd-block" style="opacity:0.6;">
-      <div class="cmd-block-header"><span class="cmd-name">/completetask · /canceltask · /kpihit · /cashkpi</span><span class="role-tag">🚧 Sắp mở</span></div>
-      <div class="cmd-block-body"><p>Xác nhận hoàn thành, huỷ task, xác nhận KPI đạt, tạo Cash KPI mới.</p></div>
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/completetask [id] [tên]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body"><p>Xác nhận hoàn thành quest. EXP tự động credit. DM thông báo nhân viên.</p></div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/canceltask [id] [tên]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body"><p>Huỷ quest. EXP reversal nếu đã credit. DM thông báo nhân viên.</p></div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/kpihit [id]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body"><p>Xác nhận nhân viên đạt Cash KPI. Instant DM. Mở payout row.</p></div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/cashkpi [tên?]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body"><p>Tạo Cash KPI mới — standalone flow. Chọn nhân viên → tiêu đề → tiền thưởng → kỳ hạn → xác nhận. Tự assign + announce.</p></div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/confirmpayout [id?]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Xác nhận thanh toán cash reward.</p>
+        <ul>
+          <li>Không có args → xem tất cả payout đang chờ</li>
+          <li>Có id → đánh dấu đã thanh toán, log cash_paid, DM staff</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cmd-block">
+      <div class="cmd-block-header"><span class="cmd-name">/distributebonus [mode]</span><span class="role-tag you">GM · Creator</span></div>
+      <div class="cmd-block-body">
+        <p>Phân phối thưởng công ty khi tất cả Company KPI đạt.</p>
+        <ul>
+          <li><span class="cmd">/distributebonus preview</span> — xem dự kiến: ai được bao nhiêu</li>
+          <li><span class="cmd">/distributebonus calculate</span> — tính toán chính thức, lưu pending</li>
+          <li><span class="cmd">/distributebonus approve</span> — duyệt và gửi thông báo: DM từng nhân viên, full ledger cho HR + BOD</li>
+        </ul>
+        <div class="warning-note">⚠️ Bank transfer only. Bot tính toán + thông báo. Không tự chuyển tiền.</div>
+      </div>
     </div>
 
   </div>
@@ -528,6 +591,7 @@
           <tr><td>/moca · /dongca</td><td>Báo cáo mở / đóng ca</td></tr>
           <tr><td>/bc hoàn thành</td><td>Bàn giao ca theo bộ phận</td></tr>
           <tr><td>/nhaphang hoàn thành</td><td>Phiếu nhập hàng + ảnh hóa đơn</td></tr>
+          <tr><td>/xuathang hoàn thành</td><td>Phiếu xuất hàng + ảnh phiếu xuất</td></tr>
           <tr><td>23:33 ICT (auto)</td><td>Bảng điểm danh ngày</td></tr>
           <tr><td>T2+T6 08:00 ICT (auto)</td><td>Bảng xếp hạng EXP tuần</td></tr>
           <tr><td>23:30 ICT (auto)</td><td>No-show → trừ EXP tự động</td></tr>
@@ -568,7 +632,7 @@
     var year  = d.getFullYear();
     var str   = day + '/' + month + '/' + year;
     document.getElementById('footer-date').textContent = 'Cập nhật ' + str;
-    document.getElementById('badge-date').textContent  = 'Cập nhật 12/03/2026';
+    document.getElementById('badge-date').textContent  = 'Cập nhật 13/03/2026';
   })();
 </script>
 </body>

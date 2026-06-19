@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Proxy Layer — Sổ Tay DGHRBOT</title>
+<style>
+  :root{
+    --cream:#f4ece0; --card:#fbf6ee; --ink:#3a2a1c; --warm:#6b4e34;
+    --cacao:#5a3d28; --line:#e0d2bf; --muted:#8a7460;
+    --green:#3f9b54; --amber:#d39a2a; --red:#c0432f; --lock:#9a8a76;
+    --shadow:0 1px 3px rgba(90,61,40,.08), 0 6px 18px rgba(90,61,40,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px}
+  header.hd{margin-bottom:28px}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:30px;margin:6px 0 8px;color:var(--cacao);line-height:1.15;letter-spacing:-.01em}
+  .sub{color:var(--warm);font-size:15px;max-width:64ch}
+  .tagbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .tag{background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:4px 12px;font-size:12.5px;color:var(--warm);box-shadow:var(--shadow)}
+  .tag b{color:var(--cacao)}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin:18px 0;box-shadow:var(--shadow)}
+  h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    margin:0 0 4px;font-weight:700}
+  .h2title{font-size:20px;color:var(--cacao);margin:0 0 14px;font-weight:700;letter-spacing:-.01em}
+  h3{font-size:15.5px;color:var(--cacao);margin:18px 0 8px;font-weight:700}
+  p{margin:8px 0}
+  .lead{font-size:16px;color:var(--ink)}
+  code{background:#efe5d6;border:1px solid var(--line);border-radius:5px;padding:1px 6px;
+    font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--cacao);white-space:nowrap}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#efe5d6;color:var(--cacao);font-weight:700;font-size:12px;
+    text-transform:uppercase;letter-spacing:.04em}
+  td b{color:var(--cacao)}
+  .ctr{text-align:center;white-space:nowrap}
+  pre{background:#2e2419;color:#e8dcc8;border-radius:10px;padding:16px 18px;overflow-x:auto;
+    font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin:12px 0}
+  pre .k{color:#d39a6a}.pre-c{color:#8a9b6a}
+  ul{margin:8px 0;padding-left:20px}li{margin:4px 0}
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .lane{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .lane .who{font-weight:700;color:var(--cacao);font-size:14.5px}
+  .lane .who span{font-weight:500;color:var(--muted);font-size:12px}
+  .lane .what{font-size:13px;color:var(--warm);margin-top:3px}
+  .pill{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;color:#fff}
+  .pg{background:var(--green)}.pa{background:var(--amber)}.pr{background:var(--red)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+  .dg{background:var(--green)}.da{background:var(--amber)}.dr{background:var(--red)}
+  .yes{color:var(--green);font-weight:700}.no{color:var(--red);font-weight:700}
+  .ro{color:var(--lock);font-weight:600}
+  .note{border-left:3px solid var(--amber);background:#f7eed9;padding:10px 14px;
+    border-radius:0 8px 8px 0;font-size:13.5px;color:var(--warm);margin:12px 0}
+  .note b{color:var(--cacao)}
+  .arch{font:12px/1.5 ui-monospace,Menlo,monospace;background:#2e2419;color:#e8dcc8;
+    border-radius:10px;padding:16px;overflow-x:auto;white-space:pre;margin:8px 0}
+  .status-grid{display:grid;grid-template-columns:1fr auto;gap:2px 14px;font-size:13.5px;margin-top:8px}
+  .status-grid div:nth-child(odd){color:var(--ink)}
+  .status-grid div:nth-child(even){text-align:right;white-space:nowrap}
+  .liveT{color:var(--green);font-weight:700}.todoT{color:var(--warm);font-weight:600}
+  .mock{background:#fbf6ee;border:1px dashed var(--line);border-radius:10px;padding:14px;
+    font:12.5px/1.6 ui-monospace,Menlo,monospace;color:var(--ink);overflow-x:auto;white-space:pre}
+  .footer{color:var(--muted);font-size:12px;margin-top:24px;text-align:center;line-height:1.6}
+  @media(max-width:640px){
+    h1{font-size:24px}.lanes{grid-template-columns:1fr}.wrap{padding:22px 14px 60px}
+    section{padding:18px 16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hd">
+  <div class="kicker">DGHRBOT · Sổ Tay Nhân Sự</div>
+  <h1>Agent Proxy Layer — Schema &amp; Spec</h1>
+  <p class="sub">Mỗi quản lý có 1 AI agent thao tác <b>thay mình</b> trong department, trong guardrail.
+  Tài liệu ráp 4 mảnh BOD đã chốt (Athena · Leon · Ray + lane Na), grounded vào codebase thật <code>willos/staff-bot</code>.</p>
+  <div class="tagbar">
+    <span class="tag"><b>Nền</b> · đã LIVE</span>
+    <span class="tag"><b>Agent-proxy</b> · thiết kế chốt, chưa build</span>
+    <span class="tag">2026-06-20</span>
+    <span class="tag">sotay.winode.io.vn</span>
+  </div>
+</header>
+
+<section>
+  <h2>TL;DR</h2>
+  <div class="h2title">Một câu &amp; lane mỗi agent</div>
+  <p class="lead">Mọi thao tác agent đi qua <b>1 cổng <code>agent_action_log</code></b> → middleware check <b>scope 3 tầng</b> →
+  gán <b>intensity</b> (<span class="dot dg"></span>🟢/<span class="dot da"></span>🟡/<span class="dot dr"></span>🔴) →
+  auto-commit hoặc queue chờ duyệt → ghi audit bất biến → hiện lên <b>thanh hoạt động AI</b> ngay nơi quản lý đang làm việc.</p>
+  <div class="lanes">
+    <div class="lane"><div class="who">Leon <span>· COO</span></div><div class="what">scope 3 tầng + 2 endpoint (<code>/api/agent/act</code>, <code>/audit</code>) + conflict lock + intensity middleware</div></div>
+    <div class="lane"><div class="who">Athena <span>· CFO</span></div><div class="what">ma trận quyền + hàng rào API + chữ ký kép vùng chồng + khoá luân phiên</div></div>
+    <div class="lane"><div class="who">Ray <span>· CMO</span></div><div class="what">thanh hoạt động AI + modal diff + hoàn tác + microcopy + giọng AI</div></div>
+    <div class="lane"><div class="who">Na <span>· tài chính</span></div><div class="what">đọc ops · ghi finance scope (tax/COGS lock) · KHÔNG ghi số gốc</div></div>
+    <div class="lane"><div class="who">Will / Claude / Nova <span>· core</span></div><div class="what">core + deploy + phân quyền agent (ai chạm cái gì)</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>§1 · Nền hiện tại</h2>
+  <div class="h2title">Kiến trúc 2 tầng — agent build TRÊN cái này</div>
+  <p class="note"><b>BLOCKER:</b> <code>staff.db</code> từng dính <code>SQLITE_CORRUPT</code> khi có &gt;1 writer → bot là <b>single-writer</b>.
+  Handbook ghi DB riêng, bridge phía bot settle về staff.db. WAL = nhiều reader + 1 writer = OK.</p>
+  <div class="arch">┌─ handbook.db (handbook server) ──────┐      ┌─ staff.db (BOT single-writer) ─┐
+│ REAL-TIME: tick / handover / board   │      │ CORE: staff, exp, KPI, lương,  │
+│ wip_item · wip_item_log · wip_handover│      │ ops-log, ESOP, reward          │
+│ wip_outbox · shift_completed (SPINE) │      │                                │
+└───────────────┬───────────────────────┘      └─────────────▲──────────────────┘
+                │  wip_outbox (hàng đợi)                      │
+                └──────► wip-bridge.js (phía BOT) ────────────┘  SETTLE
+                         poll 20s · resolve telegram_id→staff.id</div>
+  <h3>Personas &amp; dept</h3>
+  <p>Persona switcher: <b>Staff</b> · <b>Bếp/Bar lead</b> · <b>Purchasing</b> · <b>Manager (Audrey)</b>. Agent gắn vào persona Quản lý.
+  <br>Dept enum thật (<code>APP_DEPTS</code>): <code>bep</code> · <code>bar</code> · <code>phucvu</code>. Lead: Tân · Bety · Minchi.</p>
+  <h3>Bảng staff.db agent thao tác / bị chặn</h3>
+  <div class="scroll"><table>
+    <tr><th>Bảng</th><th>Dùng cho</th><th>Quyền agent mặc định</th></tr>
+    <tr><td><code>staff</code> · <code>bot_settings</code></td><td>nhân sự · config/threshold</td><td class="ro">🔒 core — chỉ Will/Claude/Nova</td></tr>
+    <tr><td><code>exp_log</code> · <code>checkin_log</code> · <code>shift_schedule</code></td><td>EXP · chấm công · lịch ca</td><td>Leon ghi (HR), Na đọc</td></tr>
+    <tr><td><code>ot_requests</code> · <code>leave_requests</code></td><td>OT · nghỉ phép</td><td>Leon duyệt thay Audrey</td></tr>
+    <tr><td><code>shift_report</code> · <code>huy_hang_log</code> · <code>xuathang_log</code> · <code>don_saisot_log</code></td><td>ops-log (đã có writer <code>db.create*</code>)</td><td>Leon ghi qua duyệt · Na đọc/khoá</td></tr>
+    <tr><td><code>revenue_reports</code> · <code>esop_kpi_scores</code> · <code>reward_*</code></td><td>tài chính · KPI · thưởng</td><td>Na (finance) · Leon đọc+flag</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>§2 · Nguyên tắc nền</h2>
+  <div class="h2title">"Thay tôi làm, nhưng tôi luôn biết" <span style="font-size:13px;color:var(--muted);font-weight:500">— Ray</span></div>
+  <p>Mọi action agent phải tuân 3 cảm giác:</p>
+  <ul>
+    <li><b>Không bất ngờ</b> — quản lý nhận notification NGAY khi agent thao tác thay, kèm diff trước/sau.</li>
+    <li><b>Không mù</b> — mở Sổ Tay thấy ngay "AI đã chỉnh X lúc Y", không phải chui vào audit log.</li>
+    <li><b>Không loạn</b> — agent không đè người đang thao tác. Quản lý đang edit field → agent chờ/xin phép, không last-write-wins âm thầm.</li>
+  </ul>
+  <p class="note"><b>Athena:</b> Mỗi agent = người đại diện theo luật của quản lý nó, KHÔNG phải super-user ẩn danh.
+  Quyền trace được = audit được = người thật chịu trách nhiệm. <b>Agent bypass = lỗ hổng kiểm soát.</b></p>
+</section>
+
+<section>
+  <h2>§3 · Ma trận quyền 3 tầng <span style="font-size:13px;color:var(--muted);font-weight:500">— Athena</span></h2>
+  <div class="scroll"><table>
+    <tr><th>Chủ thể</th><th class="ctr">Dept Ops</th><th class="ctr">Dept Data</th><th class="ctr">Financial/HR Config</th><th class="ctr">Core System</th></tr>
+    <tr><td><b>Will + Claude + Nova</b></td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr yes">✅ +deploy</td></tr>
+    <tr><td><b>Audrey + Leon</b></td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr yes">✅ đọc/sửa</td><td class="ctr ro">🔒 chỉ đọc</td></tr>
+    <tr><td><b>Na</b> (tài chính)</td><td class="ctr ro">🔒 chỉ đọc</td><td class="ctr yes">✅ phạm vi TC</td><td class="ctr yes">✅ phạm vi TC</td><td class="ctr no">❌</td></tr>
+    <tr><td><b>Ray</b> (UX/brand)</td><td class="ctr ro">🔒 chỉ đọc</td><td class="ctr yes">✅ brand/copy</td><td class="ctr ro">🔒 chỉ đọc</td><td class="ctr no">❌</td></tr>
+  </table></div>
+  <h3>Guardrail từng agent</h3>
+  <div class="scroll"><table>
+    <tr><th>Agent</th><th>✅ Được</th><th>🔒 Không</th></tr>
+    <tr><td><b>Na</b></td><td>xuất/đối chiếu DT·COGS·lương·waste · cảnh báo margin âm/DT lệch · chỉnh tax config · khoá kỳ COGS (closed→locked)</td><td>sửa DT gốc · sửa lương cá nhân · xoá audit · chạm bot code</td></tr>
+    <tr><td><b>Leon</b></td><td>duyệt/reject checklist+handover · chỉnh template/routing/ca/OT · force đóng ca (ghi lý do) · override kho · sửa chấm công · <i>tài chính = chỉ đọc+flag</i></td><td>tax/giá vốn · staff/bot_settings · bot command · tạo/xoá Sheet · deploy · cấp role · <b>hard delete</b></td></tr>
+    <tr><td><b>Ray</b></td><td>microcopy/label/text VN · màu/theme (brand palette) · onboarding/hint</td><td>logic nghiệp vụ · routing · schema DB · API endpoint</td></tr>
+  </table></div>
+  <p class="note"><b>Override = chuyển trách nhiệm:</b> Leon duyệt thay Audrey → log <code>on_behalf_of=audrey, acted_by=leon</code>.
+  Leon chịu hành động · Audrey chịu phân quyền. Audrey không muốn → <b>revoke scope, không cãi sau.</b></p>
+</section>
+
+<section>
+  <h2>§4 · Intensity tier <span style="font-size:13px;color:var(--muted);font-weight:500">— Ray đề xuất, Leon ráp middleware</span></h2>
+  <div class="h2title">Trục "mức can thiệp" — không chỉ được/không được</div>
+  <div class="scroll"><table>
+    <tr><th>Mức</th><th>Ví dụ</th><th class="ctr">Agent tự làm?</th><th>Xác nhận trước?</th><th><code>status</code></th></tr>
+    <tr><td><span class="pill pg">🟢 Xanh</span> Dọn dẹp</td><td>sửa chính tả checklist, bổ sung missing field</td><td class="ctr yes">✅ tự làm</td><td>Không (báo sau)</td><td><code>auto</code></td></tr>
+    <tr><td><span class="pill pa">🟡 Vàng</span> Thay đổi</td><td>chỉnh template, force đóng ca, override kho</td><td class="ctr">⚠️ xin phép</td><td>1 confirm</td><td><code>pending_1</code></td></tr>
+    <tr><td><span class="pill pr">🔴 Đỏ</span> Cốt lõi</td><td>chỉnh schema/role/config/lương</td><td class="ctr no">🚫 chỉ đề xuất</td><td>2 confirm (owner+1)</td><td><code>pending_2</code></td></tr>
+  </table></div>
+  <p class="note"><b>Triết lý (Leon):</b> mọi action cần duyệt → agent vô dụng, quản lý thà tự làm. Mọi action tự làm → mất kiểm soát. <b>Intensity tier = điểm cân bằng.</b></p>
+</section>
+
+<section>
+  <h2>§5 · Cơ chế thực thi <span style="font-size:13px;color:var(--muted);font-weight:500">— Athena + Leon</span></h2>
+  <h3>5.1–5.2 · 1 cổng + scope 3 tầng (AND)</h3>
+  <p>Không cho agent gọi thẳng DB. Mọi thao tác: <b>endpoint → check scope → ghi <code>agent_action_log</code> → mới write.</b> Không qua cổng = chặn.</p>
+  <ul>
+    <li><b>Dept scope</b> — agent thuộc dept nào, edit dept đó (Leon = cả 3).</li>
+    <li><b>Operation scope</b> — <code>read | write | force | approve</code>.</li>
+    <li><b>Target scope</b> — <code>wip_* = yes</code> · <code>staff = no</code> · <code>bot_settings = core only</code>.</li>
+  </ul>
+  <p class="note">Thiếu 1 tầng = chặn. Không check "Leon được không" mà "<b>Leon + edit checklist + wip_item = được không</b>".
+  VD: <code>/api/tax/config</code> từ Leon → <b>403</b>. <code>/api/wip/template</code> xoá từ Na → <b>403</b>, đọc → <b>200</b>.</p>
+  <h3>5.3 · Chữ ký kép — trigger RULE tự động (không phán đoán)</h3>
+  <p>Bất kỳ edit chạm field <code>photo=true</code> HOẶC <code>priority=critical</code> → tự nâng lên 🟡 (cần 1 confirm từ người ngoài dept), vì đụng audit trail Na cần. <b>Middleware check field, không cần người phán đoán.</b></p>
+  <h3>5.4 · Audit bất biến · 5.5 · Khoá luân phiên · 5.6 · Trách nhiệm</h3>
+  <ul>
+    <li><code>agent_action_log</code> = <b>chỉ nối thêm, không bao giờ xoá</b> (hồ sơ pháp lý). Guardrail core duy nhất.</li>
+    <li>Agent &gt; <b>5 lần / 2 giờ</b> không có phản hồi → lần 3 nhắc nhẹ · lần 5 tạm khoá chờ xác nhận (Leon chỉnh từ 3→5: giờ rush không phạt sớm).</li>
+    <li>Trách nhiệm: <b>mỗi người chịu phần mình</b> (<code>acted_by</code> chịu hành động · <code>on_behalf_of</code> chịu phân quyền), không "người cuối win".</li>
+  </ul>
+</section>
+
+<section>
+  <h2>§6 · Schema mới — THE GATE</h2>
+  <div class="h2title"><code>agent_action_log</code> (handbook.db)</div>
+  <pre><span class="k">CREATE TABLE</span> agent_action_log (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  agent_id        TEXT NOT NULL,   <span class="pre-c">-- na|leon|ray|will|claude|nova</span>
+  acted_by        TEXT NOT NULL,   <span class="pre-c">-- ai thực sự trigger (delegation: leon)</span>
+  on_behalf_of    TEXT,            <span class="pre-c">-- quyền của ai được dùng (audrey)</span>
+  dept            TEXT NOT NULL,   <span class="pre-c">-- bep|bar|phucvu|finance|hr|core</span>
+  operation       TEXT NOT NULL,   <span class="pre-c">-- read|write|force|approve</span>
+  target_table    TEXT NOT NULL,
+  target_id       TEXT,
+  intensity       TEXT NOT NULL,   <span class="pre-c">-- green|amber|red</span>
+  before_value    TEXT,            <span class="pre-c">-- JSON snapshot trước</span>
+  after_value     TEXT,            <span class="pre-c">-- JSON snapshot sau</span>
+  shift_id        TEXT,
+  reason          TEXT,
+  status          TEXT NOT NULL,   <span class="pre-c">-- auto|pending_1|pending_2|approved|rejected</span>
+  approved_by     TEXT,            <span class="pre-c">-- JSON list (2-confirm: ["audrey","will"])</span>
+  created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);</pre>
+  <h3>Conflict lock — thêm cột <code>wip_item</code> (Leon)</h3>
+  <pre><span class="k">ALTER TABLE</span> wip_item <span class="k">ADD COLUMN</span> locked_by TEXT;   <span class="pre-c">-- telegram_id đang mở edit</span>
+<span class="k">ALTER TABLE</span> wip_item <span class="k">ADD COLUMN</span> locked_at TEXT;   <span class="pre-c">-- lock hết hạn sau 2 phút</span></pre>
+  <p>Ai mở màn edit → lock. Agent thấy lock còn hạn (≤2') → queue chờ / xin phép, không đè.</p>
+</section>
+
+<section>
+  <h2>§7 · API Endpoints <span style="font-size:13px;color:var(--muted);font-weight:500">— Leon (xương sống)</span></h2>
+  <div class="h2title"><code>POST /api/agent/act</code> — cổng thực thi duy nhất</div>
+  <pre>{
+  "agent_id": "leon", "acted_by": "leon", "on_behalf_of": "audrey",
+  "action": "edit_checklist_template",
+  "dept": "bep", "target": { "table": "wip_item", "id": "bep-dauca#3" },
+  "payload": { ... }, "intensity": "amber",
+  "reason": "Mùa hè thêm bước kiểm tra tủ lạnh 2 lần/ca"
+}</pre>
+  <p><b>Pipeline middleware (6 bước):</b></p>
+  <ol style="margin:8px 0;padding-left:22px">
+    <li><b>Auth</b> (tái dùng <code>buildBoot</code>) → resolve agent_id + persona dept.</li>
+    <li><b>Scope 3 tầng</b> → thiếu 1 = <code>403</code>.</li>
+    <li><b>Conflict lock</b> → target đang lock người khác = <code>409</code> + gợi ý queue.</li>
+    <li><b>Intensity resolve</b> → nâng tier nếu chạm <code>photo</code>/<code>priority=critical</code>.</li>
+    <li><b>Ghi <code>agent_action_log</code></b> (before/after) với <code>status</code> theo intensity.</li>
+    <li><b>Execute / queue.</b> Settle staff.db (nếu cần) qua <code>wip_outbox</code> → bridge.</li>
+  </ol>
+  <p>Response: <code>{ ok, action_id, status, intensity, undo_until }</code> · <code>GET /api/agent/audit</code> →
+  <code>SELECT * FROM agent_action_log WHERE dept=? ORDER BY created_at DESC LIMIT 10</code>.</p>
+  <p class="note"><b>Build được 2 endpoint này = mọi agent đều hoạt động được.</b></p>
+</section>
+
+<section>
+  <h2>§8 · UI Spec <span style="font-size:13px;color:var(--muted);font-weight:500">— Ray (experience layer)</span></h2>
+  <h3>Thanh hoạt động AI — cuối mỗi màn, không phải tab riêng</h3>
+  <div class="mock">🤖 Leon AI đã đóng ca Bếp 22:15 · Trễ 15 phút   [Xem thay đổi]
+🤖 Na AI khoá kỳ COGS Q1 · 16:42                [Xem chi tiết]
+🤖 Ray AI sửa microcopy tab Duyệt · 14:03       [Xem thay đổi]</div>
+  <p class="note"><b>Vì sao đặt nơi đang làm việc:</b> nếu Audrey phải vào tab riêng mới thấy AI chỉnh gì → cô ấy sẽ không kiểm tra. Màu theo intensity (border-left 🟢/🟡/🔴), scroll nếu &gt;3 item, unread = chấm đỏ.</p>
+  <h3>Modal diff + Hoàn tác 30'</h3>
+  <div class="mock">┌─ Thay đổi ──────────────────────────────┐
+│ 🤖 Leon AI · 22:15 · Ca Bếp              │
+│ Intensity: 🟡 Vàng · Chờ Audrey xác nhận │
+│ Trước:               Sau:                │
+│  status: open         status: closed     │
+│ Lý do: "Staff đã đi hết, ca trễ 15p"     │
+│ [Hoàn tác 29:58]            [Đồng ý]      │
+└──────────────────────────────────────────┘</div>
+  <ul>
+    <li>Layout side-by-side (tablet+) / stacked (mobile). Diff: thêm = green bg · xoá = red bg + strikethrough · sửa = amber bg.</li>
+    <li>Countdown chạy từ <code>created_at</code> (server), KHÔNG từ lúc mở modal: <code>30' − (now − created_at)</code>. Hết hạn → mờ nút + "tạo revert action".</li>
+    <li>Nút Đồng ý chỉ hiện khi 🟡 + người xem là approver. 🟢 → "Đã thực hiện". 🔴 → "Xác nhận 1/2".</li>
+    <li><b>Lý do giới hạn 30':</b> hoàn tác hôm sau = mở lại ca hôm qua = data lộn. 30' = cửa sổ sửa ngay, không phải hồi cố.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>§9 · Giọng AI / Identity <span style="font-size:13px;color:var(--muted);font-weight:500">— Ray</span></h2>
+  <p>Notification mang <b>giọng của agent đó</b>, không phải giọng hệ thống. Mọi action ghi tên agent, không giấu dưới "system".</p>
+  <ul>
+    <li><b>Leon AI</b> (ops): ngắn, khô. <i>"Đã đóng ca Bếp 22:15 — ca trễ 15 phút do chờ khách cuối."</i></li>
+    <li><b>Na AI / Audrey AI</b>: ấm, bao quát. <i>"Em đã cập nhật checklist Ca sáng — thêm bước kiểm tra nhiệt độ tủ mát."</i></li>
+    <li><b>Will / Claude / Nova AI</b> (owner): dứt khoát, minimal. <i>"Schema updated: +menu_item_cost.yield_factor. Chờ xác nhận."</i></li>
+  </ul>
+  <p style="color:var(--cacao);font-weight:700;margin-top:12px">Giọng = nhận diện · Nhận diện = trách nhiệm · Ai cũng biết ai đã làm gì.</p>
+</section>
+
+<section>
+  <h2>§10 · Phạm vi build</h2>
+  <div class="status-grid">
+    <div>2-tier DB + bridge settle (<code>wip-bridge.js</code>)</div><div class="liveT">✅ LIVE</div>
+    <div>WIP cockpit + <code>shift_completed</code> spine</div><div class="liveT">✅ LIVE</div>
+    <div>Manager notebook đọc <code>shift_completed</code></div><div class="liveT">✅ có</div>
+    <div><code>buildBoot</code> auth + dept-scope (tái dùng)</div><div class="liveT">✅ có</div>
+    <div><code>agent_action_log</code> (§6)</div><div class="todoT">⬜ build</div>
+    <div>conflict lock cột <code>wip_item</code> (§6)</div><div class="todoT">⬜ build</div>
+    <div><code>POST /api/agent/act</code> + middleware 6 bước (§7)</div><div class="todoT">⬜ build</div>
+    <div><code>GET /api/agent/audit</code> (§7)</div><div class="todoT">⬜ build</div>
+    <div>bảng phân quyền agent (§3) <i>— Will/Claude</i></div><div class="todoT">⬜ build</div>
+    <div>thanh hoạt động AI + modal diff (§8) <i>— Ray spec</i></div><div class="todoT">⬜ build</div>
+    <div>chữ ký kép + khoá luân phiên (vào middleware)</div><div class="todoT">⬜ build</div>
+  </div>
+</section>
+
+<section>
+  <h2>§11 · Mở cho từng agent fill</h2>
+  <ul>
+    <li><b>Leon</b> → ráp scope matrix thành config từng action (action → dept/operation/target/intensity mặc định) cho 3 dept + HR/Ca.</li>
+    <li><b>Na</b> → liệt kê chính xác <code>target_table</code> finance được ghi vs chỉ-đọc + ngưỡng cảnh báo.</li>
+    <li><b>Ray</b> → khoá CSS + microcopy thanh hoạt động + modal diff (giọng từng agent, text nút theo status).</li>
+    <li><b>Athena</b> → chốt danh sách field trigger chữ ký kép + ngưỡng escalation khoá luân phiên.</li>
+    <li><b>Will / Claude / Nova</b> → duyệt ma trận + sở hữu bảng phân quyền agent + core/deploy.</li>
+  </ul>
+</section>
+
+<div class="footer">
+  Nguồn: BOD group [DG] 2026-06-20 (Athena · Leon · Ray) + codebase <code>willos/staff-bot</code><br>
+  (db.js · handbook/wip-db.js · wip-bridge.js · handbook/server.js · web/depts.js · DESIGN-ops-cockpit.md) + build-state v2.6
+</div>
+
+</div>
+</body>
+</html>
